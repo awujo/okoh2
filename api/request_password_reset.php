@@ -30,14 +30,14 @@ $stmt->execute();
 // Send email
 $mail = new PHPMailer;
 $mail->isSMTP();
-$mail->Host = 'smtp.hostiner.com';  // Set this properly
+$mail->Host = $_ENV['SMTP_HOST'];  // Set this properly
 $mail->SMTPAuth = true;
-$mail->Username = 'support@nexoracapitals.com';
-$mail->Password = 'Hustle@001';
-$mail->SMTPSecure = 'tls';
-$mail->Port = 587;
+$mail->Username = $_ENV['SMTP_USER'];
+$mail->Password = $_ENV['SMTP_PASS'];
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port = $_ENV['SMTP_PORT'];
 
-$mail->setFrom('support@nexoracapitals.com', 'Neroxa Capitals');
+$mail->setFrom($_ENV['SMTP_USER'], 'NORTH BRIDGE');
 $mail->isHTML(true);
 $mail->addAddress($email);
 $mail->Subject = 'Your Password Reset Code';
