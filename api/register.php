@@ -72,7 +72,7 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = $_ENV['SMTP_PORT'];
 
-    $mail->setFrom($_ENV['SMTP_USER'], 'Nexora Capitals');
+    $mail->setFrom($_ENV['SMTP_USER'], 'North Bridge');
     $mail->addAddress($email, $fullname);
     $mail->isHTML(false);
     $mail->Subject = 'Confirm Your Email';
