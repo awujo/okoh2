@@ -1,0 +1,19 @@
+# services:
+#   - type: web
+#     name: attendify
+#     runtime: docker
+#     env: php
+#     plan: free
+#     buildCommand: ""
+#     startCommand: php -S 0.0.0.0:10000 -t .
+#     branch: main
+#     autoDeploy: true
+
+
+services:
+  - type: web
+    name: my-php-app
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    branch: main
