@@ -1194,7 +1194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if (data.status === "unauthorized") {
-        window.location.href = "../getIn/login.html";
+        window.location.href = "../getin/login.html";
         return;
       }
 
@@ -1222,7 +1222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => {
       console.error("Error fetching dashboard data:", err);
-      window.location.href = "../getIn/login.html";
+      window.location.href = "../getin/login.html";
     });
 });
 </script>
