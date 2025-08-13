@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>2fa Verification - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo/logo_background.png" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .verification-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        
+        .instructions {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        
+        .code-input {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .code-input input {
+            width: 40px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        
+        .code-input input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        
+        #verify2faBtn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        #verify2faBtn:hover {
+            background-color: #0056b3;
+        }
+        
+        #verify2faBtn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .loader {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .toast.success {
+            background-color: #28a745;
+        }
+        
+        .toast.error {
+            background-color: #dc3545;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; top: 0; }
+            to { opacity: 1; top: 20px; }
+        }
+        
+        .resend-link {
+            margin-top: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <h1>Two-Factor Authentication</h1>
+        <p class="instructions">Enter the 6-digit code from your authenticator app</p>
+        
+        <form id="verify2faForm">
+            <div class="code-input">
+                <input type="text" name="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric" required autofocus>
+                <input type="text" name="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" name="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" name="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" name="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" name="digit6" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            </div>
+            
+            <input type="hidden" id="fullCode" name="code">
+            
+            <button type="submit" id="verify2faBtn">
+                <span class="loader"></span>
+                <span class="btn-text">Verify Code</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('verify2faForm');
+            const inputs = form.querySelectorAll('input[type="text"]');
+            const fullCodeInput = document.getElementById('fullCode');
+            const verifyBtn = document.getElementById('verify2faBtn');
+            const loader = verifyBtn.querySelector('.loader');
+            const btnText = verifyBtn.querySelector('.btn-text');
+
+            // Auto-focus first input
+            inputs[0].focus();
+
+            // Handle input navigation
+            inputs.forEach((input, index) => {
+                // Move to next input on digit entry
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+                });
+
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                // Prevent non-numeric input
+                input.addEventListener('keypress', function(e) {
+                    if (e.key < '0' || e.key > '9') {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Auto-submit when last digit is entered
+            inputs[inputs.length - 1].addEventListener('input', function() {
+                if (this.value.length === 1) {
+                    submitForm();
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitForm();
+            });
+
+            function submitForm() {
+                // Combine all digits into full code
+                let fullCode = '';
+                inputs.forEach(input => {
+                    fullCode += input.value;
+                });
+                fullCodeInput.value = fullCode;
+
+                // Validate length
+                if (fullCode.length !== 6) {
+                    showToast('Please enter a complete 6-digit code', 'error');
+                    return;
+                }
+
+                // Show loading state
+                verifyBtn.disabled = true;
+                loader.style.display = 'block';
+                btnText.textContent = 'Verifying...';
+
+                const formData = new FormData(form);
+                
+                fetch('../api/verify_2fa.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    if (data.status === 'success') {
+                        showToast(data.message, 'success');
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        }
+                    } else {
+                        showToast(data.message, 'error');
+                        // Clear all inputs and focus first
+                        inputs.forEach(input => input.value = '');
+                        inputs[0].focus();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Network error. Please try again.', 'error');
+                })
+                .finally(() => {
+                    // Reset button state
+                    verifyBtn.disabled = false;
+                    loader.style.display = 'none';
+                    btnText.textContent = 'Verify Code';
+                });
+            }
+
+            function showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
+            // Check session status on page load
+            checkSessionStatus();
+        });
+
+        function checkSessionStatus() {
+            fetch('../api/verify_2fa.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.redirect) {
+                        window.location.href = data.redirect;
+                    } else if (data.status === 'error') {
+                        window.location.href = 'login.html';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
