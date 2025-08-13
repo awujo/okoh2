@@ -65,20 +65,21 @@ $stmt->close();
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();
-    $mail->Host = 'smtp.hostinger.com'; // Change this
+    $mail->Host = $_ENV['SMTP_HOST'];
     $mail->SMTPAuth = true;
-    $mail->Username = 'support@nexoracapitals.com'; // Change this
-    $mail->Password = 'Hustle@001';     // Change this
-    $mail->SMTPSecure = 'tls';
-    $mail->Port = 587;
+    $mail->Username = $_ENV['SMTP_USER'];
+    $mail->Password = $_ENV['SMTP_PASS'];
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = $_ENV['SMTP_PORT'];
 
-    $mail->setFrom('support@nexoracapitals.com', 'Nexora Capitals');
+    $mail->setFrom($_ENV['SMTP_USER'], 'Nexora Capitals');
     $mail->addAddress($email, $fullname);
+    $mail->isHTML(false);
     $mail->Subject = 'Confirm Your Email';
     $mail->Body = "Hi $fullname,\n\nYour confirmation code is: $confirmation_code";
 
     $mail->send();
     echo json_encode(["success" => true]);
 } catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Email could not be sent."]);
+    echo json_encode(["success" => false, "message" => "Mailer Error: {$mail->ErrorInfo}"]);
 }
