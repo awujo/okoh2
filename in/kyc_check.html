@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+       <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>KYC - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .upload-section {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .success {
+            color: green;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .status-banner {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KYC Verification</h1>
+        
+        <div id="status-banner" class="status-banner hidden"></div>
+        
+        <div id="loading">
+            <p>Loading KYC verification...</p>
+        </div>
+        
+        <form id="kyc-form" class="hidden" enctype="multipart/form-data">
+            <!-- Personal Information -->
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nid">National ID Number</label>
+                <input type="text" id="nid" name="nid" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="state">State/Province</label>
+                <input type="text" id="state" name="state" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="hobby">Occupation/Hobby</label>
+                <input type="text" id="hobby" name="hobby" required>
+            </div>
+            
+            <!-- ID Document Upload -->
+            <div class="form-group">
+                <label>ID Document Photo</label>
+                <div class="upload-section">
+                    <input type="file" id="nid-file" name="nid_file" accept="image/*" style="display:none">
+                    <button type="button" id="upload-id-btn" class="btn">
+                        <i class="fas fa-upload"></i> Upload ID Document
+                    </button>
+                    <img id="nid-preview" class="preview-image">
+                </div>
+            </div>
+            
+            <!-- Selfie Upload -->
+            <div class="form-group">
+                <label>Selfie with ID</label>
+                <div class="upload-section">
+                    <input type="file" id="selfie-file" name="selfie_file" accept="image/*" style="display:none">
+                    <button type="button" id="upload-selfie-btn" class="btn">
+                        <i class="fas fa-upload"></i> Upload Selfie
+                    </button>
+                    <img id="selfie-preview" class="preview-image">
+                </div>
+            </div>
+            
+            <button type="submit" id="submit-btn" class="btn">
+                <i class="fas fa-paper-plane"></i> Submit KYC Application
+            </button>
+            
+            <div id="error-message" class="error"></div>
+            <div id="success-message" class="success"></div>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all elements with null checks
+        const loadingElement = document.getElementById('loading');
+        const statusBanner = document.getElementById('status-banner');
+        const kycForm = document.getElementById('kyc-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMsg = document.getElementById('error-message');
+        const successMsg = document.getElementById('success-message');
+        
+        // File upload elements
+        const uploadIdBtn = document.getElementById('upload-id-btn');
+        const uploadSelfieBtn = document.getElementById('upload-selfie-btn');
+        const nidFileInput = document.getElementById('nid-file');
+        const selfieFileInput = document.getElementById('selfie-file');
+        const nidPreview = document.getElementById('nid-preview');
+        const selfiePreview = document.getElementById('selfie-preview');
+
+        // Check KYC status on load
+        checkKYCStatus();
+
+        // Set up file upload buttons if they exist
+        if (uploadIdBtn && nidFileInput) {
+            uploadIdBtn.addEventListener('click', () => nidFileInput.click());
+        }
+
+        if (uploadSelfieBtn && selfieFileInput) {
+            uploadSelfieBtn.addEventListener('click', () => selfieFileInput.click());
+        }
+
+        // Handle file previews
+        if (nidFileInput && nidPreview) {
+            nidFileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    nidPreview.src = URL.createObjectURL(e.target.files[0]);
+                    nidPreview.style.display = 'block';
+                }
+            });
+        }
+
+        if (selfieFileInput && selfiePreview) {
+            selfieFileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    selfiePreview.src = URL.createObjectURL(e.target.files[0]);
+                    selfiePreview.style.display = 'block';
+                }
+            });
+        }
+
+        // Form submission
+        if (kycForm) {
+            kycForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitKYC();
+            });
+        }
+
+        async function checkKYCStatus() {
+            try {
+                const response = await fetch('../api/kyc-check.php');
+                const data = await response.json();
+                
+                if (loadingElement) loadingElement.classList.add('hidden');
+                
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+                
+                if (statusBanner) {
+                    statusBanner.textContent = `Status: ${data.kyc_status || 'Not submitted'}`;
+                    statusBanner.className = `status-banner status-${data.kyc_status || 'pending'}`;
+                    statusBanner.classList.remove('hidden');
+                    "use strict";
+                    iziToast.error({message:`Status: ${data.kyc_status || 'Not submitted'}`, position: "topRight"});
+                }
+                
+                if (kycForm) {
+                    kycForm.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking KYC status:', error);
+                if (loadingElement) loadingElement.classList.add('hidden');
+                if (errorMsg) {
+                    errorMsg.textContent = 'Error loading KYC status';
+                    errorMsg.style.display = 'block';
+                }
+            }
+        }
+
+        async function submitKYC() {
+            if (!kycForm || !submitBtn) return;
+            
+            submitBtn.disabled = true;
+            if (errorMsg) errorMsg.style.display = 'none';
+            if (successMsg) successMsg.style.display = 'none';
+            
+            try {
+                const formData = new FormData(kycForm);
+                const response = await fetch('../api/kyc-upload.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status) {
+                    if (successMsg) {
+                        successMsg.textContent = data.message || 'Submission successful!';
+                        successMsg.style.display = 'block';
+                    }
+                    setTimeout(checkKYCStatus, 2000);
+                } else {
+                    if (errorMsg) {
+                        errorMsg.textContent = data.message || 'Submission failed';
+                        errorMsg.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                if (errorMsg) {
+                    errorMsg.textContent = 'Network error. Please try again.';
+                    errorMsg.style.display = 'block';
+                }
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+    });
+    </script>
+
+<link rel="stylesheet" href="iziToast.min.css">
+<script src="iziToast.min.js"></script>
+    
+<script>
+    "use strict";
+    function notify(status,message) {
+        iziToast[status]({
+            message: message,
+            position: "topRight"
+        });
+    }
+</script>
+</body>
+</html>

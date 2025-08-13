@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Investment Plans - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo/logo_background.png" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/LineIcons.3.0.css" />
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <link rel="stylesheet" href="assets/css/tiny-slider.css" />
+    <link rel="stylesheet" href="assets/css/glightbox.min.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        /* Investment Plans Styles */
+        .plans-hero {
+            background: linear-gradient(135deg, #1a2035 0%, #131722 100%);
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        
+        .plans-hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .plans-hero p {
+            color: #aaa;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .investment-plans {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .plans-container {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .calculator-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .plan-card {
+            background: #1e222d;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid #2a2f3d;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2a2f3d;
+        }
+
+        .plan-header h3 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.3rem;
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .plan-range {
+            color: #6e8efb;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+
+        .plan-features li {
+            color: #aaa;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-features i {
+            margin-right: 10px;
+            color: #6e8efb;
+        }
+
+        .select-plan-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 142, 251, 0.4);
+        }
+
+        .calculator-card {
+            background: #1e222d;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #2a2f3d;
+            position: sticky;
+            top: 20px;
+        }
+
+        .calculator-card h2 {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #2a2f3d;
+            background: #2a2f3d;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .input-with-range {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-with-range input[type="range"] {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .amount-validation {
+            color: #ff4757;
+            font-size: 0.8rem;
+            min-height: 15px;
+        }
+
+        .market-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .market-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #2a2f3d;
+            background: #2a2f3d;
+            color: #aaa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .market-btn.active {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            border-color: transparent;
+        }
+
+        .calculation-results {
+            margin: 30px 0;
+            border-top: 1px solid #2a2f3d;
+            padding-top: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #aaa;
+        }
+
+        .result-item.bonus {
+            color: #6e8efb;
+        }
+
+        .result-item.total {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding-top: 10px;
+            border-top: 1px solid #2a2f3d;
+            margin-top: 15px;
+        }
+
+        .invest-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .invest-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .invest-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* FAQ Section */
+        .plans-faq {
+            padding: 80px 0;
+            background: #131722;
+        }
+        
+        .faq-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .faq-header h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .faq-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background: #1e222d;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #2a2f3d;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .faq-question:hover {
+            background: rgba(110, 142, 251, 0.1);
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #aaa;
+        }
+        
+        .faq-answer.show {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+        
+        .faq-toggle {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-toggle.rotate {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <!--[if lte IE 9]>
+      <p class="browserupgrade">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="https://browsehappy.com/">upgrade your browser</a> to improve
+        your experience and security.
+      </p>
+    <![endif]-->
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- /End Preloader -->
+
+    <!-- Start Header Area -->
+    <header class="header navbar-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="nav-inner">
+                        <!-- Start Navbar -->
+                        <nav class="navbar navbar-expand-lg">
+                            <a class="navbar-brand" href="index.html">
+                                <img src="assets/images/logo/logo_white.png" alt="Logo" width="130" height="60">
+                            </a>
+                            <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                                <ul id="nav" class="navbar-nav ms-auto">
+                                    <li class="nav-item">
+                                        <a href="index.html" aria-label="Toggle navigation">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="about-us.html" aria-label="Toggle navigation">About</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="investment-plans.html" class="active" aria-label="Toggle navigation">Investment Plans</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="contact.html" aria-label="Toggle navigation">Contact</a>
+                                    </li>
+                                     <li class="nav-item">
+                                        <a href="getin/login.html" aria-label="Toggle navigation">Login</a>
+                                    </li>
+                                </ul>
+                            </div> <!-- navbar collapse -->
+                            <div class="button">
+                                <a href="getIn/register.html" class="btn">Get started</a>
+                            </div>
+                        </nav>
+                        <!-- End Navbar -->
+                    </div>
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </header>
+    <!-- End Header Area -->
+
+    <!-- Start Plans Hero Section -->
+    <section class="plans-hero">
+        <div class="container">
+            <h1 class="wow fadeInUp" data-wow-delay=".4s">Investment Plans</h1>
+            <p class="wow fadeInUp" data-wow-delay=".6s">Choose from our range of investment plans designed to grow your capital through our algorithmic trading strategies in crypto and commodities markets.</p>
+        </div>
+    </section>
+    <!-- End Plans Hero Section -->
+
+    <!-- Start Investment Plans Section -->
+    <section class="section">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1 class="wow fadeInUp" data-wow-delay=".2s">Choose Your Investment Plan</h1>
+                <p class="wow fadeInUp" data-wow-delay=".4s">Select a plan that matches your financial goals and risk appetite</p>
+            </div>
+        
+            <div class="investment-plans">
+                <!-- Plan Cards -->
+                <div class="plans-container">
+                    <div class="plan-card wow fadeInUp" data-wow-delay=".2s" data-plan="starter" style="display: none;">
+                        <div class="plan-header">
+                            <h3>Starter Plan</h3>
+                            <div class="plan-badge">4% ROI</div>
+                        </div>
+                        <div class="plan-range">$200 - $499</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="lni lni-checkmark-circle"></i> 31 Days Duration</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Capital Return</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Basic Support</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Daily Profit Distribution</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Crypto & Commodities</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="starter">Select Plan</button>
+                    </div>
+            
+                    <div class="plan-card wow fadeInUp" data-wow-delay=".3s" data-plan="bronze">
+                        <div class="plan-header">
+                            <h3>Bronze Plan</h3>
+                            <div class="plan-badge">6% ROI</div>
+                        </div>
+                        <div class="plan-range">$500 - $2,000</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="lni lni-checkmark-circle"></i> 31 Days Duration</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Capital Return</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Priority Support</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Daily Profit Distribution</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Crypto & Commodities</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="bronze">Select Plan</button>
+                    </div>
+            
+                    <div class="plan-card wow fadeInUp" data-wow-delay=".4s" data-plan="silver">
+                        <div class="plan-header">
+                            <h3>Silver Plan</h3>
+                            <div class="plan-badge">10% ROI</div>
+                        </div>
+                        <div class="plan-range">$2,001 - $5,000</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="lni lni-checkmark-circle"></i> 31 Days Duration</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Capital Return</li>
+                                <li><i class="lni lni-checkmark-circle"></i> 24/7 Support</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Daily Profit Distribution</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Crypto & Commodities</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="silver">Select Plan</button>
+                    </div>
+            
+                    <div class="plan-card wow fadeInUp" data-wow-delay=".5s" data-plan="gold">
+                        <div class="plan-header">
+                            <h3>Gold Plan</h3>
+                            <div class="plan-badge">12% ROI</div>
+                        </div>
+                        <div class="plan-range">$5,001 - $10,000</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="lni lni-checkmark-circle"></i> 31 Days Duration</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Capital Return</li>
+                                <li><i class="lni lni-checkmark-circle"></i> VIP Support</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Daily Profit Distribution</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Crypto & Commodities</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="gold">Select Plan</button>
+                    </div>
+            
+                    <div class="plan-card wow fadeInUp" data-wow-delay=".6s" data-plan="ultimate">
+                        <div class="plan-header">
+                            <h3>Ultimate Plan</h3>
+                            <div class="plan-badge">15% ROI</div>
+                        </div>
+                        <div class="plan-range">$10,001+</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="lni lni-checkmark-circle"></i> 31 Days Duration</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Capital Return</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Dedicated Account Manager</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Daily Profit Distribution</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Crypto & Commodities</li>
+                                <li><i class="lni lni-checkmark-circle"></i> Custom Strategy Options</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="ultimate">Select Plan</button>
+                    </div>
+                </div>
+            
+                <!-- Investment Calculator -->
+                <div class="calculator-container">
+                    <div class="calculator-card wow fadeInUp" data-wow-delay=".7s">
+                        <h2>Investment Calculator</h2>
+                        <div class="form-group">
+                            <label for="selected-plan">Selected Plan:</label>
+                            <input type="text" id="selected-plan" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="investment-amount">Investment Amount ($):</label>
+                            <div class="input-with-range">
+                                <input type="range" id="amount-range" min="200" max="50000" step="100" value="500">
+                                <input type="number" id="investment-amount" min="200" value="500">
+                            </div>
+                            <div class="amount-validation" id="amount-validation"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Market Condition:</label>
+                            <div class="market-toggle">
+                                <button class="market-btn active" data-condition="normal">Normal</button>
+                                <button class="market-btn" data-condition="good">Good (+10%)</button>
+                            </div>
+                        </div>
+                        <div class="calculation-results">
+                            <div class="result-item">
+                                <span>Daily ROI:</span>
+                                <span id="daily-roi">$0.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>31 Days ROI:</span>
+                                <span id="total-roi">$0.00</span>
+                            </div>
+                            <div class="result-item bonus">
+                                <span>Potential Bonus:</span>
+                                <span id="potential-bonus">$0.00</span>
+                            </div>
+                            <div class="result-item total">
+                                <span>Total Payout:</span>
+                                <span id="total-payout">$0.00</span>
+                            </div>
+                        </div>
+                        <button id="invest-now-btn" class="invest-btn" disabled>Invest Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Investment Plans Section -->
+
+    <!-- Start FAQ Section -->
+    <section class="plans-faq">
+        <div class="faq-container">
+            <div class="faq-header wow fadeInUp" data-wow-delay=".2s">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about our investment plans</p>
+            </div>
+            
+            <div class="faq-list">
+                <div class="faq-item wow fadeInUp" data-wow-delay=".3s">
+                    <div class="faq-question">
+                        <span>How do I start investing with NexoraCapitals?</span>
+                        <i class="lni lni-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Starting is simple: 1) Create an account, 2) Deposit funds using cryptocurrency or other payment methods, 3) Choose an investment plan, and 4) Watch your investment grow through our algorithmic trading strategies.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item wow fadeInUp" data-wow-delay=".4s">
+                    <div class="faq-question">
+                        <span>What is the minimum investment amount?</span>
+                        <i class="lni lni-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The minimum investment amount is $200 for our Starter Plan. Higher-tier plans have larger minimum investments but offer better returns and additional benefits.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item wow fadeInUp" data-wow-delay=".5s">
+                    <div class="faq-question">
+                        <span>How are profits calculated and distributed?</span>
+                        <i class="lni lni-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Profits are calculated daily based on your investment plan's ROI percentage and distributed to your account weekly. You can withdraw these profits or reinvest them for compound growth.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item wow fadeInUp" data-wow-delay=".6s">
+                    <div class="faq-question">
+                        <span>Can I withdraw my initial investment?</span>
+                        <i class="lni lni-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your initial investment is locked for the duration of your chosen plan (typically 31 days). After this period, you can withdraw both your principal and accumulated profits.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item wow fadeInUp" data-wow-delay=".7s">
+                    <div class="faq-question">
+                        <span>What markets do you trade in?</span>
+                        <i class="lni lni-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our algorithms primarily trade in cryptocurrency markets (BTC, ETH, etc.) and commodities (gold, oil, etc.), with some exposure to forex markets for diversification.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End FAQ Section -->
+
+    <!-- Start Footer Area -->
+    <footer class="footer section">
+        <!-- Start Footer Top -->
+        <div class="footer-top">
+            <div class="container">
+                <div class="inner-content">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <!-- Single Widget -->
+                            <div class="single-footer f-about">
+                               <div class="logo">
+                                    <a href="index.html">
+                                        <img src="assets/images/logo/logo_white.png" alt="#">
+                                    </a>
+                                </div>
+                                <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
+                                <h4 class="social-title">Follow Us On:</h4>
+                                <ul class="social">
+                                    <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                                </ul>
+                            </div>
+                            <!-- End Single Widget -->
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-12">
+                            <!-- Single Widget -->
+                            <div class="single-footer f-link">
+                                <h3>Company</h3>
+                                <ul>
+                                    <li><a href="about-us.html">About Us</a></li>
+                                    <li><a href="investment-plans.html">Investment Plans</a></li>
+                                    <li><a href="contact.html">Contact</a></li>
+                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                            <!-- End Single Widget -->
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-12">
+                            <!-- Single Widget -->
+                            <div class="single-footer f-link">
+                                <h3>Resources</h3>
+                                <ul>
+                                    <li><a href="faq.html">FAQ</a></li>
+                                    <li><a href="https://cryptohopper.com/blog">Market News</a></li>
+                                    <li><a href="trading-guides.html">Trading Guides</a></li>
+                                    <li><a href="risk-disclosure.html">Risk Disclosure</a></li>
+                                </ul>
+                            </div>
+                            <!-- End Single Widget -->
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <!-- Single Widget -->
+                            <div class="single-footer newsletter">
+                                <h3>Subscribe</h3>
+                                <p>Subscribe to our newsletter for the latest updates</p>
+                                <form action="#" method="get" target="_blank" class="newsletter-form">
+                                    <input name="EMAIL" placeholder="Email address" required="required" type="email">
+                                    <div class="button">
+                                        <button class="sub-btn"><i class="lni lni-envelope"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- End Single Widget -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ End Footer Top -->
+        <!-- Start Copyright Area -->
+        <div class="copyright-area">
+            <div class="container">
+                <div class="inner-content">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <p class="copyright-text">© <span id="current-year"></span> NexoraCapitals - All Rights Reserved</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <p class="copyright-owner">Algorithmic Trading Platform</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Copyright Area -->
+    </footer>
+    <!--/ End Footer Area -->
+
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top">
+        <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/count-up.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Investment Calculator Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Plan selection
+            const planButtons = document.querySelectorAll('.select-plan-btn');
+            const selectedPlanInput = document.getElementById('selected-plan');
+            const investNowBtn = document.getElementById('invest-now-btn');
+            
+            // Range and amount inputs
+            const amountRange = document.getElementById('amount-range');
+            const investmentAmount = document.getElementById('investment-amount');
+            const amountValidation = document.getElementById('amount-validation');
+            
+            // Market condition buttons
+            const marketButtons = document.querySelectorAll('.market-btn');
+            
+            // Result displays
+            const dailyRoi = document.getElementById('daily-roi');
+            const totalRoi = document.getElementById('total-roi');
+            const potentialBonus = document.getElementById('potential-bonus');
+            const totalPayout = document.getElementById('total-payout');
+            
+            // Current selected values
+            let currentPlan = null;
+            let currentAmount = 500;
+            let marketCondition = 'normal';
+            
+            // Plan ROI rates
+            const planRates = {
+                'starter': 0.04,
+                'bronze': 0.06,
+                'silver': 0.10,
+                'gold': 0.12,
+                'ultimate': 0.15
+            };
+            
+            // Plan validation ranges
+            const planRanges = {
+                'starter': { min: 200, max: 499 },
+                'bronze': { min: 500, max: 2000 },
+                'silver': { min: 2001, max: 5000 },
+                'gold': { min: 5001, max: 10000 },
+                'ultimate': { min: 10001, max: 50000 }
+            };
+            
+            // Handle plan selection
+            planButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const plan = this.getAttribute('data-plan');
+                    currentPlan = plan;
+                    selectedPlanInput.value = this.parentNode.querySelector('h3').textContent;
+                    
+                    // Update button states
+                    planButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Validate amount against new plan
+                    validateAmount();
+                    calculateReturns();
+                    
+                    // Enable invest now button if valid
+                    if (currentPlan && validateAmount()) {
+                        investNowBtn.disabled = false;
+                    }
+                });
+            });
+            
+            // Sync range and number inputs
+            amountRange.addEventListener('input', function() {
+                investmentAmount.value = this.value;
+                currentAmount = parseFloat(this.value);
+                validateAmount();
+                calculateReturns();
+            });
+            
+            investmentAmount.addEventListener('input', function() {
+                amountRange.value = this.value;
+                currentAmount = parseFloat(this.value) || 0;
+                validateAmount();
+                calculateReturns();
+            });
+            
+            // Market condition toggle
+            marketButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    marketCondition = this.getAttribute('data-condition');
+                    marketButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    calculateReturns();
+                });
+            });
+            
+            // Validate amount against selected plan
+            function validateAmount() {
+                if (!currentPlan) {
+                    amountValidation.textContent = 'Please select a plan first';
+                    return false;
+                }
+                
+                const range = planRanges[currentPlan];
+                
+                if (currentAmount < range.min) {
+                    amountValidation.textContent = `Minimum investment for this plan is $${range.min}`;
+                    investNowBtn.disabled = true;
+                    return false;
+                } else if (currentAmount > range.max) {
+                    amountValidation.textContent = `Maximum investment for this plan is $${range.max}`;
+                    investNowBtn.disabled = true;
+                    return false;
+                } else {
+                    amountValidation.textContent = '';
+                    if (currentPlan) {
+                        investNowBtn.disabled = false;
+                    }
+                    return true;
+                }
+            }
+            
+            // Calculate and display returns
+            function calculateReturns() {
+                if (!currentPlan) return;
+                
+                const rate = planRates[currentPlan];
+                const marketMultiplier = marketCondition === 'good' ? 1.1 : 1;
+                
+                // Calculate returns
+                const dailyReturn = currentAmount * rate * marketMultiplier;
+                const totalReturn = currentAmount * rate * marketMultiplier * 31;
+                const bonus = marketCondition === 'good' ? currentAmount * rate * 0.1 : 0;
+                const total = currentAmount + totalReturn + bonus;
+                
+                // Update displays
+                dailyRoi.textContent = `$${dailyReturn.toFixed(2)}`;
+                totalRoi.textContent = `$${totalReturn.toFixed(2)}`;
+                potentialBonus.textContent = `$${bonus.toFixed(2)}`;
+                totalPayout.textContent = `$${total.toFixed(2)}`;
+            }
+            
+            // Handle invest now button
+            investNowBtn.addEventListener('click', function() {
+                if (currentPlan && validateAmount()) {
+                    // Redirect to signup page with plan details
+                    window.location.href = `getIn/register.html?plan=${currentPlan}&amount=${currentAmount}`;
+                }
+            });
+            
+            // Initialize calculator
+            calculateReturns();
+            
+            // FAQ Toggle Functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const toggle = question.querySelector('.faq-toggle');
+                    
+                    answer.classList.toggle('show');
+                    toggle.classList.toggle('rotate');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

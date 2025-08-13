@@ -1,0 +1,821 @@
+<!-- meta tags and other links --><!DOCTYPE html><html lang="en" data-scrapbook-source="https://alpacastocks.com/user/invest/statistics"><head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title> - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <!-- font  -->
+    <link href="css2.css" rel="stylesheet">
+
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <link href="all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="line-awesome.min.css">
+
+    <link rel="stylesheet" href="animate.css">
+
+    <!-- Plugin Link -->
+    <link rel="stylesheet" href="slick.css">
+    <link rel="stylesheet" href="magnific-popup.css">
+    <link rel="stylesheet" href="apexcharts.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="main.css">
+
+    
+    <link rel="stylesheet" href="custom.css">
+
+    <link rel="stylesheet" href="color.php.css">
+
+    <style>
+    .custom-progress {
+        max-width: 40px !important;
+        max-height: 40px;
+        transform: rotate(-90deg);
+    }
+    .custom-progress .bg-circle {
+        stroke: #00000011;
+        fill: none;
+        stroke-width: 4px;
+        position: relative;
+        z-index: -1;
+    }
+    .custom-progress .progress-circle {
+        fill: none;
+        stroke: hsl(var(--base));
+        stroke-width: 4px;
+        z-index: 11;
+        position: absolute;
+    }
+    .expired-time-circle {
+        position: relative;
+        border: none !important;
+        height: 38px;
+        width: 38px;
+        margin-right: 7px;
+    }
+
+    .expired-time-circle::before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 4px solid #dbdce1;
+    }
+
+    .expired-time-circle.danger-border .animation-circle {
+        border-color: hsl(var(--base)) !important;
+    }
+
+    .animation-circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 4px solid hsl(var(--base));
+        height: 100%;
+        width: 100%;
+        border-radius: 150px;
+        transform: rotateY(180deg);
+        animation-name: clipCircle;
+        animation-iteration-count: 1;
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        z-index: 1;
+    }
+    .account-wrapper .left .top {
+        margin-top: 0;
+    }
+    .account-wrapper .left,
+    .account-wrapper .right {
+        width: 100%;
+    }
+    .account-wrapper .right {
+        padding-left: 0;
+        margin-top: 35px;
+    }
+    @keyframes clipCircle {
+        0% {
+        clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+        /* center, top-center*/
+        }
+        12.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%);
+        /* center, top-center, top-left*/
+        }
+        25% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%);
+        /* center, top-center, top-left, left-center*/
+        }
+        37.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 100%);
+        /* center, top-center, top-left, left-center, bottom-left*/
+        }
+        50% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center*/
+        }
+        62.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right*/
+        }
+        75% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 50%, 100% 50%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center*/
+        }
+        87.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0%, 100% 0%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center top-right*/
+        }
+        100% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0%, 50% 0%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center top-right, top-center*/
+        }
+    }
+
+    .capital-back{
+        font-size: 10px;
+    }
+
+    .invest-details-link{
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        border: 1px solid #c3bfbf;
+        border-radius: 50px;
+        color: #c3bfbf;
+    }
+    .invest-details-link:hover{
+        border-color: #a7a7a7;
+        color: #a7a7a7;
+    }
+</style>
+    <style>
+        .pb-120 {
+            padding-bottom: clamp(40px, 4vw, 40px);
+        }
+
+        .pt-120 {
+            padding-top: clamp(40px, 4vw, 40px);
+        }
+
+        .container {
+            max-width: 1140px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="r42ShEoGCT.js" async=""></script>
+
+
+<div class="d-flex flex-wrap">
+
+    <div class="dashboard-sidebar" id="dashboard-sidebar">
+    <button class="btn-close dash-sidebar-close d-xl-none"></button>
+    <a href="../index.html" class="logo"><img src="../assets/images/logo/logo_black.png" alt="images"></a>
+    <div class="bg--lights">
+      <div class="profile-info">
+        <p class="fs--13px mb-3 fw-bold">ACCOUNT BALANCE</p>
+        <h4 class="usd-balance text--base mb-2 fs--30">
+          <span id="deposit-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Deposit Wallet)</small></sub>
+        </h4>
+        <p class="btc-balance fw-medium fs--18px">
+          <span id="interest-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Interest Wallet)</small></sub>
+        </p>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <a href="deposit.html" class="btn btn--base btn--smd">Deposit</a>
+          <a id="withdraw-btn" href="kyc-form.html" class="btn btn--secondary btn--smd">Withdraw</a>
+        </div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="index.html" class=""><img src="dashboard.png" alt="icon"> Dashboard</a></li>
+        <li><a href="" class="active"><img src="investment.png" alt="icon"> Investments</a></li>
+        <li><a href="deposit.html" class=""><img src="wallet.png" alt="icon"> Deposit</a></li>
+        <li><a href="kyc-form.html" class=""><img src="withdraw.png" alt="icon"> Withdraw</a></li>
+                    <li><a href="transfer-balance.html" class=""><img src="balance-transfer.png" alt="icon"> Transfer Balance</a></li>
+                             <li><a href="trading.php.html" class=""><img src="balance-transfer.png" alt="icon"> Live Trading</a></li>
+                <li><a href="transactions.html" class=""><img src="transaction.png" alt="icon"> Transactions</a></li>
+                <li><a href="referrals.html" class=""><img src="referral.png" alt="icon"> Referrals</a></li>
+        
+        <li><a href="ticket.html" class=""><img src="ticket.png" alt="icon"> Support Ticket</a></li>
+        <li><a href="twofactor.html" class=""><img src="2fa.png" alt="icon"> 2FA</a></li>
+        <li><a href="profile-setting.html" class=""><img src="profile.png" alt="icon"> Profile</a></li>
+        <li><a href="change-password.html" class=""><img src="password.png" alt="icon"> Change Password</a></li>
+        <li><a href="logout.php" class=""><img src="logout.png" alt="icon"> Logout</a></li>
+    </ul>
+</div>
+
+    <div class="dashboard-wrapper">
+
+        <div class="dashboard-nav d-flex flex-wrap align-items-center justify-content-between">
+    <div class="nav-left d-flex gap-4 align-items-center">
+        <div class="dash-sidebar-toggler d-xl-none" id="dash-sidebar-toggler">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="nav-right d-flex flex-wrap align-items-center gap-3">
+                            <select name="langSel" class="langSel form--control h-auto px-2 py-1 border-0">
+                                    <option value="en" selected="">English</option>
+                            </select>
+                <ul class="nav-header-link d-flex flex-wrap gap-2">
+            <li>
+                <a class="link" href="javascript:void(0)"><span id="abb"></span></a>
+                <div class="dropdown-wrapper">
+                    <div class="dropdown-header">
+                        <h6 class="name text--base"><span id="username"></span></h6>
+                        <p class="fs--14px"><span id="fullname"></span></p>
+                    </div>
+                    <ul class="links">
+                        <li><a href="profile-setting.html"><i class="las la-user"></i> Profile</a></li>
+                        <li><a href="change-password.html"><i class="las la-key"></i> Change Password</a></li>
+                        <li><a href="logout.php"><i class="las la-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+        <div class="dashboard-container">
+
+<!-- investment.html (frontend) -->
+<div class="investment-dashboard">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Investment Portfolio</h1>
+      <p class="dashboard-subtitle">Track and manage your investments</p>
+    </div>
+  
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="card-header">
+          <span class="card-icon">💰</span>
+          <h3 class="card-title">Total Invested</h3>
+        </div>
+        <div class="card-value" id="total-invested">$0.00</div>
+        <div class="card-footer">
+          <a href="investment.html" class="action-btn primary">
+            Invest More <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+  
+      <div class="summary-card">
+        <div class="card-header">
+          <span class="card-icon">📈</span>
+          <h3 class="card-title">Total Profit</h3>
+        </div>
+        <div class="card-value" id="total-profit">$0.00</div>
+        <div class="card-footer">
+          <a id="withdraw-link" href="#" class="action-btn secondary">
+            Withdraw <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+  
+      <div class="summary-card wide">
+        <div class="card-header">
+          <span class="card-icon">🔄</span>
+          <h3 class="card-title">Investment Status</h3>
+        </div>
+        <div class="status-content" id="investment-status"></div>
+      </div>
+    </div>
+  
+    <div class="investments-section">
+        <div class="section-header">
+          <h2 class="section-title">Active Investments <span class="badge">0</span></h2>
+          <a href="investment_history.html" class="view-all">
+            View All <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      
+        <!-- Cards container -->
+        <div class="investment-cards-container"></div>
+      
+        <!-- Empty state -->
+        <div class="empty-investments">
+          <div class="empty-content">
+            <i class="fas fa-search empty-icon"></i>
+            <h4>No Investments Found</h4>
+            <p>Your active investments will appear here</p>
+            <a href="investment.html" class="action-btn primary">
+              Start Investing <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+              
+              <style>
+                /* Base Styles */
+                :root {
+                  --primary-color: #4f46e5;
+                  --secondary-color: #10b981;
+                  --text-color: #111827;
+                  --light-text: #6b7280;
+                  --border-color: #e5e7eb;
+                  --card-bg: #ffffff;
+                  --bg-color: #f9fafb;
+                  --success-color: #10b981;
+                  --warning-color: #f59e0b;
+                  --error-color: #ef4444;
+                }
+              
+                .investment-dashboard {
+                  max-width: 1200px;
+                  margin: 0 auto;
+                  padding: 2rem;
+                  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                  background-color: var(--bg-color);
+                  border-radius: 12px;
+                }
+              
+                /* Dashboard Header */
+                .dashboard-header {
+                  margin-bottom: 2.5rem;
+                }
+              
+                .dashboard-title {
+                  font-size: 1.8rem;
+                  font-weight: 700;
+                  color: var(--text-color);
+                  margin-bottom: 0.5rem;
+                }
+              
+                .dashboard-subtitle {
+                  font-size: 1rem;
+                  color: var(--light-text);
+                  margin: 0;
+                }
+              
+                /* Summary Grid */
+                .summary-grid {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                  gap: 1.5rem;
+                  margin-bottom: 2.5rem;
+                }
+              
+                /* Summary Cards */
+                .summary-card {
+                  background-color: var(--card-bg);
+                  border-radius: 12px;
+                  padding: 1.5rem;
+                  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                  display: flex;
+                  flex-direction: column;
+                }
+              
+                .summary-card.wide {
+                  grid-column: span 2;
+                }
+              
+                .card-header {
+                  display: flex;
+                  align-items: center;
+                  margin-bottom: 1.5rem;
+                }
+              
+                .card-icon {
+                  font-size: 1.5rem;
+                  margin-right: 0.75rem;
+                  color: var(--primary-color);
+                }
+              
+                .card-title {
+                  font-size: 1.1rem;
+                  font-weight: 600;
+                  color: var(--text-color);
+                  margin: 0;
+                }
+              
+                .card-value {
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--text-color);
+                  margin-bottom: 1.5rem;
+                }
+              
+                .card-value sup {
+                  font-size: 1rem;
+                  font-weight: 400;
+                  opacity: 0.8;
+                }
+              
+                .card-footer {
+                  margin-top: auto;
+                }
+              
+                /* Action Buttons */
+                .action-btn {
+                  display: inline-flex;
+                  align-items: center;
+                  padding: 0.6rem 1.2rem;
+                  border-radius: 8px;
+                  font-weight: 500;
+                  text-decoration: none;
+                  transition: all 0.2s;
+                }
+              
+                .action-btn i {
+                  margin-left: 0.5rem;
+                  font-size: 0.8rem;
+                }
+              
+                .action-btn.primary {
+                  background-color: var(--primary-color);
+                  color: white;
+                }
+              
+                .action-btn.primary:hover {
+                  background-color: #4338ca;
+                }
+              
+                .action-btn.secondary {
+                  background-color: var(--secondary-color);
+                  color: white;
+                }
+              
+                .action-btn.secondary:hover {
+                  background-color: #0d9c6e;
+                }
+              
+                /* Status Content */
+                .status-content {
+                  flex-grow: 1;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+              
+                .empty-state {
+                  text-align: center;
+                  padding: 1rem;
+                }
+              
+                .empty-icon {
+                  font-size: 2.5rem;
+                  color: var(--light-text);
+                  margin-bottom: 1rem;
+                  opacity: 0.5;
+                }
+              
+                .empty-state h4 {
+                  font-size: 1.2rem;
+                  color: var(--text-color);
+                  margin-bottom: 0.5rem;
+                }
+              
+                .empty-state p {
+                  color: var(--light-text);
+                  margin-bottom: 1.5rem;
+                }
+              
+                /* Investments Section */
+                .investments-section {
+                  background-color: var(--card-bg);
+                  border-radius: 12px;
+                  padding: 1.5rem;
+                  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                }
+              
+                .section-header {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1.5rem;
+                }
+              
+                .section-title {
+                  font-size: 1.3rem;
+                  font-weight: 600;
+                  color: var(--text-color);
+                  margin: 0;
+                  display: flex;
+                  align-items: center;
+                }
+              
+                .badge {
+                  background-color: var(--primary-color);
+                  color: white;
+                  font-size: 0.8rem;
+                  padding: 0.25rem 0.6rem;
+                  border-radius: 999px;
+                  margin-left: 0.75rem;
+                }
+              
+                .view-all {
+                  color: var(--primary-color);
+                  font-weight: 500;
+                  text-decoration: none;
+                  display: flex;
+                  align-items: center;
+                }
+              
+                .view-all i {
+                  margin-left: 0.5rem;
+                  font-size: 0.8rem;
+                }
+              
+                .view-all:hover {
+                  text-decoration: underline;
+                }
+              
+                /* Empty Investments */
+                .empty-investments {
+                  padding: 3rem 1rem;
+                  text-align: center;
+                  border: 1px dashed var(--border-color);
+                  border-radius: 8px;
+                }
+              
+                .empty-content h4 {
+                  font-size: 1.2rem;
+                  color: var(--text-color);
+                  margin-bottom: 0.5rem;
+                }
+              
+                .empty-content p {
+                  color: var(--light-text);
+                  margin-bottom: 0;
+                }
+
+                .investment-cards-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                gap: 1.2rem;
+                margin-top: 1rem;
+                }
+
+                .investment-card {
+                background-color: #FAF0E6;
+                border-radius: 1rem;
+                padding: 1.2rem;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                transition: transform 0.2s ease;
+                }
+
+                .investment-card:hover {
+                transform: translateY(-5px);
+                }
+
+                .investment-card .card-body h4 {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                color: #8E6E53;
+                }
+
+                .investment-card .card-body p {
+                margin: 0.3rem 0;
+                font-size: 0.95rem;
+                color: #3E2C1C;
+                }
+
+              
+                /* Responsive */
+                @media (max-width: 768px) {
+                  .investment-dashboard {
+                    padding: 1.5rem;
+                  }
+              
+                  .summary-grid {
+                    grid-template-columns: 1fr;
+                  }
+              
+                  .summary-card.wide {
+                    grid-column: span 1;
+                  }
+              
+                  .dashboard-title {
+                    font-size: 1.5rem;
+                  }
+                }
+              </style>
+              
+              <!-- Font Awesome for icons -->
+              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+        </div>
+    </div>
+</div>
+
+        
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+
+    <!-- Pluglin Link -->
+    <script src="slick.min.js"></script>
+    <script src="magnific-popup.min.js"></script>
+    <script src="apexcharts.min.js"></script>
+
+    
+    <!-- Main js -->
+    <script src="main.js"></script>
+
+        <script>
+        let animationCircle = $('.animation-circle');
+        animationCircle.css('animation-duration', function() {
+            let duration = ($(this).data('duration'));
+            return duration;
+        });
+    </script>
+<script src="chart.min.js"></script>
+
+<script>
+    /* -- Chartjs - Pie Chart -- */
+    var pieChartID = document.getElementById("chartjs-pie-chart").getContext('2d');
+    var pieChart = new Chart(pieChartID, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                                    ],
+                borderColor: 'transparent',
+                backgroundColor: planColors(),
+                label: 'Dataset 1'
+            }],
+            labels: [
+                            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    var planPoints = $('.planPoint');
+    planPoints.each(function(key,planPoint){
+        var planPoint = $(planPoint)
+        planPoint.css('color',planColors()[key])
+    })
+
+    function planColors(){
+        return [
+            '#ff7675',
+            '#6c5ce7',
+            '#ffa62b',
+            '#ffeaa7',
+            '#D980FA',
+            '#fccbcb',
+            '#45aaf2',
+            '#05dfd7',
+            '#FF00F6',
+            '#1e90ff',
+            '#2ed573',
+            '#eccc68',
+            '#ff5200',
+            '#cd84f1',
+            '#7efff5',
+            '#7158e2',
+            '#fff200',
+            '#ff9ff3',
+            '#08ffc8',
+            '#3742fa',
+            '#1089ff',
+            '#70FF61',
+            '#bf9fee',
+            '#574b90'
+        ]
+    }
+</script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    
+    <link rel="stylesheet" href="iziToast.min.css">
+<script src="iziToast.min.js"></script>
+
+<script>
+    "use strict";
+    function notify(status,message) {
+        iziToast[status]({
+            message: message,
+            position: "topRight"
+        });
+    }
+</script>
+
+    <script>
+        $(".langSel").on("change", function() {
+            window.location.href = "https://alpacastocks.com/change/" + $(this).val();
+        });
+
+        Array.from(document.querySelectorAll('table')).forEach(table => {
+            let heading = table.querySelectorAll('thead tr th');
+            Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
+                Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
+                    colum.setAttribute('data-label', heading[i].innerText)
+                });
+            });
+        });
+
+        $.each($('input, select, textarea'), function(i, element) {
+            var elementType = $(element);
+            if (elementType.attr('type') != 'checkbox') {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+            }
+        });
+
+        var inputElements = $('[type=text],[type=password],[type=email],[type=number],select,textarea');
+        $.each(inputElements, function(index, element) {
+            element = $(element);
+            element.closest('.form-group').find('label').attr('for', element.attr('name'));
+            element.attr('id', element.attr('name'))
+        });
+
+        $('.policy').on('click', function() {
+            $.get('https://alpacastocks.com/cookie/accept', function(response) {
+                $('.cookies-card').addClass('d-none');
+            });
+        });
+
+
+        setTimeout(function() {
+            $('.cookies-card').removeClass('hide')
+        }, 2000);
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const totalInvested = document.querySelector(".summary-card:nth-child(1) .card-value");
+      const totalProfit = document.querySelector(".summary-card:nth-child(2) .card-value");
+      const withdrawLink = document.querySelector(".summary-card:nth-child(2) .card-footer a");
+      const badge = document.querySelector(".section-title .badge");
+      const cardsContainer = document.querySelector(".investment-cards-container");
+      const emptyState = document.querySelector(".empty-investments");
+    
+      fetch('../api/get_investment_dashboard.php')
+        .then(res => res.json())
+        .then(data => {
+          if (data.status) {
+            // Totals
+            totalInvested.textContent = `$${parseFloat(data.total_invested).toFixed(2)}`;
+            totalProfit.textContent = `$${parseFloat(data.total_profit).toFixed(2)}`;
+            withdrawLink.href = data.kyc_done ? "withdrawal.html" : "kyc-form.html";
+    
+            const investments = data.active_investments;
+            badge.textContent = investments.length;
+    
+            if (investments.length > 0) {
+              emptyState.style.display = "none";
+              cardsContainer.innerHTML = "";
+    
+              investments.forEach(invest => {
+                const createdAt = new Date(invest.created_at);
+                const today = new Date();
+                const timeDiff = today - createdAt;
+                const daysPassed = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    
+                const card = document.createElement("div");
+                card.className = "investment-card";
+                card.innerHTML = `
+                  <div class="card-body">
+                    <h4>Investment #${invest.id}</h4>
+                    <p><strong>Amount:</strong> $${parseFloat(invest.amount).toFixed(2)}</p>
+                    <p><strong>Profit:</strong> $${parseFloat(invest.interest_earned).toFixed(2)}</p>
+                    <p><strong>Days Active:</strong> ${invest.days_count}</p>
+                    <p><strong>Status:</strong> ${invest.status}</p>
+                  </div>
+                `;
+                cardsContainer.appendChild(card);
+              });
+            } else {
+              emptyState.style.display = "block";
+              cardsContainer.innerHTML = "";
+            }
+          } else {
+            console.error("Error fetching investment data");
+          }
+        })
+        .catch(err => {
+          console.error("Server error:", err);
+        });
+    });
+    </script>
+    
+    
+
+
+
+</body></html>

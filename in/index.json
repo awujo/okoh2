@@ -1,0 +1,842 @@
+{
+ "version": 3,
+ "indexPages": [
+  "index.html"
+ ],
+ "redirects": [
+  [
+   "https://alpacastocks.com/user/withdraw",
+   "https://alpacastocks.com/user/kyc-form"
+  ]
+ ],
+ "files": [
+  {
+   "path": "index.json"
+  },
+  {
+   "path": "index.dat"
+  },
+  {
+   "path": "index.rdf"
+  },
+  {
+   "path": "history.rdf"
+  },
+  {
+   "path": "^metadata^"
+  },
+  {
+   "path": "index.html",
+   "url": "https://alpacastocks.com/user/dashboard",
+   "role": "document",
+   "token": "851a32432fc71176c4476f2ac823efa3701ef813"
+  },
+  {
+   "path": "index.xhtml",
+   "role": "document"
+  },
+  {
+   "path": "index.svg",
+   "role": "document"
+  },
+  {
+   "path": "css2.css",
+   "url": "https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,500&family=Maven+Pro:wght@400;500;600&display=swap",
+   "role": "css-utf-8",
+   "token": "3d78c0a99857f9164df48c598271b9092e46b03d"
+  },
+  {
+   "path": "favicon.png",
+   "url": "https://alpacastocks.com/assets/images/logoIcon/favicon.png",
+   "role": "resource",
+   "token": "dd4458b91f657881f21f5f270f4fa81a595335bb"
+  },
+  {
+   "path": "logo_2.png",
+   "url": "https://alpacastocks.com/assets/images/logoIcon/logo_2.png",
+   "role": "resource",
+   "token": "1a0c4fab3a32bfef9d068d9d621caee7534e77f2"
+  },
+  {
+   "path": "jquery-3.6.0.min.js",
+   "url": "https://alpacastocks.com/assets/global/js/jquery-3.6.0.min.js",
+   "role": "resource",
+   "token": "f1d25d323e34f627545d56868db9dfbff28327b2"
+  },
+  {
+   "path": "bootstrap.bundle.min.js",
+   "url": "https://alpacastocks.com/assets/global/js/bootstrap.bundle.min.js",
+   "role": "resource",
+   "token": "03c490348bf5ad5c043bae3a1c74936e18f4a938"
+  },
+  {
+   "path": "slick.min.js",
+   "url": "https://alpacastocks.com/assets/templates/invester/js/lib/slick.min.js",
+   "role": "resource",
+   "token": "166af6fbc3330a94c1f1c3d3738145cf35a1ccdc"
+  },
+  {
+   "path": "magnific-popup.min.js",
+   "url": "https://alpacastocks.com/assets/templates/invester/js/lib/magnific-popup.min.js",
+   "role": "resource",
+   "token": "974019e4c576293ca5706b41d2543c627c16d571"
+  },
+  {
+   "path": "main.js",
+   "url": "https://alpacastocks.com/assets/templates/invester/js/main.js",
+   "role": "resource",
+   "token": "48d25bb222660a666c39e19c8bb65fa8a2e4005a"
+  },
+  {
+   "path": "apexcharts.min.js",
+   "url": "https://alpacastocks.com/assets/templates/invester/js/lib/apexcharts.min.js",
+   "role": "resource",
+   "token": "1559f99768107cd0f50a53e3b5e47a1c66cb4680"
+  },
+  {
+   "path": "iziToast.min.js",
+   "url": "https://alpacastocks.com/assets/global/js/iziToast.min.js",
+   "role": "resource",
+   "token": "2efeabfa56d1d1f23f179b39e709ee5e4e14079d"
+  },
+  {
+   "path": "bootstrap.min.css",
+   "url": "https://alpacastocks.com/assets/global/css/bootstrap.min.css",
+   "role": "css-utf-8",
+   "token": "b8fc72b0c183c2b2b40d2f265959a5fadefa976d"
+  },
+  {
+   "path": "color.php.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/color.php?color=5e8cf1",
+   "role": "css-utf-8",
+   "token": "01696729853e00e303f5fe2f601ca0d06d40aa1e"
+  },
+  {
+   "path": "line-awesome.min.css",
+   "url": "https://alpacastocks.com/assets/global/css/line-awesome.min.css",
+   "role": "css-utf-8",
+   "token": "778947aff214ce167479a4157b213bcb886f1364"
+  },
+  {
+   "path": "all.min.css",
+   "url": "https://alpacastocks.com/assets/global/css/all.min.css",
+   "role": "css-utf-8",
+   "token": "aec154102f2d25a8597211225b30c1f4a6240c15"
+  },
+  {
+   "path": "slick.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/lib/slick.css",
+   "role": "css-utf-8",
+   "token": "faa24e9219bed8c291691a00e59228d7a669425f"
+  },
+  {
+   "path": "magnific-popup.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/lib/magnific-popup.css",
+   "role": "css-utf-8",
+   "token": "0fa8db589743b56e3db69979e16fbca5790b0fd2"
+  },
+  {
+   "path": "apexcharts.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/lib/apexcharts.css",
+   "role": "css-utf-8",
+   "token": "2a21cf18eb0f4271d1002017b9d9543c73a486a2"
+  },
+  {
+   "path": "animate.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/lib/animate.css",
+   "role": "css-utf-8",
+   "token": "11e91ea2745799b47da0e71a8e23d67687d9706f"
+  },
+  {
+   "path": "custom.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/custom.css",
+   "role": "css-utf-8",
+   "token": "e1d0b8f49aa650495fa8c9fe884dc5431c971054"
+  },
+  {
+   "path": "iziToast.min.css",
+   "url": "https://alpacastocks.com/assets/global/css/iziToast.min.css",
+   "role": "css-utf-8",
+   "token": "2bd2f7e7e6d05b72a55b1bb7a01e1f499665b065"
+  },
+  {
+   "path": "main.css",
+   "url": "https://alpacastocks.com/assets/templates/invester/css/main.css",
+   "role": "css-utf-8",
+   "token": "1fe8429a8e4d55e33109dbb04e665346afd32333"
+  },
+  {
+   "path": "7dae9903347952ebbafea6ca64a56d6f64a5c0b7.svg",
+   "role": "resource",
+   "token": "dab4999ed7163d5ed92b354ec8fbb4be06da1924"
+  },
+  {
+   "path": "dashboard.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/dashboard.png",
+   "role": "resource",
+   "token": "6f9a5e46cead626c7e9f21fc9649940b047d2946"
+  },
+  {
+   "path": "investment.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/investment.png",
+   "role": "resource",
+   "token": "0a46630304dbfe17648f79ff4f8426eeb78543bb"
+  },
+  {
+   "path": "wallet.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/wallet.png",
+   "role": "resource",
+   "token": "d5e31b22236950b58812df9e34c72a651835fd7e"
+  },
+  {
+   "path": "balance-transfer.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/balance-transfer.png",
+   "role": "resource",
+   "token": "f975d50c0be7cf3324fe318b07ca1503be3f873b"
+  },
+  {
+   "path": "withdraw.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/withdraw.png",
+   "role": "resource",
+   "token": "4af91569f6be20656f3c7378f36afaf9bf61d639"
+  },
+  {
+   "path": "transaction.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/transaction.png",
+   "role": "resource",
+   "token": "1cf7e10e19649258c944a4f1761a4d1f4a650ba9"
+  },
+  {
+   "path": "referral.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/referral.png",
+   "role": "resource",
+   "token": "3966bb76e83f61c4f788bfa96ec50a70f3dd4acf"
+  },
+  {
+   "path": "ticket.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/ticket.png",
+   "role": "resource",
+   "token": "983cac8c6e473796bc603835031a5ccda479547b"
+  },
+  {
+   "path": "profile.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/profile.png",
+   "role": "resource",
+   "token": "b38a2eb3b15a9a26d90d7d5ce63aca8a186c3c91"
+  },
+  {
+   "path": "2fa.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/2fa.png",
+   "role": "resource",
+   "token": "d23c39badfab33aa76cdaf22714396177692e164"
+  },
+  {
+   "path": "password.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/password.png",
+   "role": "resource",
+   "token": "788ae096365ca44b11ba07050c9696122d3710f0"
+  },
+  {
+   "path": "logout.png",
+   "url": "https://alpacastocks.com/assets/templates/invester//images/icon/logout.png",
+   "role": "resource",
+   "token": "e8029243d763d9cb61489e63e0420f19443c37ca"
+  },
+  {
+   "path": "index_1.html",
+   "url": "https://www.tradingview-widget.com/embed-widget/mini-symbol-overview/?locale=en",
+   "role": "document-920b62b0-cb34-4aca-8d13-7f1d3a25627c",
+   "token": "b51d466bd739c172f0e85c56e4f3f59e37f858eb"
+  },
+  {
+   "path": "index_1.xhtml",
+   "role": "document-920b62b0-cb34-4aca-8d13-7f1d3a25627c"
+  },
+  {
+   "path": "index_1.svg",
+   "role": "document-920b62b0-cb34-4aca-8d13-7f1d3a25627c"
+  },
+  {
+   "path": "la-regular-400.eot",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-regular-400.eot?",
+   "role": "resource",
+   "token": "d57df9dae47df2e332e8c0f9d5ef86f121ee1989"
+  },
+  {
+   "path": "la-regular-400.woff2",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-regular-400.woff2",
+   "role": "resource",
+   "token": "16c7931bce82e574a44e3635b991af37dce784c4"
+  },
+  {
+   "path": "la-regular-400.woff",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-regular-400.woff",
+   "role": "resource",
+   "token": "42d8831cfdc62945a64d1345d230aec5b5a856b6"
+  },
+  {
+   "path": "la-regular-400.ttf",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-regular-400.ttf",
+   "role": "resource",
+   "token": "b08359513911a65a87d7d4ece972f0166ef42d4c"
+  },
+  {
+   "path": "la-regular-400.svg",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-regular-400.svg",
+   "role": "resource",
+   "token": "af79aee06f11c130c73ca8d0e53e045c8715e625"
+  },
+  {
+   "path": "64915.18b84e6734bed9409e26.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/64915.18b84e6734bed9409e26.css",
+   "role": "css-utf-8",
+   "token": "344412b8b7ba0bc9ab38b629d98d4b776e69cd30"
+  },
+  {
+   "path": "44178.849b83e7d908290f3097.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/44178.849b83e7d908290f3097.css",
+   "role": "css-utf-8",
+   "token": "523d563bc3a5ea02e01de3383ae9a38913cfae99"
+  },
+  {
+   "path": "58985.3f2846486686d7110cd3.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/58985.3f2846486686d7110cd3.css",
+   "role": "css-utf-8",
+   "token": "74fe50edc506d37adb6f80cfff5f7f795c930c19"
+  },
+  {
+   "path": "88488.8067ca9367a045e8d3e3.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/88488.8067ca9367a045e8d3e3.css",
+   "role": "css-utf-8",
+   "token": "13cdc9e9944a3a5a9bff95d8a9f465eba618a2ff"
+  },
+  {
+   "path": "41563.7b39e056dac16f51803a.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/41563.7b39e056dac16f51803a.css",
+   "role": "css-utf-8",
+   "token": "1912c2d52bb30ebac45bf3045eb4b11eec54d008"
+  },
+  {
+   "path": "92115.d4ce023e54009adf69b3.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/92115.d4ce023e54009adf69b3.css",
+   "role": "css-utf-8",
+   "token": "5be9bcca0cbf07f1f3839ccc66266f6eab922094"
+  },
+  {
+   "path": "67661.de1e2a61cac87d771a3d.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/67661.de1e2a61cac87d771a3d.css",
+   "role": "css-utf-8",
+   "token": "bec1d857f01725a24acc9c6370271d5867518a7c"
+  },
+  {
+   "path": "77476.126f70e3b7f6a4a92dbe.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/77476.126f70e3b7f6a4a92dbe.css",
+   "role": "css-utf-8",
+   "token": "4b0bcc5b9a46dc5738fabbda5b0c594636724fb8"
+  },
+  {
+   "path": "83425.32a5e8b20566c33f2265.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/83425.32a5e8b20566c33f2265.css",
+   "role": "css-utf-8",
+   "token": "29c5ff51c231f0ffc3e3573b7b5f635f94c1bb09"
+  },
+  {
+   "path": "la-solid-900.eot",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-solid-900.eot?",
+   "role": "resource",
+   "token": "56527af509a6b99aeb8d7cd90ee6b86a3241686a"
+  },
+  {
+   "path": "apexcharts.min-1.js",
+   "url": "https://alpacastocks.com/assets/templates/invester//js/lib/apexcharts.min.js",
+   "role": "resource",
+   "token": "fc3292a18c49a8cca1651e03fe283a093019ca6a"
+  },
+  {
+   "path": "en.56316.854e395653f8264318c8.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/en.56316.854e395653f8264318c8.js",
+   "role": "resource",
+   "token": "80a2a136b7a819c66366a8db6c85d9d73c239627"
+  },
+  {
+   "path": "23859.5e9ef43f8966a310de01.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/23859.5e9ef43f8966a310de01.css",
+   "role": "css-utf-8",
+   "token": "8d0786ea90f248682e1f34f83c1547539ee97303"
+  },
+  {
+   "path": "en.24167.2a274ba2e5ef73645449.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/en.24167.2a274ba2e5ef73645449.js",
+   "role": "resource",
+   "token": "991b58439c1fba99d3164eaa04902697d2197848"
+  },
+  {
+   "path": "la-solid-900.woff2",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-solid-900.woff2",
+   "role": "resource",
+   "token": "cdd43ea361240f3309e394c44caae50f7b919847"
+  },
+  {
+   "path": "runtime-embed_mini_symbol_overview_widget.dc1f7fbafefe19ccf480.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/runtime-embed_mini_symbol_overview_widget.dc1f7fbafefe19ccf480.js",
+   "role": "resource",
+   "token": "50c932a8f57128dffc3bb401c5b4b20dfd9506ed"
+  },
+  {
+   "path": "la-solid-900.woff",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-solid-900.woff",
+   "role": "resource",
+   "token": "c338d8cd21bcd39e8474396da7f851db70df3480"
+  },
+  {
+   "path": "r42ShEoGCT.js",
+   "url": "https://code.jivosite.com/widget/r42ShEoGCT",
+   "role": "resource",
+   "token": "d885749941c868e6ad41ae6f63b1e47ba699236b"
+  },
+  {
+   "path": "fa-regular-400.eot",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-regular-400.eot?",
+   "role": "resource",
+   "token": "70e86a84eebaf62fcc5920975226480fde85ec7a"
+  },
+  {
+   "path": "fa-regular-400.woff2",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-regular-400.woff2",
+   "role": "resource",
+   "token": "d78bb70984898498173055b120aebb2903f12abe"
+  },
+  {
+   "path": "la-solid-900.ttf",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-solid-900.ttf",
+   "role": "resource",
+   "token": "672f7a07c80a2a3669f5742e2e7aa8bd9ef12cbd"
+  },
+  {
+   "path": "fa-regular-400.woff",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-regular-400.woff",
+   "role": "resource",
+   "token": "4d37f09d4293d12ef515ba915e3e4fdeca652335"
+  },
+  {
+   "path": "fa-regular-400.ttf",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-regular-400.ttf",
+   "role": "resource",
+   "token": "7d454cd8d0e1ffdde2f1b3d401d8641be88a43ff"
+  },
+  {
+   "path": "fa-regular-400.svg",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-regular-400.svg",
+   "role": "resource",
+   "token": "e354f712bbc84512cd964de9b0db5db6a352cdb9"
+  },
+  {
+   "path": "fa-solid-900.eot",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-solid-900.eot?",
+   "role": "resource",
+   "token": "2cb26b464b0d1d91ff236adefe9a6e208f30dda9"
+  },
+  {
+   "path": "la-solid-900.svg",
+   "url": "https://alpacastocks.com/assets/global/fonts/la-solid-900.svg",
+   "role": "resource",
+   "token": "728db2bbccbc72d4706f3e096056cb9f2c5a2917"
+  },
+  {
+   "path": "XTVCBTC.svg",
+   "url": "https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg",
+   "role": "resource",
+   "token": "2b2728d0a02bfcb3d8845018158cd8a54d8036f6"
+  },
+  {
+   "path": "XTVCUSDT.svg",
+   "url": "https://s3-symbol-logo.tradingview.com/crypto/XTVCUSDT.svg",
+   "role": "resource",
+   "token": "92cd374360d63aab030675e5bb9c8a0e85dceb9b"
+  },
+  {
+   "path": "fa-solid-900.ttf",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-solid-900.ttf",
+   "role": "resource",
+   "token": "1e8cd6f7d9148dc1c38137b64e597b4e569ebd7b"
+  },
+  {
+   "path": "fa-solid-900.woff2",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-solid-900.woff2",
+   "role": "resource",
+   "token": "bef8dd62256425c766dfd5a1ea785e5c960fcacc"
+  },
+  {
+   "path": "fa-solid-900.svg",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-solid-900.svg",
+   "role": "resource",
+   "token": "ac130c1a78262b24b6c56c6cc5b9c452c1739143"
+  },
+  {
+   "path": "68159.bf5ddea00ca9d313f12a.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/68159.bf5ddea00ca9d313f12a.js",
+   "role": "resource",
+   "token": "5628a227969d03fa6fd1a10556998d102341ee47"
+  },
+  {
+   "path": "98671.4aef0ea6a4b7f6dc490a.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/98671.4aef0ea6a4b7f6dc490a.js",
+   "role": "resource",
+   "token": "702cc96b8aa2e00a4b12e5e5ad2950fa4fceaaff"
+  },
+  {
+   "path": "68984.e896d9ac096f41d4550a.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/68984.e896d9ac096f41d4550a.js",
+   "role": "resource",
+   "token": "0e80f8852e439e337412dd1ef2a3439d9b8544c7"
+  },
+  {
+   "path": "58722.5f8e626b88332b135cd3.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/58722.5f8e626b88332b135cd3.js",
+   "role": "resource",
+   "token": "acc25f1755eb1df056de9a9be210119bef1b003a"
+  },
+  {
+   "path": "49013.0f11a7f829a19c8643d0.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/49013.0f11a7f829a19c8643d0.js",
+   "role": "resource",
+   "token": "3b74f0bb7d05085358cef0ad2665b0a404351c30"
+  },
+  {
+   "path": "66357.def24998028ace04c282.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/66357.def24998028ace04c282.js",
+   "role": "resource",
+   "token": "b45d927715bb68047b3f90a6a0a4069892fa1e87"
+  },
+  {
+   "path": "4126.c5fe59ebf5772d0faf10.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/4126.c5fe59ebf5772d0faf10.js",
+   "role": "resource",
+   "token": "31526513ab18bd7f1606dfd4992ae79b64a998e8"
+  },
+  {
+   "path": "37939.ff0f860de73affc858c5.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/37939.ff0f860de73affc858c5.js",
+   "role": "resource",
+   "token": "de8b46e7bb98c1dc2727b476bd525c636d81bfb4"
+  },
+  {
+   "path": "41050.623b3f26e743fa134340.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/41050.623b3f26e743fa134340.js",
+   "role": "resource",
+   "token": "da319e8978fd1e71d9b1beecdfd0742fcdf0e3c0"
+  },
+  {
+   "path": "93659.c2dc8c77701ae5eeb061.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/93659.c2dc8c77701ae5eeb061.js",
+   "role": "resource",
+   "token": "d1d97998f07f06dcf6551be483b1ad0d7a79b47a"
+  },
+  {
+   "path": "45165.422de7ca69a78da9feed.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/45165.422de7ca69a78da9feed.js",
+   "role": "resource",
+   "token": "7733882530b5f0a31460d36107c3654fe79d0e14"
+  },
+  {
+   "path": "84300.98240bea92f21e082308.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/84300.98240bea92f21e082308.js",
+   "role": "resource",
+   "token": "8ef5d3eb3c0d24277989c5f9c44d413a71c18856"
+  },
+  {
+   "path": "91317.800d6a1bc5eebdb4445f.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/91317.800d6a1bc5eebdb4445f.js",
+   "role": "resource",
+   "token": "543438621578266b6c5f9f27c8430c4389176720"
+  },
+  {
+   "path": "79774.d9e2a0539dc60f38b470.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/79774.d9e2a0539dc60f38b470.js",
+   "role": "resource",
+   "token": "6368daccb006dfa1201b8a7a0dcad40a272eb9af"
+  },
+  {
+   "path": "45595.a85aa769e77d0dabb569.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/45595.a85aa769e77d0dabb569.js",
+   "role": "resource",
+   "token": "a29c392f649056dc3bb23a71e4c3134865476b5b"
+  },
+  {
+   "path": "embed_mini_symbol_overview_widget.8ef3877609d69f899d39.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/embed_mini_symbol_overview_widget.8ef3877609d69f899d39.js",
+   "role": "resource",
+   "token": "727c58d0f2130d333e869d2aa102762070a40d1a"
+  },
+  {
+   "path": "80230.9e963fe2c5a14fa8e945.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/80230.9e963fe2c5a14fa8e945.js",
+   "role": "resource",
+   "token": "ab6ee5140768e4895679895f555eb88c6a2ab83a"
+  },
+  {
+   "path": "fa-solid-900.woff",
+   "url": "https://alpacastocks.com/assets/global/webfonts/fa-solid-900.woff",
+   "role": "resource",
+   "token": "9ecc3ca16a644e68588870c3bfcded89d67da304"
+  },
+  {
+   "path": "25558.8314b0fef8fe22d0e251.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/25558.8314b0fef8fe22d0e251.css",
+   "role": "css-utf-8",
+   "token": "ee2c522e6796b112545ff284ad670ac715acca38"
+  },
+  {
+   "path": "65282.3df05329aeb76aa2ac69.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/65282.3df05329aeb76aa2ac69.css",
+   "role": "css-utf-8",
+   "token": "7aa73ed4d6d0996a423a2e7d1e97cc8c4e8f4557"
+  },
+  {
+   "path": "40142.4ca2690b005002dcbdb5.css",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/40142.4ca2690b005002dcbdb5.css",
+   "role": "css-utf-8",
+   "token": "4740d72ee1d47defdb91528c8f6c89b77440d969"
+  },
+  {
+   "path": "68149.4e1780f9d1bcc436dd38.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/68149.4e1780f9d1bcc436dd38.js",
+   "role": "resource",
+   "token": "ac01142cdc97eccf4dc53733f3f00cfda95533de"
+  },
+  {
+   "path": "36161.7f11775a1c02ab1c6c1f.js",
+   "url": "https://www.tradingview-widget.com/static/bundles/embed/36161.7f11775a1c02ab1c6c1f.js",
+   "role": "resource",
+   "token": "0a4074348aa029308b488d0f61283dfb1771cb49"
+  },
+  {
+   "path": "deposit.html",
+   "url": "https://alpacastocks.com/user/deposit",
+   "role": "document",
+   "token": "fde8e982d0cbb72c98a130c601d7d8e6c6de0c5a"
+  },
+  {
+   "path": "kyc-form.html",
+   "url": "https://alpacastocks.com/user/kyc-form",
+   "role": "document",
+   "token": "010473776ed0f6d34e716c3270642fe03ce02b09"
+  },
+  {
+   "path": "statistics.html",
+   "url": "https://alpacastocks.com/user/invest/statistics",
+   "role": "document",
+   "token": "4d638c165d79434374d666ae638cb3313dcfe35b"
+  },
+  {
+   "path": "chart.min.js",
+   "url": "https://alpacastocks.com/assets/global/js/chart.min.js",
+   "role": "resource",
+   "token": "a12cc70870789a45d9b9ddc6131d73810b283b9d"
+  },
+  {
+   "path": "transfer-balance.html",
+   "url": "https://alpacastocks.com/user/transfer-balance",
+   "role": "document",
+   "token": "fd6e9948bd4b681b767d3a9ab53285932cf8236c"
+  },
+  {
+   "path": "trading.php.html",
+   "url": "https://alpacastocks.com/trading.php",
+   "role": "document",
+   "token": "64a3fa850ee838e2aaa08659d3153f830afd7976"
+  },
+  {
+   "path": "css2-1.css",
+   "url": "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap",
+   "role": "css-utf-8",
+   "token": "9849e92a87aa44f5b197220096bebb4c5d40d56f"
+  },
+  {
+   "path": "all.min-1.css",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "role": "css-utf-8",
+   "token": "c415f9b9e2719d585e95d8093d94b0d66b86a982"
+  },
+  {
+   "path": "JTUSjIg1_i6t8kCHKm459WZhyyTn89ddpROi.woff2",
+   "url": "https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WZhyyTn89ddpROi.woff2",
+   "role": "resource",
+   "token": "73296a4ba07f3d5ad0e09b481f5b8101800793a5"
+  },
+  {
+   "path": "JTUSjIg1_i6t8kCHKm459WlhyyTn89ddpQ.woff2",
+   "url": "https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WlhyyTn89ddpQ.woff2",
+   "role": "resource",
+   "token": "9b7830349262d331ae8d130549acc6141871777e"
+  },
+  {
+   "path": "JTUSjIg1_i6t8kCHKm459WRhyyTn89ddpROi.woff2",
+   "url": "https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WRhyyTn89ddpROi.woff2",
+   "role": "resource",
+   "token": "3dd9ff666b0e6702c312e55fa45fef77a19a465f"
+  },
+  {
+   "path": "JTUSjIg1_i6t8kCHKm459W1hyyTn89ddpROi.woff2",
+   "url": "https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459W1hyyTn89ddpROi.woff2",
+   "role": "resource",
+   "token": "2fc105f3991ec15b1a6fdd3519a89721283a108d"
+  },
+  {
+   "path": "JTUSjIg1_i6t8kCHKm459WdhyyTn89ddpROi.woff2",
+   "url": "https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WdhyyTn89ddpROi.woff2",
+   "role": "resource",
+   "token": "701b23696f50f858927e6c09cabad377080dd9da"
+  },
+  {
+   "path": "fa-brands-400.eot",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.eot",
+   "role": "resource",
+   "token": "2482b9a8715208ec1db2d406f9c7ad818649352b"
+  },
+  {
+   "path": "fa-brands-400.woff2",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.woff2",
+   "role": "resource",
+   "token": "6e7d95b7530277256999f74ed3c4534aa8b003d0"
+  },
+  {
+   "path": "fa-brands-400.woff",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.woff",
+   "role": "resource",
+   "token": "8708da240030509011e17eba7d4d0ba3162d447d"
+  },
+  {
+   "path": "fa-brands-400.ttf",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.ttf",
+   "role": "resource",
+   "token": "e9b08bd5e839772e761577003534068bf1b6d8b2"
+  },
+  {
+   "path": "fa-brands-400.svg",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.svg",
+   "role": "resource",
+   "token": "9afb46e1cbf6e21baf93da59cdbebac90df081af"
+  },
+  {
+   "path": "fa-regular-400-1.eot",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.eot",
+   "role": "resource",
+   "token": "55707b41dcb033f16ee00e71182e98eda5c38448"
+  },
+  {
+   "path": "fa-regular-400-1.woff2",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.woff2",
+   "role": "resource",
+   "token": "8af63a01a366e8ab2e5a90e9f74bb891c24442a7"
+  },
+  {
+   "path": "fa-regular-400-1.woff",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.woff",
+   "role": "resource",
+   "token": "d7abdd23fcbe7798e3dde2b4ca31dffa68c243ff"
+  },
+  {
+   "path": "fa-regular-400-1.ttf",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.ttf",
+   "role": "resource",
+   "token": "a01bfe3bf7e681093f2be36e3e994adf793a28f1"
+  },
+  {
+   "path": "fa-regular-400-1.svg",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.svg",
+   "role": "resource",
+   "token": "0e5ef450fe65656d97831566d889861659841d82"
+  },
+  {
+   "path": "fa-solid-900-1.eot",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.eot",
+   "role": "resource",
+   "token": "853d2c5a256af6d8eef352aa858608fc8ae6d26e"
+  },
+  {
+   "path": "fa-solid-900-1.woff2",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.woff2",
+   "role": "resource",
+   "token": "60e53afcaad580435f71b5cc90b28a0248efaff1"
+  },
+  {
+   "path": "fa-solid-900-1.woff",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.woff",
+   "role": "resource",
+   "token": "79865373d6ac63b09af26253b1d0dd5e28bd7ea8"
+  },
+  {
+   "path": "fa-solid-900-1.ttf",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.ttf",
+   "role": "resource",
+   "token": "a3980df88301cf2d828c1283fccfcd08cf49a16d"
+  },
+  {
+   "path": "fa-solid-900-1.svg",
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.svg",
+   "role": "resource",
+   "token": "74e6838b951b37016c2122c377e9e6146cda0528"
+  },
+  {
+   "path": "transactions.html",
+   "url": "https://alpacastocks.com/user/transactions",
+   "role": "document",
+   "token": "d2259516a3b996e79a45bc1f4784a60b356be83c"
+  },
+  {
+   "path": "referrals.html",
+   "url": "https://alpacastocks.com/user/referrals",
+   "role": "document",
+   "token": "b08ed11eed589a107f0bb18fc86a076a51817262"
+  },
+  {
+   "path": "jquery.treeView.js",
+   "url": "https://alpacastocks.com/assets/global/js/jquery.treeView.js",
+   "role": "resource",
+   "token": "7013cebb276ef3ac8ebbb1f397965de46d370cdf"
+  },
+  {
+   "path": "jquery.treeView.css",
+   "url": "https://alpacastocks.com/assets/global/css/jquery.treeView.css",
+   "role": "css-utf-8",
+   "token": "3591500e0f9c9be6d8b45e09bdd9268dc5a375eb"
+  },
+  {
+   "path": "arrow-left.png",
+   "url": "https://alpacastocks.com/assets/global/css/icons/arrow-left.png",
+   "role": "resource",
+   "token": "9d6251849420919dee7bc01f41b2a83fa593a06d"
+  },
+  {
+   "path": "arrow-down.png",
+   "url": "https://alpacastocks.com/assets/global/css/icons/arrow-down.png",
+   "role": "resource",
+   "token": "2fff76aff93ba82f26e7982c6b0d073b9d9be74d"
+  },
+  {
+   "path": "ticket.html",
+   "url": "https://alpacastocks.com/ticket",
+   "role": "document",
+   "token": "a765ad3b73cdc59a0c6ee7a87d9d122a918ee834"
+  },
+  {
+   "path": "twofactor.html",
+   "url": "https://alpacastocks.com/user/twofactor",
+   "role": "document",
+   "token": "9011452341d90284e456c6f2595a6ceee0baf620"
+  },
+  {
+   "path": "profile-setting.html",
+   "url": "https://alpacastocks.com/user/profile-setting",
+   "role": "document",
+   "token": "f4ae078678ad6b6400c46581dc2e15e6155fa37a"
+  },
+  {
+   "path": "change-password.html",
+   "url": "https://alpacastocks.com/user/change-password",
+   "role": "document",
+   "token": "f09887103656fe795d35cba97c4cd978c56e1a25"
+  }
+ ]
+}

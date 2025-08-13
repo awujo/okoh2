@@ -1,0 +1,829 @@
+<!-- meta tags and other links --><!DOCTYPE html><html lang="en" data-scrapbook-source="https://alpacastocks.com/user/deposit"><head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Deposit Wallet - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <!-- font  -->
+    <link href="css2.css" rel="stylesheet">
+
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <link href="all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="line-awesome.min.css">
+
+    <link rel="stylesheet" href="animate.css">
+
+    <!-- Plugin Link -->
+    <link rel="stylesheet" href="slick.css">
+    <link rel="stylesheet" href="magnific-popup.css">
+    <link rel="stylesheet" href="apexcharts.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="main.css">
+
+    
+    <link rel="stylesheet" href="custom.css">
+
+    <link rel="stylesheet" href="color.php.css">
+
+        <style>
+        .pb-120 {
+            padding-bottom: clamp(40px, 4vw, 40px);
+        }
+
+        .pt-120 {
+            padding-top: clamp(40px, 4vw, 40px);
+        }
+
+        .container {
+            max-width: 1140px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="r42ShEoGCT.js" async=""></script>
+
+
+<div class="d-flex flex-wrap">
+
+    <div class="dashboard-sidebar" id="dashboard-sidebar">
+    <button class="btn-close dash-sidebar-close d-xl-none"></button>
+    <a href="../index.html" class="logo"><img src="../assets/images/logo/logo_black.png" alt="images"></a>
+    <div class="bg--lights">
+      <div class="profile-info">
+        <p class="fs--13px mb-3 fw-bold">ACCOUNT BALANCE</p>
+        <h4 class="usd-balance text--base mb-2 fs--30">
+          <span id="deposit-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Deposit Wallet)</small></sub>
+        </h4>
+        <p class="btc-balance fw-medium fs--18px">
+          <span id="interest-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Interest Wallet)</small></sub>
+        </p>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <a href="deposit.html" class="btn btn--base btn--smd">Deposit</a>
+          <a id="withdraw-btn" href="kyc-form.html" class="btn btn--secondary btn--smd">Withdraw</a>
+        </div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="index.html" class=""><img src="dashboard.png" alt="icon"> Dashboard</a></li>
+        <li><a href="statistics.html" class=""><img src="investment.png" alt="icon"> Investments</a></li>
+        <li><a href="deposit.html" class="active"><img src="wallet.png" alt="icon"> Deposit</a></li>
+        <li><a href="kyc-form.html" class=""><img src="withdraw.png" alt="icon"> Withdraw</a></li>
+                    <li><a href="transfer-balance.html" class=""><img src="balance-transfer.png" alt="icon"> Transfer Balance</a></li>
+                             <li><a href="trading.php.html" class=""><img src="balance-transfer.png" alt="icon"> Live Trading</a></li>
+                <li><a href="transactions.html" class=""><img src="transaction.png" alt="icon"> Transactions</a></li>
+                <li><a href="referrals.html" class=""><img src="referral.png" alt="icon"> Referrals</a></li>
+        
+        <li><a href="ticket.html" class=""><img src="ticket.png" alt="icon"> Support Ticket</a></li>
+        <li><a href="twofactor.html" class=""><img src="2fa.png" alt="icon"> 2FA</a></li>
+        <li><a href="profile-setting.html" class=""><img src="profile.png" alt="icon"> Profile</a></li>
+        <li><a href="change-password.html" class=""><img src="password.png" alt="icon"> Change Password</a></li>
+        <li><a href="logout.php" class=""><img src="logout.png" alt="icon"> Logout</a></li>
+    </ul>
+</div>
+
+    <div class="dashboard-wrapper">
+
+        <div class="dashboard-nav d-flex flex-wrap align-items-center justify-content-between">
+    <div class="nav-left d-flex gap-4 align-items-center">
+        <div class="dash-sidebar-toggler d-xl-none" id="dash-sidebar-toggler">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="nav-right d-flex flex-wrap align-items-center gap-3">
+                            <select name="langSel" class="langSel form--control h-auto px-2 py-1 border-0">
+                                    <option value="en" selected="">English</option>
+                            </select>
+                <ul class="nav-header-link d-flex flex-wrap gap-2">
+            <li>
+                <a class="link" href="javascript:void(0)"><span id="abb"></span></a>
+                <div class="dropdown-wrapper">
+                    <div class="dropdown-header">
+                        <h6 class="name text--base"><span id="username"></span></h6>
+                        <p class="fs--14px"><span id="fullname"></span></p>
+                    </div>
+                    <ul class="links">
+                        <li><a href="profile-setting.html"><i class="las la-user"></i> Profile</a></li>
+                        <li><a href="change-password.html"><i class="las la-key"></i> Change Password</a></li>
+                        <li><a href="logout.php"><i class="las la-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+        <div class="dashboard-container">
+
+            <div class="dashboard-inner">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+        <div class="payment-container">
+            <div id="walletContainer" class="wallet-info"></div>
+          
+            <form id="proofForm" enctype="multipart/form-data" class="proof-form">
+              <h3 class="form-title">Submit Payment Proof</h3>
+              
+              <div class="form-group">
+                <label class="form-label">Transaction Hash</label>
+                <input type="text" name="hash" class="form-input" placeholder="Enter transaction hash">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Upload Screenshot</label>
+                <div class="file-upload">
+                  <input type="file" name="screenshot" id="screenshot" accept="image/*">
+                  <label for="screenshot" class="file-label">
+                    <span class="file-text">Choose file</span>
+                    <span class="file-button">Browse</span>
+                  </label>
+                  <div id="fileName" class="file-name">No file selected</div>
+                </div>
+              </div>
+              
+              <button type="submit" id="submitProofBtn" class="submit-btn">
+                <span class="btn-text">Submit Proof</span>
+                <span class="btn-loader"></span>
+              </button>
+            </form>
+            
+          </div>
+          
+          <style>
+            /* Base Styles */
+            :root {
+              --primary-color: #4f46e5;
+              --error-color: #ef4444;
+              --success-color: #10b981;
+              --text-color: #111827;
+              --light-gray: #f3f4f6;
+              --border-color: #d1d5db;
+              --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+          
+            .payment-container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+            }
+          
+            /* Wallet Info Styles */
+            .wallet-info {
+              background: white;
+              border-radius: 12px;
+              padding: 25px;
+              margin-bottom: 30px;
+              box-shadow: var(--box-shadow);
+              border: 1px solid var(--border-color);
+            }
+          
+            .wallet-info h3 {
+              color: var(--primary-color);
+              margin-bottom: 20px;
+              font-size: 1.4rem;
+              text-align: center;
+            }
+          
+            .wallet-address {
+              background: var(--light-gray);
+              padding: 12px 15px;
+              border-radius: 8px;
+              font-family: monospace;
+              word-break: break-all;
+              margin: 15px 0;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
+          
+            .copy-btn {
+              background: var(--primary-color);
+              color: white;
+              border: none;
+              border-radius: 6px;
+              padding: 6px 12px;
+              font-size: 0.9rem;
+              cursor: pointer;
+              transition: background 0.2s;
+              margin-left: 10px;
+              white-space: nowrap;
+            }
+          
+            .copy-btn:hover {
+              background: #4338ca;
+            }
+          
+            .copy-btn:active {
+              transform: scale(0.98);
+            }
+          
+            #qrCanvas {
+              display: block;
+              margin: 20px auto;
+              padding: 10px;
+              background: white;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+            }
+          
+            .instructions {
+              margin-top: 25px;
+            }
+          
+            .instructions ul {
+              padding-left: 20px;
+            }
+          
+            .instructions li {
+              margin-bottom: 8px;
+              line-height: 1.5;
+            }
+          
+            /* Form Styles */
+            .proof-form {
+              background: white;
+              border-radius: 12px;
+              padding: 25px;
+              box-shadow: var(--box-shadow);
+              border: 1px solid var(--border-color);
+            }
+          
+            .form-title {
+              color: var(--primary-color);
+              margin-bottom: 20px;
+              font-size: 1.3rem;
+              text-align: center;
+            }
+          
+            .form-group {
+              margin-bottom: 20px;
+            }
+          
+            .form-label {
+              display: block;
+              margin-bottom: 8px;
+              font-weight: 500;
+              color: var(--text-color);
+            }
+          
+            .form-input {
+              width: 100%;
+              padding: 12px 15px;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+              font-size: 1rem;
+              transition: all 0.2s;
+            }
+          
+            .form-input:focus {
+              outline: none;
+              border-color: var(--primary-color);
+              box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+          
+            /* File Upload Styles */
+            .file-upload {
+              position: relative;
+            }
+          
+            .file-upload input[type="file"] {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              padding: 0;
+              margin: -1px;
+              overflow: hidden;
+              clip: rect(0, 0, 0, 0);
+              border: 0;
+            }
+          
+            .file-label {
+              display: flex;
+              cursor: pointer;
+            }
+          
+            .file-text {
+              flex: 1;
+              padding: 12px 15px;
+              border: 1px solid var(--border-color);
+              border-right: none;
+              border-radius: 8px 0 0 8px;
+              background: var(--light-gray);
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+          
+            .file-button {
+              padding: 12px 20px;
+              background: var(--primary-color);
+              color: white;
+              border-radius: 0 8px 8px 0;
+              font-weight: 500;
+              transition: background 0.2s;
+            }
+          
+            .file-button:hover {
+              background: #4338ca;
+            }
+          
+            .file-name {
+              margin-top: 8px;
+              font-size: 0.9rem;
+              color: #6b7280;
+            }
+          
+            /* Button Styles */
+            .submit-btn {
+              width: 100%;
+              padding: 14px;
+              background-color: var(--primary-color);
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-size: 1rem;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.2s;
+              margin-top: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+            }
+          
+            .submit-btn:hover {
+              background-color: #4338ca;
+            }
+          
+            .submit-btn:disabled {
+              background-color: #a5b4fc;
+              cursor: not-allowed;
+            }
+          
+            /* Loader Styles */
+            .btn-loader {
+              width: 18px;
+              height: 18px;
+              border: 2px solid rgba(255, 255, 255, 0.3);
+              border-radius: 50%;
+              border-top-color: white;
+              animation: spin 1s linear infinite;
+              display: none;
+            }
+          
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          
+            /* Toast Styles */
+            .toast-container {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              z-index: 9999;
+            }
+          
+            .toast {
+              padding: 14px 18px;
+              margin-bottom: 10px;
+              border-radius: 8px;
+              color: white;
+              display: flex;
+              align-items: center;
+              box-shadow: var(--box-shadow);
+              animation: slideIn 0.3s, fadeOut 0.5s 3s forwards;
+              max-width: 300px;
+            }
+          
+            .toast.success {
+              background-color: var(--success-color);
+            }
+          
+            .toast.error {
+              background-color: var(--error-color);
+            }
+          
+            .toast-icon {
+              margin-right: 10px;
+              font-size: 18px;
+            }
+          
+            @keyframes slideIn {
+              from { transform: translateX(100%); opacity: 0; }
+              to { transform: translateX(0); opacity: 1; }
+            }
+          
+            @keyframes fadeOut {
+              from { opacity: 1; }
+              to { opacity: 0; }
+            }
+          
+            /* Responsive */
+            @media (max-width: 600px) {
+              .payment-container {
+                padding: 15px;
+              }
+              
+              .wallet-info, .proof-form {
+                padding: 20px;
+              }
+              
+              .wallet-address {
+                flex-direction: column;
+                align-items: flex-start;
+              }
+              
+              .copy-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+              }
+            }
+          </style>
+          
+          <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+          <script>
+          // Toast notification function
+          function showToast(message, type = 'info') {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            // Add icon based on type
+            let icon = '';
+            switch(type) {
+              case 'success':
+                icon = '✓';
+                break;
+              case 'error':
+                icon = '✗';
+                break;
+              default:
+                icon = 'ℹ';
+            }
+            
+            toast.innerHTML = `
+              <span class="toast-icon">${icon}</span>
+              <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after animation
+            setTimeout(() => {
+              toast.remove();
+              if (toastContainer.children.length === 0) {
+                toastContainer.remove();
+              }
+            }, 3500);
+          }
+
+          let rates = {};
+
+          async function fetchRates() {
+            try {
+              const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tron,solana,tether&vs_currencies=usd');
+              if (!response.ok) throw new Error('Failed to fetch rates');
+              
+              const data = await response.json();
+              rates = {
+                bitcoin: data.bitcoin.usd,
+                ethereum: data.ethereum.usd,
+                tron: data.tron.usd,
+                solana: data.solana.usd,
+                tether: data.tether.usd
+              };
+            } catch (error) {
+              console.error('Error fetching rates:', error);
+              showToast('Failed to load exchange rates. Please try again.', 'error');
+            }
+          }
+
+          
+// Move the copyAddress function outside of the DOMContentLoaded listener
+function copyAddress() {
+  const walletAddr = document.getElementById('copyAddr');
+  const range = document.createRange();
+  range.selectNode(walletAddr);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  document.execCommand('copy');
+  showToast('Wallet address copied!', 'success');
+}
+
+// The rest of your code
+document.addEventListener('DOMContentLoaded', async () => {
+  // Fetch the exchange rates when the page is loaded
+  await fetchRates();
+  
+  // Load payment info from localStorage
+  const info = JSON.parse(localStorage.getItem('depositDetails'));
+  if (!info) {
+    showToast('No deposit information found in localStorage.', 'error');
+    return;
+  }
+  
+  const container = document.getElementById('walletContainer');
+  const wallet = info.wallet_address;
+  const gateway = info.gateway;
+  const amountInUSD = info.amount;  // Amount in USD
+  
+  // Ensure the amount is a valid number
+  if (isNaN(amountInUSD) || amountInUSD <= 0) {
+    showToast('Invalid amount.', 'error');
+    return;
+  }
+
+  // Convert the USD amount to the selected cryptocurrency amount
+  const cryptoRate = rates[gateway.toLowerCase()];
+  if (!cryptoRate) {
+    showToast(`Exchange rate for ${gateway} not found.`, 'error');
+    return;
+  }
+
+  // Calculate the cryptocurrency equivalent amount
+  const cryptoAmount = (amountInUSD / cryptoRate).toFixed(8);  // Limiting to 8 decimals for cryptocurrencies
+
+  // Display wallet info with the converted amount
+  container.innerHTML = `
+    <h3>Send $${amountInUSD} via ${gateway.toUpperCase()} (≈ ${cryptoAmount} ${gateway.toUpperCase()})</h3>
+    <div class="wallet-address">
+      <span id="copyAddr">${wallet}</span>
+      <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+    </div>
+    <canvas id="qrCanvas"></canvas>
+    <div class="instructions">
+      <p><strong>Instructions:</strong></p>
+      <ul>
+        <li>Copy or scan the wallet address above</li>
+        <li>Go to your wallet/exchange and send exactly <strong>$${amountInUSD}</strong></li>
+        <li>Copy the transaction hash or take a screenshot of the confirmation</li>
+        <li>Paste the hash ID of the payment or upload your screenshot below</li>
+      </ul>
+    </div>
+  `;
+  
+  // Generate QR code
+  QRCode.toCanvas(document.getElementById('qrCanvas'), wallet, {
+    width: 180,
+    margin: 1,
+    color: {
+      dark: '#000000',
+      light: '#ffffff'
+    }
+  }, function(error) {
+    if (error) console.error('QR code error:', error);
+  });
+});
+    
+          
+          
+          // Show selected file name
+          document.getElementById('screenshot').addEventListener('change', function(e) {
+            const fileName = document.getElementById('fileName');
+            if (this.files.length > 0) {
+              fileName.textContent = this.files[0].name;
+              fileName.style.color = 'var(--text-color)';
+            } else {
+              fileName.textContent = 'No file selected';
+              fileName.style.color = '#6b7280';
+            }
+          });
+           
+        // Show selected file name for screenshot upload
+document.getElementById('screenshot').addEventListener('change', function(e) {
+  const fileName = document.getElementById('fileName');
+  if (this.files.length > 0) {
+    fileName.textContent = this.files[0].name;
+    fileName.style.color = 'var(--text-color)';
+  } else {
+    fileName.textContent = 'No file selected';
+    fileName.style.color = '#6b7280';
+  }
+});
+
+document.getElementById("proofForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const hash = document.querySelector('input[name="hash"]').value.trim();
+  const screenshot = document.getElementById('screenshot').files[0];  // Get the first file selected
+  
+  // Validation: Check if either the hash or screenshot is provided
+  if (!hash && !screenshot) {
+    showToast('Please enter a transaction hash or upload a screenshot.', 'error');
+    return; // Stop the form from submitting if neither is provided
+  }
+
+  const btn = document.getElementById("submitProofBtn");
+  const btnText = btn.querySelector(".btn-text");
+  const btnLoader = btn.querySelector(".btn-loader");
+
+  // Show loading state
+  btn.disabled = true;
+  btnText.textContent = "Submitting...";
+  btnLoader.style.display = "block";
+
+  const formData = new FormData(this);  // Start with the form data from the form fields
+  
+  // Append the hash and screenshot (if available)
+  if (hash) formData.append('hash', hash);  // Append hash if provided
+  if (screenshot) formData.append('screenshot', screenshot);  // Append screenshot if uploaded
+
+  // Retrieve additional info from localStorage (gateway, amount)
+  const info = JSON.parse(localStorage.getItem('depositDetails'));
+  if (info) {
+    formData.append('gateway', info.gateway);  // Append gateway to form data
+    formData.append('amount', info.amount);    // Append amount to form data
+  }
+
+  try {
+    const res = await fetch('../api/submit_proof.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    // Try parsing the response as JSON
+    const data = await res.json();
+    
+    if (data.status === 'success') {
+      showToast('Proof submitted successfully!', 'success');
+      setTimeout(() => {
+        window.location.href = "deposit_history.html";
+      }, 1500);
+    } else {
+      showToast(data.message || 'Submission failed', 'error');
+    }
+  } catch (error) {
+    console.error('Submission error:', error);
+    showToast('Network error or invalid response. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = "Submit Proof";
+    btnLoader.style.display = "none";
+  }
+});
+
+          </script>
+    </div>
+</div>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+        
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+
+    <!-- Pluglin Link -->
+    <script src="slick.min.js"></script>
+    <script src="magnific-popup.min.js"></script>
+    <script src="apexcharts.min.js"></script>
+
+    
+    <!-- Main js -->
+    <script src="main.js"></script>
+
+        
+
+        <script>
+        (function ($) {
+            "use strict";
+            $('select[name=gateway]').change(function(){
+                if(!$('select[name=gateway]').val()){
+                    $('.preview-details').addClass('d-none');
+                    return false;
+                }
+                var resource = $('select[name=gateway] option:selected').data('gateway');
+                var fixed_charge = parseFloat(resource.fixed_charge);
+                var percent_charge = parseFloat(resource.percent_charge);
+                var rate = parseFloat(resource.rate)
+                if(resource.method.crypto == 1){
+                    var toFixedDigit = 8;
+                    $('.crypto_currency').removeClass('d-none');
+                }else{
+                    var toFixedDigit = 2;
+                    $('.crypto_currency').addClass('d-none');
+                }
+                $('.min').text(parseFloat(resource.min_amount).toFixed(2));
+                $('.max').text(parseFloat(resource.max_amount).toFixed(2));
+                var amount = parseFloat($('input[name=amount]').val());
+                if (!amount) {
+                    amount = 0;
+                }
+                if(amount <= 0){
+                    $('.preview-details').addClass('d-none');
+                    return false;
+                }
+                $('.preview-details').removeClass('d-none');
+                var charge = parseFloat(fixed_charge + (amount * percent_charge / 100)).toFixed(2);
+                $('.charge').text(charge);
+                var payable = parseFloat((parseFloat(amount) + parseFloat(charge))).toFixed(2);
+                $('.payable').text(payable);
+                var final_amo = (parseFloat((parseFloat(amount) + parseFloat(charge)))*rate).toFixed(toFixedDigit);
+                $('.final_amo').text(final_amo);
+                if (resource.currency != 'USD') {
+                    var rateElement = `<span class="fw-bold">Conversion Rate</span> <span><span  class="fw-bold">1 USD = <span class="rate">${rate}</span>  <span class="method_currency">${resource.currency}</span></span></span>`;
+                    $('.rate-element').html(rateElement)
+                    $('.rate-element').removeClass('d-none');
+                    $('.in-site-cur').removeClass('d-none');
+                    $('.rate-element').addClass('d-flex');
+                    $('.in-site-cur').addClass('d-flex');
+                }else{
+                    $('.rate-element').html('')
+                    $('.rate-element').addClass('d-none');
+                    $('.in-site-cur').addClass('d-none');
+                    $('.rate-element').removeClass('d-flex');
+                    $('.in-site-cur').removeClass('d-flex');
+                }
+                $('.method_currency').text(resource.currency);
+                $('input[name=currency]').val(resource.currency);
+                $('input[name=amount]').on('input');
+            });
+            $('input[name=amount]').on('input',function(){
+                $('select[name=gateway]').change();
+                $('.amount').text(parseFloat($(this).val()).toFixed(2));
+            });
+        })(jQuery);
+    </script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    
+    <link rel="stylesheet" href="iziToast.min.css">
+<script src="iziToast.min.js"></script>
+
+<script>
+    "use strict";
+    function notify(status,message) {
+        iziToast[status]({
+            message: message,
+            position: "topRight"
+        });
+    }
+</script>
+
+    <script>
+        $(".langSel").on("change", function() {
+            window.location.href = "https://alpacastocks.com/change/" + $(this).val();
+        });
+
+        Array.from(document.querySelectorAll('table')).forEach(table => {
+            let heading = table.querySelectorAll('thead tr th');
+            Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
+                Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
+                    colum.setAttribute('data-label', heading[i].innerText)
+                });
+            });
+        });
+
+        $.each($('input, select, textarea'), function(i, element) {
+            var elementType = $(element);
+            if (elementType.attr('type') != 'checkbox') {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+            }
+        });
+
+        var inputElements = $('[type=text],[type=password],[type=email],[type=number],select,textarea');
+        $.each(inputElements, function(index, element) {
+            element = $(element);
+            element.closest('.form-group').find('label').attr('for', element.attr('name'));
+            element.attr('id', element.attr('name'))
+        });
+
+        $('.policy').on('click', function() {
+            $.get('https://alpacastocks.com/cookie/accept', function(response) {
+                $('.cookies-card').addClass('d-none');
+            });
+        });
+
+
+        setTimeout(function() {
+            $('.cookies-card').removeClass('hide')
+        }, 2000);
+    </script>
+
+
+
+</body></html>

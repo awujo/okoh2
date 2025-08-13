@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+       <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Transaction - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2e59d9;
+        }
+        
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        .transactions-table th {
+            background: #4e73df;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .transactions-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .transactions-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .transactions-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        #transactions-container {
+            overflow-x: auto;
+            max-height: 600px; /* Limit height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .type-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .type-deposit {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .type-investment {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .type-withdrawal {
+            background: #f8d7da;
+            color: #842029;
+        }
+        
+        .amount {
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: #28a745;
+        }
+        
+        .negative {
+            color: #dc3545;
+        }
+        
+        .no-transactions {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4e73df;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Transaction History</h1>
+        
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="transaction-type">Transaction Type</label>
+                    <select id="transaction-type">
+                        <option value="all">All Transactions</option>
+                        <option value="deposit">Deposits</option>
+                        <option value="investment">Investments</option>
+                        <option value="withdrawal">Withdrawals</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="start-date">From Date</label>
+                    <input type="date" id="start-date">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="end-date">To Date</label>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
+            
+            <button id="apply-filters">Apply Filters</button>
+            <button id="reset-filters">Reset Filters</button>
+        </div>
+        
+        <div id="transactions-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading transactions...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Load transactions when page loads
+    fetchTransactions();
+    
+    // Apply filters button
+    document.getElementById('apply-filters').addEventListener('click', fetchTransactions);
+    
+    // Reset filters button
+    document.getElementById('reset-filters').addEventListener('click', function() {
+        document.getElementById('transaction-type').value = 'all';
+        document.getElementById('status').value = 'all';
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
+        fetchTransactions();
+    });
+});
+
+function fetchTransactions() {
+    const container = document.getElementById('transactions-container');
+    container.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading transactions...</p>
+        </div>
+    `;
+    
+    const type = document.getElementById('transaction-type').value;
+    const status = document.getElementById('status').value;
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+    
+    const filterData = {
+        type: type,
+        status: status,
+        start_date: startDate,
+        end_date: endDate
+    };
+    
+    fetch('../api/get_transactions.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filterData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status && data.transactions) {
+            renderTransactions(data.transactions);
+        } else {
+            container.innerHTML = `
+                <div class="no-transactions">
+                    <p>Error loading transactions. Please try again.</p>
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        container.innerHTML = `
+            <div class="no-transactions">
+                <p>Error loading transactions. Please try again.</p>
+            </div>
+        `;
+    });
+}
+
+function renderTransactions(transactions) {
+    const container = document.getElementById('transactions-container');
+    
+    if (transactions.length === 0) {
+        container.innerHTML = `
+            <div class="no-transactions">
+                <p>No transactions found matching your criteria.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `
+        <table class="transactions-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Transaction ID</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Details</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    transactions.forEach(tx => {
+        const date = new Date(tx.created_at).toLocaleString();
+        let amountClass = '';
+        let amountDisplay = '';
+        let details = '';
+        
+        // Set amount display and class based on transaction type
+        if (tx.type === 'deposit') {
+            amountClass = 'positive';
+            amountDisplay = `+$${tx.amount.toLocaleString()}`;
+            details = `Via ${tx.gateway}`;
+        } else if (tx.type === 'investment') {
+            amountClass = 'negative';
+            amountDisplay = `-$${tx.amount.toLocaleString()}`;
+            details = `${tx.plan} (${tx.days_count} days)`;
+        } else if (tx.type === 'withdrawal') {
+            amountClass = 'negative';
+            amountDisplay = `-$${tx.amount.toLocaleString()}`;
+            details = `Net: $${tx.withdrawable_amount} via ${tx.gateway}`;
+        }
+        
+        // Add profit for investments
+        if (tx.type === 'investment' && tx.profit) {
+            details += ` | Profit: $${tx.profit.toLocaleString()}`;
+        }
+        
+        html += `
+            <tr>
+                <td><span class="type-badge type-${tx.type}">${tx.type}</span></td>
+                <td>${tx.transaction_id}</td>
+                <td>${date}</td>
+                <td class="amount ${amountClass}">${amountDisplay}</td>
+                <td>${details}</td>
+                <td><span class="status status-${tx.status}">${tx.status}</span></td>
+            </tr>
+        `;
+    });
+    
+    html += `
+            </tbody>
+        </table>
+    `;
+    
+    container.innerHTML = html;
+}
+    </script>
+</body>
+</html>

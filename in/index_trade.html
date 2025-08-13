@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title> - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+    
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #0e0e1a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .trading-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        @media (min-width: 992px) {
+            .trading-container {
+                flex-direction: row;
+            }
+        }
+
+        .chart-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #tradingview-chart {
+            flex: 1;
+            min-height: 400px;
+        }
+
+        .trading-panel {
+            width: 100%;
+            background-color: #1a1b26;
+            padding: 15px;
+            border-top: 1px solid #2a2b3d;
+        }
+
+        @media (min-width: 992px) {
+            .trading-panel {
+                width: 320px;
+                border-top: none;
+                border-left: 1px solid #2a2b3d;
+            }
+        }
+
+        .order-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 5px;
+        }
+
+        .order-tab {
+            flex: 1;
+            padding: 8px;
+            background-color: #2a2b3d;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .order-tab.active {
+            background-color: #3d7df8;
+        }
+
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #a1a1b5;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #2a2b3d;
+            border: 1px solid #3a3b4d;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        .input-group .form-input {
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+
+        .input-group-append {
+            padding: 10px 12px;
+            background-color: #3a3b4d;
+            border: 1px solid #3a3b4d;
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+        }
+
+        .leverage-slider {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .buy-btn {
+            flex: 1;
+            padding: 12px;
+            background-color: #0ecb81;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sell-btn {
+            flex: 1;
+            padding: 12px;
+            background-color: #f6465d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .position-info {
+            margin-top: 20px;
+            background-color: #2a2b3d;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .position-title {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .position-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .positive {
+            color: #0ecb81;
+        }
+
+        .negative {
+            color: #f6465d;
+        }
+
+        .ticker-tape {
+            height: 40px;
+            background-color: #1a1b26;
+            border-bottom: 1px solid #2a2b3d;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticker-tape">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+                "colorTheme": "dark",
+                "isTransparent": false,
+                "displayMode": "adaptive",
+                "locale": "en"
+            }
+            </script>
+        </div>
+        <!-- TradingView Widget END -->
+    </div>
+
+    <div class="trading-container">
+        <div class="chart-section">
+            <div id="tradingview-chart">
+                            <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container" style="height:100%;width:100%">
+    <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+    <!-- <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div> -->
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+    {
+    "autosize": true,
+    "symbol": "NASDAQ:AAPL",
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "allow_symbol_change": true,
+    "support_host": "https://www.tradingview.com"
+  }
+    </script>
+  </div>
+            </div>
+        </div>
+
+        <div class="trading-panel">
+            <div class="order-tabs">
+                <button class="order-tab active">Market</button>
+                <button class="order-tab">Limit</button>
+                <button class="order-tab">Stop</button>
+            </div>
+
+            <div class="order-form">
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00">
+                        <span class="input-group-append">USDT</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Take Profit</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00">
+                        <span class="input-group-append">USDT</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Stop Loss</label>
+                    <div class="input-group">
+                        <input type="number" class="form-input" placeholder="0.00">
+                        <span class="input-group-append">USDT</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Leverage: <span id="leverage-value">10x</span></label>
+                    <input type="range" min="1" max="100" value="10" class="leverage-slider">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="buy-btn">Buy/Long</button>
+                    <button class="sell-btn">Sell/Short</button>
+                </div>
+
+                <div class="position-info">
+                    <h4 class="position-title">Open Position</h4>
+                    <div class="position-row">
+                        <span>Size:</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="position-row">
+                        <span>Entry:</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="position-row">
+                        <span>Mark:</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="position-row">
+                        <span>Liq:</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="position-row">
+                        <span>PNL:</span>
+                        <span class="positive">+0.00 (0.00%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // // Initialize TradingView Widget
+        // new TradingView.widget({
+        //     "autosize": true,
+        //     "symbol": "BINANCE:BTCUSDT",
+        //     "interval": "5",
+        //     "timezone": "Etc/UTC",
+        //     "theme": "dark",
+        //     "style": "1",
+        //     "locale": "en",
+        //     "toolbar_bg": "#1a1b26",
+        //     "enable_publishing": false,
+        //     "hide_top_toolbar": false,
+        //     "hide_side_toolbar": false,
+        //     "allow_symbol_change": true,
+        //     "container_id": "tradingview-chart"
+        // });
+
+        // Check user trading status
+async function checkTradingStatus() {
+    try {
+        const response = await fetch('../api/trading_api.php');
+        const data = await response.json();
+        
+        if (data.status) {
+            const buyBtn = document.querySelector('.buy-btn');
+            const sellBtn = document.querySelector('.sell-btn');
+            const actionButtons = document.querySelector('.action-buttons');
+            
+            if (data.hasInvestment) {
+                // User has active investment - show automated trading button
+                actionButtons.innerHTML = `
+                    <button class="automated-btn" style="flex:1; padding:12px; background: linear-gradient(90deg, #3d7df8, #8a3ffc); 
+                    color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer; 
+                    position:relative; overflow:hidden;">
+                        <span style="position:relative; z-index:2;">Automated Trading</span>
+                        <div class="wave" style="position:absolute; top:0; left:0; width:100%; height:100%; 
+                        background: radial-gradient(circle, rgba(61,125,248,0.3) 0%, rgba(138,63,252,0) 70%); 
+                        animation: pulse 2s infinite;"></div>
+                    </button>
+                `;
+            } else if (!data.hasBalance) {
+                // No balance - show deposit message
+                buyBtn.textContent = 'Deposit to Trade';
+                sellBtn.textContent = 'Deposit to Trade';
+                
+                buyBtn.style.backgroundColor = '#3d7df8';
+                sellBtn.style.backgroundColor = '#3d7df8';
+                
+                const handleDepositClick = () => {
+                    window.location.href = 'deposit.html';
+                };
+                
+                buyBtn.onclick = handleDepositClick;
+                sellBtn.onclick = handleDepositClick;
+            } else {
+                // Has balance but no investment - show enroll message
+                buyBtn.onclick = async () => {
+                    const response = await fetch('../api/trading_api.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'buy' })
+                    });
+                    const result = await response.json();
+                    alert(result.message);
+                    if (result.status) {
+                        window.location.href = 'investment-plans.html';
+                    }
+                };
+                
+                sellBtn.onclick = async () => {
+                    const response = await fetch('../api/trading_api.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'sell' })
+                    });
+                    const result = await response.json();
+                    alert(result.message);
+                    if (result.status) {
+                        window.location.href = 'investment-plans.html';
+                    }
+                };
+            }
+        }
+    } catch (error) {
+        console.error('Error checking trading status:', error);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Your existing TradingView initialization code...
+    
+    // Check user trading status
+    checkTradingStatus();
+    
+    // Add wave animation style
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+        // Order tab selector logic
+        document.querySelectorAll('.order-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Leverage slider
+        const leverageSlider = document.querySelector('.leverage-slider');
+        const leverageValue = document.getElementById('leverage-value');
+        leverageSlider.addEventListener('input', function() {
+            leverageValue.textContent = this.value + 'x';
+        });
+
+        // Buy/Sell button actions
+        document.querySelector('.buy-btn').addEventListener('click', function() {
+            alert('Buy order placed');
+        });
+
+        document.querySelector('.sell-btn').addEventListener('click', function() {
+            alert('Sell order placed');
+        });
+    });
+    </script>
+</body>
+</html>

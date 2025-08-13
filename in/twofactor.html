@@ -1,0 +1,437 @@
+<!-- meta tags and other links --><!DOCTYPE html><html lang="en" data-scrapbook-source="https://alpacastocks.com/user/twofactor"><head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Two Factor - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <!-- font  -->
+    <link href="css2.css" rel="stylesheet">
+
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <link href="all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="line-awesome.min.css">
+
+    <link rel="stylesheet" href="animate.css">
+
+    <!-- Plugin Link -->
+    <link rel="stylesheet" href="slick.css">
+    <link rel="stylesheet" href="magnific-popup.css">
+    <link rel="stylesheet" href="apexcharts.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="main.css">
+
+    
+    <link rel="stylesheet" href="custom.css">
+
+    <link rel="stylesheet" href="color.php.css">
+
+        <style>
+        .pb-120 {
+            padding-bottom: clamp(40px, 4vw, 40px);
+        }
+
+        .pt-120 {
+            padding-top: clamp(40px, 4vw, 40px);
+        }
+
+        .container {
+            max-width: 1140px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="r42ShEoGCT.js" async=""></script>
+
+
+<div class="d-flex flex-wrap">
+
+    <div class="dashboard-sidebar" id="dashboard-sidebar">
+    <button class="btn-close dash-sidebar-close d-xl-none"></button>
+    <a href="../index.html" class="logo"><img src="../assets/images/logo/logo_black.png" alt="images"></a>
+    <div class="bg--lights">
+      <div class="profile-info">
+        <p class="fs--13px mb-3 fw-bold">ACCOUNT BALANCE</p>
+        <h4 class="usd-balance text--base mb-2 fs--30">
+          <span id="deposit-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Deposit Wallet)</small></sub>
+        </h4>
+        <p class="btc-balance fw-medium fs--18px">
+          <span id="interest-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Interest Wallet)</small></sub>
+        </p>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <a href="deposit.html" class="btn btn--base btn--smd">Deposit</a>
+          <a id="withdraw-btn" href="kyc-form.html" class="btn btn--secondary btn--smd">Withdraw</a>
+        </div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="index.html" class=""><img src="dashboard.png" alt="icon"> Dashboard</a></li>
+        <li><a href="statistics.html" class=""><img src="investment.png" alt="icon"> Investments</a></li>
+        <li><a href="deposit.html" class=""><img src="wallet.png" alt="icon"> Deposit</a></li>
+        <li><a href="kyc-form.html" class=""><img src="withdraw.png" alt="icon"> Withdraw</a></li>
+                    <li><a href="transfer-balance.html" class=""><img src="balance-transfer.png" alt="icon"> Transfer Balance</a></li>
+                             <li><a href="trading.php.html" class=""><img src="balance-transfer.png" alt="icon"> Live Trading</a></li>
+                <li><a href="transactions.html" class=""><img src="transaction.png" alt="icon"> Transactions</a></li>
+                <li><a href="referrals.html" class=""><img src="referral.png" alt="icon"> Referrals</a></li>
+        
+        <li><a href="ticket.html" class=""><img src="ticket.png" alt="icon"> Support Ticket</a></li>
+        <li><a href="" class="active"><img src="2fa.png" alt="icon"> 2FA</a></li>
+        <li><a href="profile-setting.html" class=""><img src="profile.png" alt="icon"> Profile</a></li>
+        <li><a href="change-password.html" class=""><img src="password.png" alt="icon"> Change Password</a></li>
+        <li><a href="logout.php" class=""><img src="logout.png" alt="icon"> Logout</a></li>
+    </ul>
+</div>
+
+    <div class="dashboard-wrapper">
+
+        <div class="dashboard-nav d-flex flex-wrap align-items-center justify-content-between">
+    <div class="nav-left d-flex gap-4 align-items-center">
+        <div class="dash-sidebar-toggler d-xl-none" id="dash-sidebar-toggler">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="nav-right d-flex flex-wrap align-items-center gap-3">
+                            <select name="langSel" class="langSel form--control h-auto px-2 py-1 border-0">
+                                    <option value="en" selected="">English</option>
+                            </select>
+                <ul class="nav-header-link d-flex flex-wrap gap-2">
+            <li>
+                <a class="link" href="javascript:void(0)"><span id="abb"></span></a>
+                <div class="dropdown-wrapper">
+                    <div class="dropdown-header">
+                        <h6 class="name text--base"><span id="username"></span></h6>
+                        <p class="fs--14px"><span id="fullname"></span></p>
+                    </div>
+                    <ul class="links">
+                        <li><a href="profile-setting.html"><i class="las la-user"></i> Profile</a></li>
+                        <li><a href="change-password.html"><i class="las la-key"></i> Change Password</a></li>
+                        <li><a href="logout.php"><i class="las la-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+        <div class="dashboard-container">
+
+            
+    <div class="dashboard-inner">
+        <div class="row justify-content-center">
+            <div class=" col-md-12 ">
+                <div class="mb-4">
+                    <h3>Two Factor Authentication</h3>
+                                        <p>Your account will be more secure if you use this feature. A 6-digit verification code from your Android Google Authenticator app must be entered whenever someone tries to log in to the account. So that the system could verify that, this is you. Additionally, the payout procedure will require this verification.</p>
+                                    </div>
+                <div class="row gy-4" style="margin-top: 10px;">
+
+                    <div class="row" id="twofa-section">
+                        <div class="col-md-6">
+                            <div class="card custom--card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Add Your Account</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="mb-3">Use the QR code or setup key in your Google Authenticator app to add your account.</h6>
+                                    <div class="form-group mb-3 mx-auto text-center">
+                                        <img id="qr-image" class="mx-auto" src="" alt="Loading QR...">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Setup Key</label>
+                                        <div class="copy-link">
+                                            <input type="text" id="setup-key" class="copyURL" value="" readonly>
+                                            <span class="copyBoard" id="copyBoard"><i class="las la-copy"></i> <strong class="copyText">Copy</strong></span>
+                                        </div>
+                                    </div>
+                                    <label><i class="fa fa-info-circle"></i> Help</label>
+                                    <p>
+                                        Google Authenticator is a 2FA app for mobile. <a class="text--base" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Download</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class=" col-md-6 ">
+                            <div class="card custom--card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Enable 2FA Security</h5>
+                                </div>
+                                <form id="verify2faForm">
+                                    <div class="card-body">
+                                        <input type="hidden" name="key" id="hidden-secret">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Google Authenticator OTP</label>
+                                            <input type="text" class="form-control form--control" name="code" required>
+                                        </div>
+                                        <button type="submit" id="verifyBtn" class="btn btn--base w-100">
+                                            <span class="spinner-border spinner-border-sm d-none" id="loader"></span>
+                                            <span class="btn-text">Submit</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        /* Add to your existing CSS */
+#qr-image {
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
+.btn-close {
+    padding: 0.5rem 0.5rem;
+    background-size: 0.75rem;
+}
+
+.spinner-border {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+    </style>
+
+
+        </div>
+    </div>
+</div>
+
+        
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+
+    <!-- Pluglin Link -->
+    <script src="slick.min.js"></script>
+    <script src="magnific-popup.min.js"></script>
+    <script src="apexcharts.min.js"></script>
+
+    
+    <!-- Main js -->
+    <script src="main.js"></script>
+
+        <script>
+        (function($){
+            "use strict";
+            $('#copyBoard').click(function(){
+                var copyText = document.getElementsByClassName("copyURL");
+                copyText = copyText[0];
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                /*For mobile devices*/
+                document.execCommand("copy");
+                $('.copyText').text('Copied');
+                setTimeout(() => {
+                    $('.copyText').text('Copy');
+                }, 2000);
+            });
+        })(jQuery);
+    </script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    
+    <link rel="stylesheet" href="iziToast.min.css">
+<script src="iziToast.min.js"></script>
+
+<script>
+    "use strict";
+    function notify(status,message) {
+        iziToast[status]({
+            message: message,
+            position: "topRight"
+        });
+    }
+</script>
+
+    <script>
+        $(".langSel").on("change", function() {
+            window.location.href = "https://alpacastocks.com/change/" + $(this).val();
+        });
+
+        Array.from(document.querySelectorAll('table')).forEach(table => {
+            let heading = table.querySelectorAll('thead tr th');
+            Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
+                Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
+                    colum.setAttribute('data-label', heading[i].innerText)
+                });
+            });
+        });
+
+        $.each($('input, select, textarea'), function(i, element) {
+            var elementType = $(element);
+            if (elementType.attr('type') != 'checkbox') {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+            }
+        });
+
+        var inputElements = $('[type=text],[type=password],[type=email],[type=number],select,textarea');
+        $.each(inputElements, function(index, element) {
+            element = $(element);
+            element.closest('.form-group').find('label').attr('for', element.attr('name'));
+            element.attr('id', element.attr('name'))
+        });
+
+        $('.policy').on('click', function() {
+            $.get('https://alpacastocks.com/cookie/accept', function(response) {
+                $('.cookies-card').addClass('d-none');
+            });
+        });
+
+
+        setTimeout(function() {
+            $('.cookies-card').removeClass('hide')
+        }, 2000);
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load 2FA setup data
+    fetch2FAData();
+    
+    // Setup copy functionality
+    document.getElementById('copyBoard').addEventListener('click', function() {
+        const setupKey = document.getElementById('setup-key');
+        setupKey.select();
+        document.execCommand('copy');
+        
+        const copyText = this.querySelector('.copyText');
+        const originalText = copyText.textContent;
+        copyText.textContent = 'Copied!';
+        
+        setTimeout(() => {
+            copyText.textContent = originalText;
+        }, 2000);
+    });
+    
+    // Handle form submission
+    document.getElementById('verify2faForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const button = form.querySelector('#verifyBtn');
+        const loader = form.querySelector('#loader');
+        const buttonText = button.querySelector('.btn-text');
+        
+        // Show loading state
+        button.disabled = true;
+        loader.classList.remove('d-none');
+        buttonText.textContent = 'Verifying...';
+        
+        const formData = {
+            code: form.code.value,
+            key: document.getElementById('hidden-secret').value
+        };
+        
+        fetch('../api/2fa_setup.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                showAlert('success', data.message);
+                "use strict";
+                iziToast.success({message:data.message, position: "topRight"});
+                // Redirect or reload after successful verification
+                setTimeout(() => {
+                    window.location.href = "index.html"; // Redirect to the dashboard or another page
+                }, 3000); // 3 seconds delay
+            } else {
+                showAlert('danger', data.message);
+                "use strict";
+                iziToast.error({message:data.message, position: "topRight"});
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'An error occurred during verification');
+            "use strict";
+                iziToast.error({message:"An error occurred during verification", position: "topRight"});
+        })
+        .finally(() => {
+            // Reset button state
+            button.disabled = false;
+            loader.classList.add('d-none');
+            buttonText.textContent = 'Submit';
+        });
+    });
+});
+
+function fetch2FAData() {
+    fetch('../api/2fa_setup.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                // Update QR code image
+                document.getElementById('qr-image').src = data.qrCodeUri;
+                // Update setup key
+                document.getElementById('setup-key').value = data.secret;
+                document.getElementById('hidden-secret').value = data.secret;
+            } else {
+                showAlert('danger', data.message);
+                "use strict";
+                iziToast.error({message:data.message, position: "topRight"});
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Failed to load 2FA setup data');
+            "use strict";
+                iziToast.error({message:"Failed to load 2FA setup data", position: "topRight"});
+        });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.role = 'alert';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    const container = document.getElementById('twofa-section');
+    container.prepend(alertDiv);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 150);
+    }, 5000);
+}
+    </script>
+    
+
+
+
+</body></html>

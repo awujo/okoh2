@@ -1,0 +1,1622 @@
+<!-- meta tags and other links --><!DOCTYPE html><html lang="en" data-scrapbook-source="https://alpacastocks.com/user/invest/statistics"><head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Investment - NexoraCapitals | Algorithmic Trading Platform</title>
+    <meta name="description" content="Choose from our range of investment plans designed to grow your capital through algorithmic trading in crypto and commodities markets." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/logo/logo_background.png" />
+
+    <!-- font  -->
+    <link href="css2.css" rel="stylesheet">
+
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <link href="all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="line-awesome.min.css">
+
+    <link rel="stylesheet" href="animate.css">
+
+    <!-- Plugin Link -->
+    <link rel="stylesheet" href="slick.css">
+    <link rel="stylesheet" href="magnific-popup.css">
+    <link rel="stylesheet" href="apexcharts.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="main.css">
+
+    
+    <link rel="stylesheet" href="custom.css">
+
+    <link rel="stylesheet" href="color.php.css">
+
+    <style>
+    .custom-progress {
+        max-width: 40px !important;
+        max-height: 40px;
+        transform: rotate(-90deg);
+    }
+    .custom-progress .bg-circle {
+        stroke: #00000011;
+        fill: none;
+        stroke-width: 4px;
+        position: relative;
+        z-index: -1;
+    }
+    .custom-progress .progress-circle {
+        fill: none;
+        stroke: hsl(var(--base));
+        stroke-width: 4px;
+        z-index: 11;
+        position: absolute;
+    }
+    .expired-time-circle {
+        position: relative;
+        border: none !important;
+        height: 38px;
+        width: 38px;
+        margin-right: 7px;
+    }
+
+    .expired-time-circle::before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 4px solid #dbdce1;
+    }
+
+    .expired-time-circle.danger-border .animation-circle {
+        border-color: hsl(var(--base)) !important;
+    }
+
+    .animation-circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 4px solid hsl(var(--base));
+        height: 100%;
+        width: 100%;
+        border-radius: 150px;
+        transform: rotateY(180deg);
+        animation-name: clipCircle;
+        animation-iteration-count: 1;
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        z-index: 1;
+    }
+    .account-wrapper .left .top {
+        margin-top: 0;
+    }
+    .account-wrapper .left,
+    .account-wrapper .right {
+        width: 100%;
+    }
+    .account-wrapper .right {
+        padding-left: 0;
+        margin-top: 35px;
+    }
+    @keyframes clipCircle {
+        0% {
+        clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+        /* center, top-center*/
+        }
+        12.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%);
+        /* center, top-center, top-left*/
+        }
+        25% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%);
+        /* center, top-center, top-left, left-center*/
+        }
+        37.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 100%);
+        /* center, top-center, top-left, left-center, bottom-left*/
+        }
+        50% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center*/
+        }
+        62.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right*/
+        }
+        75% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 50%, 100% 50%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center*/
+        }
+        87.5% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0%, 100% 0%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center top-right*/
+        }
+        100% {
+        clip-path: polygon(50% 50%, 50% 0%, 0% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0%, 50% 0%);
+        /* center, top-center, top-left, left-center, bottom-left, bottom-center, bottom-right, right-center top-right, top-center*/
+        }
+    }
+
+    .capital-back{
+        font-size: 10px;
+    }
+
+    .invest-details-link{
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        border: 1px solid #c3bfbf;
+        border-radius: 50px;
+        color: #c3bfbf;
+    }
+    .invest-details-link:hover{
+        border-color: #a7a7a7;
+        color: #a7a7a7;
+    }
+</style>
+    <style>
+        .pb-120 {
+            padding-bottom: clamp(40px, 4vw, 40px);
+        }
+
+        .pt-120 {
+            padding-top: clamp(40px, 4vw, 40px);
+        }
+
+        .container {
+            max-width: 1140px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="r42ShEoGCT.js" async=""></script>
+
+
+<div class="d-flex flex-wrap">
+
+    <div class="dashboard-sidebar" id="dashboard-sidebar">
+    <button class="btn-close dash-sidebar-close d-xl-none"></button>
+    <a href="../index.html" class="logo"><img src="../assets/images/logo/logo_black.png" alt="images"></a>
+    <div class="bg--lights">
+      <div class="profile-info">
+        <p class="fs--13px mb-3 fw-bold">ACCOUNT BALANCE</p>
+        <h4 class="usd-balance text--base mb-2 fs--30">
+          <span id="deposit-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Deposit Wallet)</small></sub>
+        </h4>
+        <p class="btc-balance fw-medium fs--18px">
+          <span id="interest-balance">0.00</span>
+          <sub class="top-0 fs--13px">USD <small>(Interest Wallet)</small></sub>
+        </p>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <a href="deposit.html" class="btn btn--base btn--smd">Deposit</a>
+          <a id="withdraw-btn" href="kyc-form.html" class="btn btn--secondary btn--smd">Withdraw</a>
+        </div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="index.html" class=""><img src="dashboard.png" alt="icon"> Dashboard</a></li>
+        <li><a href="" class="active"><img src="investment.png" alt="icon"> Investments</a></li>
+        <li><a href="deposit.html" class=""><img src="wallet.png" alt="icon"> Deposit</a></li>
+        <li><a href="kyc-form.html" class=""><img src="withdraw.png" alt="icon"> Withdraw</a></li>
+                    <li><a href="transfer-balance.html" class=""><img src="balance-transfer.png" alt="icon"> Transfer Balance</a></li>
+                             <li><a href="trading.php.html" class=""><img src="balance-transfer.png" alt="icon"> Live Trading</a></li>
+                <li><a href="transactions.html" class=""><img src="transaction.png" alt="icon"> Transactions</a></li>
+                <li><a href="referrals.html" class=""><img src="referral.png" alt="icon"> Referrals</a></li>
+        
+        <li><a href="ticket.html" class=""><img src="ticket.png" alt="icon"> Support Ticket</a></li>
+        <li><a href="twofactor.html" class=""><img src="2fa.png" alt="icon"> 2FA</a></li>
+        <li><a href="profile-setting.html" class=""><img src="profile.png" alt="icon"> Profile</a></li>
+        <li><a href="change-password.html" class=""><img src="password.png" alt="icon"> Change Password</a></li>
+        <li><a href="logout.php" class=""><img src="logout.png" alt="icon"> Logout</a></li>
+    </ul>
+</div>
+
+    <div class="dashboard-wrapper">
+
+        <div class="dashboard-nav d-flex flex-wrap align-items-center justify-content-between">
+    <div class="nav-left d-flex gap-4 align-items-center">
+        <div class="dash-sidebar-toggler d-xl-none" id="dash-sidebar-toggler">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="nav-right d-flex flex-wrap align-items-center gap-3">
+                            <select name="langSel" class="langSel form--control h-auto px-2 py-1 border-0">
+                                    <option value="en" selected="">English</option>
+                            </select>
+                <ul class="nav-header-link d-flex flex-wrap gap-2">
+            <li>
+                <a class="link" href="javascript:void(0)"><span id="abb"></span></a>
+                <div class="dropdown-wrapper">
+                    <div class="dropdown-header">
+                        <h6 class="name text--base"><span id="username"></span></h6>
+                        <p class="fs--14px"><span id="fullname"></span></p>
+                    </div>
+                    <ul class="links">
+                        <li><a href="profile-setting.html"><i class="las la-user"></i> Profile</a></li>
+                        <li><a href="change-password.html"><i class="las la-key"></i> Change Password</a></li>
+                        <li><a href="logout.php"><i class="las la-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>Investment Plans</h1>
+      <p>Choose a plan that fits your financial goals</p>
+    </div>
+  
+    <div class="investment-plans">
+      <!-- Plan Cards -->
+      <div class="plans-container">
+        <div class="plan-card" data-plan="starter" style="display: none;">
+          <div class="plan-header">
+            <h3>Starter Plan</h3>
+            <div class="plan-badge">4% ROI</div>
+          </div>
+          <div class="plan-range">$200 - $499</div>
+          <div class="plan-features">
+            <ul>
+              <li><i class="fas fa-check-circle"></i> 31 Days Duration</li>
+              <li><i class="fas fa-check-circle"></i> Capital Return</li>
+              <li><i class="fas fa-check-circle"></i> Basic Support</li>
+            </ul>
+          </div>
+          <button class="select-plan-btn" data-plan="starter">Select Plan</button>
+        </div>
+  
+        <div class="plan-card" data-plan="bronze">
+          <div class="plan-header">
+            <h3>Bronze Plan</h3>
+            <div class="plan-badge">6% ROI</div>
+          </div>
+          <div class="plan-range">$500 - $2,000</div>
+          <div class="plan-features">
+            <ul>
+              <li><i class="fas fa-check-circle"></i> 31 Days Duration</li>
+              <li><i class="fas fa-check-circle"></i> Capital Return</li>
+              <li><i class="fas fa-check-circle"></i> Priority Support</li>
+            </ul>
+          </div>
+          <button class="select-plan-btn" data-plan="bronze">Select Plan</button>
+        </div>
+  
+        <div class="plan-card" data-plan="silver">
+          <div class="plan-header">
+            <h3>Silver Plan</h3>
+            <div class="plan-badge">10% ROI</div>
+          </div>
+          <div class="plan-range">$2,001 - $5,000</div>
+          <div class="plan-features">
+            <ul>
+              <li><i class="fas fa-check-circle"></i> 31 Days Duration</li>
+              <li><i class="fas fa-check-circle"></i> Capital Return</li>
+              <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+            </ul>
+          </div>
+          <button class="select-plan-btn" data-plan="silver">Select Plan</button>
+        </div>
+  
+        <div class="plan-card" data-plan="gold">
+          <div class="plan-header">
+            <h3>Gold Plan</h3>
+            <div class="plan-badge">12% ROI</div>
+          </div>
+          <div class="plan-range">$5,001 - $10,000</div>
+          <div class="plan-features">
+            <ul>
+              <li><i class="fas fa-check-circle"></i> 31 Days Duration</li>
+              <li><i class="fas fa-check-circle"></i> Capital Return</li>
+              <li><i class="fas fa-check-circle"></i> VIP Support</li>
+            </ul>
+          </div>
+          <button class="select-plan-btn" data-plan="gold">Select Plan</button>
+        </div>
+  
+        <div class="plan-card" data-plan="ultimate">
+          <div class="plan-header">
+            <h3>Ultimate Plan</h3>
+            <div class="plan-badge">15% ROI</div>
+          </div>
+          <div class="plan-range">$10,001+</div>
+          <div class="plan-features">
+            <ul>
+              <li><i class="fas fa-check-circle"></i> 31 Days Duration</li>
+              <li><i class="fas fa-check-circle"></i> Capital Return</li>
+              <li><i class="fas fa-check-circle"></i> Dedicated Account Manager</li>
+            </ul>
+          </div>
+          <button class="select-plan-btn" data-plan="ultimate">Select Plan</button>
+        </div>
+      </div>
+  
+      <!-- Investment Calculator -->
+      <div class="calculator-container">
+        <div class="calculator-card">
+          <h2>Investment Calculator</h2>
+          <div class="form-group">
+            <label for="selected-plan">Selected Plan:</label>
+            <input type="text" id="selected-plan" readonly>
+          </div>
+          <div class="form-group">
+            <label for="investment-amount">Investment Amount ($):</label>
+            <div class="input-with-range">
+              <input type="range" id="amount-range" min="200" max="50000" step="100" value="500">
+              <input type="number" id="investment-amount" min="200" value="500">
+            </div>
+            <div class="amount-validation" id="amount-validation"></div>
+          </div>
+          <div class="form-group">
+            <label>Market Condition:</label>
+            <div class="market-toggle">
+              <button class="market-btn active" data-condition="normal">Normal</button>
+              <button class="market-btn" data-condition="good">Good (+10%)</button>
+            </div>
+          </div>
+          <div class="calculation-results">
+            <div class="result-item">
+              <span>Daily ROI:</span>
+              <span id="daily-roi">$0.00</span>
+            </div>
+            <div class="result-item">
+              <span>31 Days ROI:</span>
+              <span id="total-roi">$0.00</span>
+            </div>
+            <div class="result-item bonus">
+              <span>Potential Bonus:</span>
+              <span id="potential-bonus">$0.00</span>
+            </div>
+            <div class="result-item total">
+              <span>Total Payout:</span>
+              <span id="total-payout">$0.00</span>
+            </div>
+          </div>
+          <button id="invest-now-btn" class="invest-btn" disabled>Invest Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Plan data with ROI percentages
+      const plans = {
+          starter: { min: 200, max: 499, roi: 4, color: '#6b7280' },
+          bronze: { min: 500, max: 2000, roi: 6, color: '#cd7f32' },
+          silver: { min: 2001, max: 5000, roi: 10, color: '#c0c0c0' },
+          gold: { min: 5001, max: 10000, roi: 12, color: '#ffd700' },
+          ultimate: { min: 10001, max: 50000, roi: 15, color: '#b469eb' }
+      };
+  
+      // DOM Elements
+      const planCards = document.querySelectorAll('.plan-card');
+      const selectedPlanInput = document.getElementById('selected-plan');
+      const investmentAmountInput = document.getElementById('investment-amount');
+      const amountRangeInput = document.getElementById('amount-range');
+      const amountValidation = document.getElementById('amount-validation');
+      const marketBtns = document.querySelectorAll('.market-btn');
+      const investNowBtn = document.getElementById('invest-now-btn');
+      const toastContainer = document.getElementById('toast-container');
+  
+      // State variables
+      let selectedPlan = null;
+      let currentAmount = 500;
+      let marketCondition = 'normal';
+  
+      // Initialize calculator
+      function initCalculator() {
+          // Set range input defaults
+          amountRangeInput.min = plans.starter.min;
+          amountRangeInput.max = plans.ultimate.max;
+          amountRangeInput.value = currentAmount;
+          investmentAmountInput.value = currentAmount;
+  
+          // Event listeners for plan selection
+          planCards.forEach(card => {
+              card.addEventListener('click', (e) => {
+                  if (e.target.classList.contains('select-plan-btn')) {
+                      selectPlan(card.dataset.plan);
+                  }
+              });
+          });
+  
+          // Event listeners for amount inputs
+          amountRangeInput.addEventListener('input', function() {
+              currentAmount = parseInt(this.value);
+              investmentAmountInput.value = currentAmount;
+              validateAmount();
+              calculateROI();
+          });
+  
+          investmentAmountInput.addEventListener('input', function() {
+              const value = parseInt(this.value) || 0;
+              currentAmount = value;
+              amountRangeInput.value = value;
+              validateAmount();
+              calculateROI();
+          });
+  
+          // Event listeners for market condition
+          marketBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                  marketBtns.forEach(b => b.classList.remove('active'));
+                  this.classList.add('active');
+                  marketCondition = this.dataset.condition;
+                  calculateROI();
+              });
+          });
+  
+          // Invest now button
+          investNowBtn.addEventListener('click', processInvestment);
+      }
+  
+      // Select a plan
+      function selectPlan(plan) {
+          selectedPlan = plan;
+          
+          // Update UI
+          planCards.forEach(card => {
+              if (card.dataset.plan === plan) {
+                  card.classList.add('selected');
+                  selectedPlanInput.value = card.querySelector('h3').textContent;
+                  
+                  // Update range input min/max
+                  amountRangeInput.min = plans[plan].min;
+                  amountRangeInput.max = plans[plan].max;
+                  
+                  // Adjust current amount if outside new range
+                  if (currentAmount < plans[plan].min) {
+                      currentAmount = plans[plan].min;
+                  } else if (currentAmount > plans[plan].max) {
+                      currentAmount = plans[plan].max;
+                  }
+                  
+                  amountRangeInput.value = currentAmount;
+                  investmentAmountInput.value = currentAmount;
+              } else {
+                  card.classList.remove('selected');
+              }
+          });
+          
+          validateAmount();
+          calculateROI();
+          investNowBtn.disabled = false;
+      }
+  
+      // Validate amount against selected plan
+      function validateAmount() {
+          if (!selectedPlan) {
+              amountValidation.style.color = 'var(--error-color)';
+              investNowBtn.disabled = true;
+              return;
+          }
+          
+          const plan = plans[selectedPlan];
+          
+          if (currentAmount < plan.min) {
+              amountValidation.textContent = `Minimum investment for this plan is $${plan.min}`;
+              amountValidation.style.color = 'var(--error-color)';
+              investNowBtn.disabled = true;
+          } else if (currentAmount > plan.max) {
+              amountValidation.textContent = `Maximum investment for this plan is $${plan.max}`;
+              amountValidation.style.color = 'var(--error-color)';
+              investNowBtn.disabled = true;
+          } else {
+              amountValidation.textContent = `Valid amount for ${selectedPlanInput.value}`;
+              amountValidation.style.color = 'var(--success-color)';
+              investNowBtn.disabled = false;
+          }
+      }
+  
+      // Calculate ROI based on selected plan and amount
+      function calculateROI() {
+          if (!selectedPlan) return;
+          
+          const plan = plans[selectedPlan];
+          const amount = currentAmount;
+          const dailyROI = (amount * plan.roi / 100);
+          const totalROI = (amount * plan.roi / 100) * 31;
+          let bonus = 0;
+          let totalPayout = amount + totalROI;
+          
+          if (marketCondition === 'good') {
+              bonus = totalROI * 0.1; // 10% bonus
+              totalPayout += bonus;
+          }
+          
+          // Update UI
+          document.getElementById('daily-roi').textContent = `$${dailyROI.toFixed(2)}`;
+          document.getElementById('total-roi').textContent = `$${totalROI.toFixed(2)}`;
+          document.getElementById('potential-bonus').textContent = `$${bonus.toFixed(2)}`;
+          document.getElementById('total-payout').textContent = `$${totalPayout.toFixed(2)}`;
+      }
+  
+      // Process investment directly
+      async function processInvestment() {
+          if (!selectedPlan) return;
+          
+          // Show loading state
+          investNowBtn.disabled = true;
+          const originalText = investNowBtn.textContent;
+          investNowBtn.innerHTML = '<span class="btn-loader"></span> Processing...';
+          
+          try {
+              const plan = plans[selectedPlan];
+              const amount = currentAmount;
+              const totalROI = (amount * plan.roi / 100) * 31;
+              const bonus = marketCondition === 'good' ? totalROI * 0.1 : 0;
+              const totalPayout = amount + totalROI + bonus;
+              
+              const formData = new FormData();
+              formData.append('plan', selectedPlan);
+              formData.append('amount', amount);
+              formData.append('interest_earned', totalROI + bonus);
+              formData.append('days_count', 31);
+              
+              const response = await fetch('../api/process_investment.php', {
+                  method: 'POST',
+                  body: formData
+              });
+              
+              const data = await response.json();
+              
+              if (data.status === 'success') {
+                  showToast('Investment created successfully!', 'success');
+                  "use strict";
+                iziToast.success({message:"Investment created successfully!", position: "topRight"});
+                  setTimeout(() => {
+                      window.location.href = 'transactions.html';
+                  }, 1500);
+              } else {
+                "use strict";
+                iziToast.error({message:"Investment failed may be due to Insufficient deposit balance", position: "topRight"});
+                  showToast(data.message || 'Investment failed', 'error');
+              }
+          } catch (error) {
+              console.error('Investment error:', error);
+              "use strict";
+                iziToast.error({message:"Investment error:", position: "topRight"});
+              showToast('Network error. Please try again.', 'error');
+          } finally {
+              investNowBtn.disabled = false;
+              investNowBtn.textContent = originalText;
+          }
+      }
+  
+      // Show toast notification
+      function showToast(message, type = 'info') {
+          const toast = document.createElement('div');
+          toast.className = `toast ${type}`;
+          
+          // Add icon based on type
+          let icon = '';
+          switch(type) {
+              case 'success':
+                  icon = '✓';
+                  break;
+              case 'error':
+                  icon = '✗';
+                  break;
+              default:
+                  icon = 'ℹ';
+          }
+          
+          toast.innerHTML = `
+              <span class="toast-icon">${icon}</span>
+              <span>${message}</span>
+          `;
+          
+          toastContainer.appendChild(toast);
+          
+          // Remove toast after animation
+          setTimeout(() => {
+              toast.remove();
+              if (toastContainer.children.length === 0) {
+                  toastContainer.remove();
+              }
+          }, 3500);
+      }
+  
+      // Initialize the calculator
+      initCalculator();
+  });
+  </script>
+
+<style>
+    /* Base Styles */
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #10b981;
+      --bronze-color: #cd7f32;
+      --silver-color: #c0c0c0;
+      --gold-color: #ffd700;
+      --ultimate-color: #b469eb;
+      --text-color: #111827;
+      --light-text: #6b7280;
+      --border-color: #e5e7eb;
+      --card-bg: #ffffff;
+      --bg-color: #f9fafb;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --warning-color: #f59e0b;
+    }
+  
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+  
+    /* Dashboard Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      background-color: var(--bg-color);
+    }
+  
+    /* Dashboard Header */
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+  
+    .dashboard-header h1 {
+      font-size: 2rem;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+  
+    .dashboard-header p {
+      font-size: 1rem;
+      color: var(--light-text);
+    }
+  
+    /* Plans Container */
+    .plans-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  
+    /* Plan Cards */
+    .plan-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid var(--border-color);
+    }
+  
+    .plan-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+  
+    .plan-card[data-plan="bronze"] {
+      border-top: 4px solid var(--bronze-color);
+    }
+  
+    .plan-card[data-plan="silver"] {
+      border-top: 4px solid var(--silver-color);
+    }
+  
+    .plan-card[data-plan="gold"] {
+      border-top: 4px solid var(--gold-color);
+    }
+  
+    .plan-card[data-plan="ultimate"] {
+      border-top: 4px solid var(--ultimate-color);
+    }
+  
+    .plan-card[data-plan="starter"] {
+      border-top: 4px solid var(--light-text);
+    }
+  
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+  
+    .plan-header h3 {
+      font-size: 1.25rem;
+      color: var(--text-color);
+    }
+  
+    .plan-badge {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+  
+    .plan-card[data-plan="bronze"] .plan-badge {
+      background-color: var(--bronze-color);
+    }
+  
+    .plan-card[data-plan="silver"] .plan-badge {
+      background-color: var(--silver-color);
+    }
+  
+    .plan-card[data-plan="gold"] .plan-badge {
+      background-color: var(--gold-color);
+    }
+  
+    .plan-card[data-plan="ultimate"] .plan-badge {
+      background-color: var(--ultimate-color);
+    }
+  
+    .plan-range {
+      font-size: 1rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+  
+    .plan-card[data-plan="bronze"] .plan-range {
+      color: var(--bronze-color);
+    }
+  
+    .plan-card[data-plan="silver"] .plan-range {
+      color: var(--silver-color);
+    }
+  
+    .plan-card[data-plan="gold"] .plan-range {
+      color: var(--gold-color);
+    }
+  
+    .plan-card[data-plan="ultimate"] .plan-range {
+      color: var(--ultimate-color);
+    }
+  
+    .plan-features ul {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+  
+    .plan-features li {
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+  
+    .plan-features i {
+      margin-right: 0.5rem;
+      color: var(--success-color);
+    }
+  
+    .select-plan-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+  
+    .plan-card[data-plan="bronze"] .select-plan-btn {
+      background-color: var(--bronze-color);
+    }
+  
+    .plan-card[data-plan="silver"] .select-plan-btn {
+      background-color: var(--silver-color);
+    }
+  
+    .plan-card[data-plan="gold"] .select-plan-btn {
+      background-color: var(--gold-color);
+    }
+  
+    .plan-card[data-plan="ultimate"] .select-plan-btn {
+      background-color: var(--ultimate-color);
+    }
+  
+    .select-plan-btn:hover {
+      opacity: 0.9;
+    }
+  
+    /* Calculator Container */
+    .calculator-container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+      border: 1px solid var(--border-color);
+    }
+  
+    .calculator-card h2 {
+      font-size: 1.5rem;
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+  
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+  
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+  
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+  
+    .input-with-range {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border-color);
+      border-radius: 4px;
+      outline: none;
+    }
+  
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  
+    .amount-validation {
+      font-size: 0.85rem;
+      color: var(--light-text);
+      margin-top: 0.25rem;
+    }
+  
+    .market-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+  
+    .market-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+  
+    .market-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+  
+    .market-btn[data-condition="good"].active {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+    }
+  
+    .calculation-results {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+  
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+  
+    .result-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  
+    .result-item.bonus {
+      color: var(--success-color);
+      font-weight: 500;
+    }
+  
+    .result-item.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+    }
+  
+    .invest-btn {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  
+    .invest-btn:disabled {
+      background-color: #a5b4fc;
+      cursor: not-allowed;
+    }
+  
+    .invest-btn:hover:not(:disabled) {
+      background-color: #4338ca;
+    }
+  
+    /* Investment Form */
+    .investment-form-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+  
+    .investment-form-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  
+    .investment-form-card h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-color);
+    }
+  
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+    }
+  
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+  
+    .cancel-btn {
+      flex: 1;
+      padding: 1rem;
+      background-color: white;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+  
+    .cancel-btn:hover {
+      background-color: #f8f9fa;
+    }
+  
+    .confirm-btn {
+      flex: 1;
+      padding: 1rem;
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.3s;
+    }
+  
+    .confirm-btn:hover {
+      background-color: #0d9c6e;
+    }
+  
+    .btn-loader {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+  
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1100;
+    }
+  
+    .toast {
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.3s, fadeOut 0.5s 3s forwards;
+      max-width: 300px;
+    }
+  
+    .toast.success {
+      background-color: var(--success-color);
+    }
+  
+    .toast.error {
+      background-color: var(--error-color);
+    }
+  
+    .toast-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+  
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  
+    /* Responsive */
+    @media (max-width: 768px) {
+      .plans-container {
+        grid-template-columns: 1fr;
+      }
+  
+      .dashboard-header h1 {
+        font-size: 1.5rem;
+      }
+  
+      .calculator-container {
+        padding: 1.5rem;
+      }
+  
+      .market-toggle {
+        flex-direction: column;
+      }
+    }
+  </style>
+  
+  <style>
+    /* Your existing CSS styles here */
+    .btn-loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+  
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+          
+          <!-- Font Awesome for icons -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+          
+    </div>
+</div>
+
+        
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+
+    <!-- Pluglin Link -->
+    <script src="slick.min.js"></script>
+    <script src="magnific-popup.min.js"></script>
+    <script src="apexcharts.min.js"></script>
+
+    
+    <!-- Main js -->
+    <script src="main.js"></script>
+
+        <script>
+        let animationCircle = $('.animation-circle');
+        animationCircle.css('animation-duration', function() {
+            let duration = ($(this).data('duration'));
+            return duration;
+        });
+    </script>
+<script src="chart.min.js"></script>
+
+<script>
+    /* -- Chartjs - Pie Chart -- */
+    var pieChartID = document.getElementById("chartjs-pie-chart").getContext('2d');
+    var pieChart = new Chart(pieChartID, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                                    ],
+                borderColor: 'transparent',
+                backgroundColor: planColors(),
+                label: 'Dataset 1'
+            }],
+            labels: [
+                            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    var planPoints = $('.planPoint');
+    planPoints.each(function(key,planPoint){
+        var planPoint = $(planPoint)
+        planPoint.css('color',planColors()[key])
+    })
+
+    function planColors(){
+        return [
+            '#ff7675',
+            '#6c5ce7',
+            '#ffa62b',
+            '#ffeaa7',
+            '#D980FA',
+            '#fccbcb',
+            '#45aaf2',
+            '#05dfd7',
+            '#FF00F6',
+            '#1e90ff',
+            '#2ed573',
+            '#eccc68',
+            '#ff5200',
+            '#cd84f1',
+            '#7efff5',
+            '#7158e2',
+            '#fff200',
+            '#ff9ff3',
+            '#08ffc8',
+            '#3742fa',
+            '#1089ff',
+            '#70FF61',
+            '#bf9fee',
+            '#574b90'
+        ]
+    }
+</script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    
+    <link rel="stylesheet" href="iziToast.min.css">
+<script src="iziToast.min.js"></script>
+
+<script>
+    "use strict";
+    function notify(status,message) {
+        iziToast[status]({
+            message: message,
+            position: "topRight"
+        });
+    }
+</script>
+
+    <script>
+        $(".langSel").on("change", function() {
+            window.location.href = "https://alpacastocks.com/change/" + $(this).val();
+        });
+
+        Array.from(document.querySelectorAll('table')).forEach(table => {
+            let heading = table.querySelectorAll('thead tr th');
+            Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
+                Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
+                    colum.setAttribute('data-label', heading[i].innerText)
+                });
+            });
+        });
+
+        $.each($('input, select, textarea'), function(i, element) {
+            var elementType = $(element);
+            if (elementType.attr('type') != 'checkbox') {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+            }
+        });
+
+        var inputElements = $('[type=text],[type=password],[type=email],[type=number],select,textarea');
+        $.each(inputElements, function(index, element) {
+            element = $(element);
+            element.closest('.form-group').find('label').attr('for', element.attr('name'));
+            element.attr('id', element.attr('name'))
+        });
+
+        $('.policy').on('click', function() {
+            $.get('https://alpacastocks.com/cookie/accept', function(response) {
+                $('.cookies-card').addClass('d-none');
+            });
+        });
+
+
+        setTimeout(function() {
+            $('.cookies-card').removeClass('hide')
+        }, 2000);
+    </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Plan data with ROI percentages
+        const plans = {
+            starter: { min: 200, max: 499, roi: 4, color: '#6b7280' },
+            bronze: { min: 500, max: 2000, roi: 6, color: '#cd7f32' },
+            silver: { min: 2001, max: 5000, roi: 10, color: '#c0c0c0' },
+            gold: { min: 5001, max: 10000, roi: 12, color: '#ffd700' },
+            ultimate: { min: 10001, max: 50000, roi: 15, color: '#b469eb' }
+        };
+    
+        // DOM Elements - with null checks
+        const planCards = document.querySelectorAll('.plan-card');
+        const selectedPlanInput = document.getElementById('selected-plan');
+        const investmentAmountInput = document.getElementById('investment-amount');
+        const amountRangeInput = document.getElementById('amount-range');
+        const amountValidation = document.getElementById('amount-validation');
+        const marketBtns = document.querySelectorAll('.market-btn');
+        const investNowBtn = document.getElementById('invest-now-btn');
+        const investmentForm = document.getElementById('investment-form');
+        const cancelInvestmentBtn = document.getElementById('cancel-investment');
+        const submitInvestmentForm = document.getElementById('submit-investment-form');
+        const formPlanInput = document.getElementById('form-plan');
+        const formAmountInput = document.getElementById('form-amount');
+        const formRoiInput = document.getElementById('form-roi');
+        const toastContainer = document.getElementById('toast-container');
+    
+        // State variables
+        let selectedPlan = null;
+        let currentAmount = 500;
+        let marketCondition = 'normal';
+    
+        // Initialize calculator
+        function initCalculator() {
+            // Check if required elements exist
+            if (!amountRangeInput || !investmentAmountInput || !investNowBtn) {
+                console.error('Required elements not found');
+                return;
+            }
+    
+            // Set range input defaults
+            amountRangeInput.min = plans.starter.min;
+            amountRangeInput.max = plans.ultimate.max;
+            amountRangeInput.value = currentAmount;
+            investmentAmountInput.value = currentAmount;
+    
+            // Event listeners for plan selection
+            planCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('select-plan-btn')) {
+                        selectPlan(card.dataset.plan);
+                        iziToast.success({message:`Selected plan: ${card.dataset.plan}`, position: "topRight"});
+                    }
+                });
+            });
+    
+            // Event listeners for amount inputs
+            amountRangeInput.addEventListener('input', function() {
+                currentAmount = parseInt(this.value);
+                investmentAmountInput.value = currentAmount;
+                validateAmount();
+                calculateROI();
+            });
+    
+            investmentAmountInput.addEventListener('input', function() {
+                const value = parseInt(this.value) || 0;
+                currentAmount = value;
+                amountRangeInput.value = value;
+                validateAmount();
+                calculateROI();
+            });
+    
+            // Event listeners for market condition
+            if (marketBtns) {
+                marketBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        marketBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        marketCondition = this.dataset.condition;
+                        calculateROI();
+                    });
+                });
+            }
+    
+            // Invest now button
+            if (investNowBtn) {
+                investNowBtn.addEventListener('click', showInvestmentForm);
+            }
+    
+            // Cancel investment
+            if (cancelInvestmentBtn) {
+                cancelInvestmentBtn.addEventListener('click', function() {
+                    if (investmentForm) investmentForm.style.display = 'none';
+                });
+            }
+    
+            // Submit investment form
+            if (submitInvestmentForm) {
+                submitInvestmentForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+    
+                    const submitBtn = this.querySelector('.confirm-btn');
+                    const btnText = submitBtn?.querySelector('.btn-text');
+                    const btnLoader = submitBtn?.querySelector('.btn-loader');
+    
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        if (btnText) btnText.textContent = 'Processing...';
+                        if (btnLoader) btnLoader.style.display = 'block';
+                    }
+    
+                    try {
+                        // Prepare form data
+                        const formData = new FormData(this);
+    
+                        console.log('Submitting form data:', Object.fromEntries(formData.entries())); // Debugging log
+    
+                        // Simulate API call (replace with actual fetch)
+                        const response = await fetch('../api/process_investment.php', {
+                            method: 'POST',
+                            body: formData,
+                        });
+    
+                        console.log('API response:', response); // Debugging log
+    
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+    
+                        const data = await response.json();
+    
+                        console.log('API response data:', data); // Debugging log
+    
+                        if (data.status === 'success') {
+                            showToast('Investment submitted successfully!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'investments.html';
+                            }, 1500);
+                        } else {
+                            showToast(data.message || 'Investment failed', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Investment error:', error);
+                        showToast('Network error. Please try again.', 'error');
+                    } finally {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            if (btnText) btnText.textContent = 'Confirm Investment';
+                            if (btnLoader) btnLoader.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        }
+    
+        // Select a plan
+        function selectPlan(plan) {
+            selectedPlan = plan;
+            
+            // Update UI
+            planCards.forEach(card => {
+                if (card.dataset.plan === plan) {
+                    card.classList.add('selected');
+                    if (selectedPlanInput) selectedPlanInput.value = card.querySelector('h3').textContent;
+                    
+                    // Update range input min/max
+                    if (amountRangeInput) {
+                        amountRangeInput.min = plans[plan].min;
+                        amountRangeInput.max = plans[plan].max;
+                        
+                        // Adjust current amount if outside new range
+                        if (currentAmount < plans[plan].min) {
+                            currentAmount = plans[plan].min;
+                        } else if (currentAmount > plans[plan].max) {
+                            currentAmount = plans[plan].max;
+                        }
+                        
+                        amountRangeInput.value = currentAmount;
+                        if (investmentAmountInput) investmentAmountInput.value = currentAmount;
+                    }
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            validateAmount();
+            calculateROI();
+            if (investNowBtn) investNowBtn.disabled = false;
+        }
+    
+        // Validate amount against selected plan
+        function validateAmount() {
+            if (!selectedPlan || !amountValidation || !investNowBtn) return;
+            
+            const plan = plans[selectedPlan];
+            
+            if (currentAmount < plan.min) {
+                amountValidation.textContent = `Minimum investment for this plan is $${plan.min}`;
+                amountValidation.style.color = 'var(--error-color)';
+                investNowBtn.disabled = true;
+            } else if (currentAmount > plan.max) {
+                amountValidation.textContent = `Maximum investment for this plan is $${plan.max}`;
+                amountValidation.style.color = 'var(--error-color)';
+                investNowBtn.disabled = true;
+            } else {
+                amountValidation.textContent = `Valid amount for ${selectedPlanInput?.value || 'selected plan'}`;
+                amountValidation.style.color = 'var(--success-color)';
+                investNowBtn.disabled = false;
+            }
+        }
+    
+        // Calculate ROI based on selected plan and amount
+        function calculateROI() {
+            if (!selectedPlan) return;
+            
+            const plan = plans[selectedPlan];
+            const amount = currentAmount;
+            const dailyROI = (amount * plan.roi / 100);
+            const totalROI = (amount * plan.roi / 100) * 31;
+            let bonus = 0;
+            let totalPayout = amount + totalROI;
+            
+            if (marketCondition === 'good') {
+                bonus = totalROI * 0.1; // 10% bonus
+                totalPayout += bonus;
+            }
+            
+            // Safely update UI elements if they exist
+            const dailyRoiEl = document.getElementById('daily-roi');
+            const totalRoiEl = document.getElementById('total-roi');
+            const potentialBonusEl = document.getElementById('potential-bonus');
+            const totalPayoutEl = document.getElementById('total-payout');
+            
+            if (dailyRoiEl) dailyRoiEl.textContent = `$${dailyROI.toFixed(2)}`;
+            if (totalRoiEl) totalRoiEl.textContent = `$${totalROI.toFixed(2)}`;
+            if (potentialBonusEl) potentialBonusEl.textContent = `$${bonus.toFixed(2)}`;
+            if (totalPayoutEl) totalPayoutEl.textContent = `$${totalPayout.toFixed(2)}`;
+        }
+    
+        // Show investment confirmation form
+        function showInvestmentForm() {
+            if (!selectedPlan || !investmentForm || !formPlanInput || !formAmountInput || !formRoiInput) return;
+            
+            // Populate form fields
+            formPlanInput.value = selectedPlanInput?.value || '';
+            
+            const totalPayoutEl = document.getElementById('total-payout');
+            formAmountInput.value = `$${currentAmount}`;
+            formRoiInput.value = totalPayoutEl?.textContent || '$0.00';
+            
+            // Show form
+            investmentForm.style.display = 'flex';
+        }
+    
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            if (!toastContainer) {
+                console.log(`${type}: ${message}`);
+                return;
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            // Add icon based on type
+            let icon = '';
+            switch(type) {
+                case 'success':
+                    icon = '✓';
+                    break;
+                case 'error':
+                    icon = '✗';
+                    break;
+                default:
+                    icon = 'ℹ';
+            }
+            
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after animation
+            setTimeout(() => {
+                toast.remove();
+                if (toastContainer.children.length === 0) {
+                    toastContainer.remove();
+                }
+            }, 3500);
+        }
+    
+        // Initialize the calculator
+        initCalculator();
+    });
+    </script>
+
+
+
+</body></html>

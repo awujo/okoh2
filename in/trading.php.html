@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en" data-scrapbook-source="https://alpacastocks.com/trading.php"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Not Funded</title>
+    <link href="css2-1.css" rel="stylesheet"> <!-- Google Font for Montserrat -->
+    <link rel="stylesheet" href="all.min-1.css"> <!-- Font Awesome for icons -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Montserrat", sans-serif; /* Montserrat font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(240, 245, 249, 0.5); /* Semi-transparent background */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Glassy effect */
+            border-radius: 20px; /* Curved edges */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow */
+            backdrop-filter: blur(10px); /* Blurry effect */
+            padding: 40px; /* Adjust padding */
+            text-align: center;
+            max-width: 400px; /* Adjust max width */
+            position: relative;
+        }
+        h2 {
+            color: #007bff; /* Header color */
+            font-size: 32px; /* Header font size */
+            margin-bottom: 20px; /* Bottom margin for header */
+        }
+        p {
+            color: #000000; /* Paragraph color */
+            font-size: 18px; /* Paragraph font size */
+            line-height: 1.5; /* Line height for paragraph */
+        }
+        .buttons {
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            margin-top: 30px;
+        }
+        .button {
+            display: flex; /* Make button contents (text and icon) flex */
+            align-items: center; /* Center button contents vertically */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 10px; /* Add margin between buttons */
+        }
+        .button:hover {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .button i {
+            margin-right: 5px; /* Add margin between icon and text */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Account not funded</h2>
+    <p>Deposit and start trading to access this trading. To access kindly make deposits.</p>
+    <div class="buttons">
+        <a href="index.html" class="button"><i class="fas fa-arrow-left"></i>Go back</a>
+        <a href="deposit.html" class="button"><i class="fas fa-wallet"></i>Deposit</a>
+    </div>
+</div>
+
+<script>
+    // Function to check user trading status
+    async function checkTradingStatus() {
+        try {
+            const response = await fetch('../api/trading_check.php');
+            const data = await response.json();
+            
+            if (data.status) {
+                const tradingContainer = document.querySelector('.trading-container');
+                
+                if (!data.hasDeposit) {
+                    // User hasn't deposited - show deposit prompt
+                    tradingContainer.innerHTML = `
+                        <div class="container" style="max-width: 500px; margin: 50px auto; padding: 30px; 
+                        background: #1a1b26; border-radius: 10px; text-align: center;">
+                            <h2 style="color: #fff; margin-bottom: 20px;">Account Not Funded</h2>
+                            <p style="color: #a1a1b5; margin-bottom: 30px;">
+                                Deposit and start trading to access this feature. To continue, please make a deposit.
+                            </p>
+                            <div class="buttons" style="display: flex; gap: 15px; justify-content: center;">
+                                <a href="index.html" class="button" style="padding: 12px 20px; background: #2a2b3d; 
+                                color: white; text-decoration: none; border-radius: 6px; display: flex; 
+                                align-items: center; gap: 8px;">
+                                    <i class="fas fa-arrow-left"></i> Go Back
+                                </a>
+                                <a href="deposit.html" class="button" style="padding: 12px 20px; background: #3d7df8; 
+                                color: white; text-decoration: none; border-radius: 6px; display: flex; 
+                                align-items: center; gap: 8px;">
+                                    <i class="fas fa-wallet"></i> Deposit Now
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } else if (!data.hasActiveInvestment) {
+                    // User has deposit but no active investment
+                    tradingContainer.innerHTML = `
+                        <div class="container" style="max-width: 500px; margin: 50px auto; padding: 30px; 
+                        background: #1a1b26; border-radius: 10px; text-align: center;">
+                            <h2 style="color: #fff; margin-bottom: 20px;">Start Trading</h2>
+                            <p style="color: #a1a1b5; margin-bottom: 20px;">
+                                You have $${data.balance.toFixed(2)} available. To start trading, please enroll in an investment plan.
+                            </p>
+                            <div style="background: #2a2b3d; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: left;">
+                                <h4 style="margin-top: 0; color: #fff;">Why invest with us?</h4>
+                                <ul style="color: #a1a1b5; padding-left: 20px;">
+                                    <li>Professional automated trading</li>
+                                    <li>Daily profit returns</li>
+                                    <li>24/7 market monitoring</li>
+                                </ul>
+                            </div>
+                            <div class="buttons" style="display: flex; gap: 15px; justify-content: center;">
+                                <a href="index.html" class="button" style="padding: 12px 20px; background: #2a2b3d; 
+                                color: white; text-decoration: none; border-radius: 6px;">
+                                    Learn More
+                                </a>
+                                <a href="investment-plans.html" class="button" style="padding: 12px 20px; background: #0ecb81; 
+                                color: white; text-decoration: none; border-radius: 6px;">
+                                    View Investment Plans
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // User has active investment - redirect to trading page
+                    window.location.href = 'index_trade.html';
+                }
+            }
+        } catch (error) {
+            console.error('Error checking trading status:', error);
+            document.querySelector('.trading-container').innerHTML = `
+                <div class="container" style="max-width: 500px; margin: 50px auto; padding: 30px; 
+                background: #1a1b26; border-radius: 10px; text-align: center;">
+                    <h2 style="color: #f6465d; margin-bottom: 20px;">Error Loading Trading Data</h2>
+                    <p style="color: #a1a1b5; margin-bottom: 30px;">
+                        We couldn't load your trading information. Please try again later.
+                    </p>
+                    <div class="buttons" style="display: flex; gap: 15px; justify-content: center;">
+                        <a href="index.html" class="button" style="padding: 12px 20px; background: #2a2b3d; 
+                        color: white; text-decoration: none; border-radius: 6px;">
+                            Return Home
+                        </a>
+                        <button onclick="window.location.reload()" class="button" style="padding: 12px 20px; background: #3d7df8; 
+                        color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check user trading status
+        checkTradingStatus();
+        
+        // Add Font Awesome if not already loaded
+        if (!document.querySelector('link[href*="font-awesome"]')) {
+            const faLink = document.createElement('link');
+            faLink.rel = 'stylesheet';
+            faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+            document.head.appendChild(faLink);
+        }
+    });
+    </script>
+
+
+</body></html>
