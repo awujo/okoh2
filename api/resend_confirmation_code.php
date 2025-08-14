@@ -1,6 +1,13 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 require_once 'db.php';
 require_once 'send_email.php';
+
+require_once '../PHPMailer-master/src/Exception.php';
+require_once '../PHPMailer-master/src/PHPMailer.php';
+require_once '../PHPMailer-master/src/SMTP.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -17,16 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->bind_param("ii", $new_code, $id);
         $update->execute();
 
-        $mail = new PHPMailer\PHPMailer\PHPMailer();
-$mail->isSMTP();
-$mail->Host = 'smtp.hostinger.com';
-$mail->SMTPAuth = true;
-$mail->Username = 'support@nexoracapitals.com';
-$mail->Password = 'Hustle@001';
-$mail->SMTPSecure = 'tls';
-$mail->Port = 587;
+        $mail = new PHPMailer(true);
+    $mail->Host = $_ENV['SMTP_HOST'];
+    $mail->SMTPAuth = true;
+    $mail->Username = $_ENV['SMTP_USER'];
+    $mail->Password = $_ENV['SMTP_PASS'];
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = $_ENV['SMTP_PORT'];
 
-$mail->setFrom('support@nexoracapitals.com', 'Neroxa Capitals');
+    $mail->setFrom($_ENV['SMTP_USER'], 'NORTH BRIDGE');
 $mail->addAddress($email);
 $mail->Subject = 'Email Confirmation Code';
 $mail->Body = "Hello $username, your new confirmation code is: <b>$new_code</b>";
