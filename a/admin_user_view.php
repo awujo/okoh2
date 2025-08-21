@@ -345,12 +345,16 @@ $stmt->close();
         
         <div>
             <h3>ID Document:</h3>
-            <img src="../api/uploads/kyc/<?= $kyc['nid_url'] ?>" style="max-width: 500px; max-height: 300px;">
+            <!-- <img src="../api/uploads/kyc/<?= $kyc['nid_url'] ?>" style="max-width: 500px; max-height: 300px;"> -->
+             <img src="<?= $kyc['nid_url'] ?>" style="max-width: 500px; max-height: 300px;">
+
         </div>
         
         <div>
             <h3>Selfie:</h3>
-            <img src="../api/uploads/kyc/<?= $kyc['selfie_url'] ?>" style="max-width: 500px; max-height: 300px;">
+            <img src="<?= $kyc['selfie_url'] ?>" style="max-width: 500px; max-height: 300px;">
+            <!-- <img src="../api/uploads/kyc/<?= $kyc['selfie_url'] ?>" style="max-width: 500px; max-height: 300px;"> -->
+
         </div>
     </div>
     <?php endif; ?>
@@ -376,7 +380,8 @@ $stmt->close();
                 <td><?= htmlspecialchars($deposit['gateway']) ?></td>
                 <td><?= $deposit['status'] ?></td>
                 <td><?= $deposit['hash'] ?></td>
-                <td><a href="../uploads/<?= $deposit['screenshot'] ?>">View Screenshot</a></td>
+                <!-- <td><a href="../uploads/<?= $deposit['screenshot'] ?>">View Screenshot</a></td> -->
+                <td><a href="<?= $deposit['screenshot'] ?>">View Screenshot</a></td>
                 <td><?= $deposit['created_at'] ?></td>
                 <td>
                     <?php if ($deposit['status'] === 'pending' || $deposit['status'] === 'rejected'): ?>

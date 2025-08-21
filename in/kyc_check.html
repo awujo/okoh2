@@ -288,43 +288,47 @@
 
         async function submitKYC() {
             if (!kycForm || !submitBtn) return;
-            
+
             submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             if (errorMsg) errorMsg.style.display = 'none';
             if (successMsg) successMsg.style.display = 'none';
-            
+
             try {
-                const formData = new FormData(kycForm);
-                const response = await fetch('../api/kyc-upload.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.status) {
-                    if (successMsg) {
-                        successMsg.textContent = data.message || 'Submission successful!';
-                        successMsg.style.display = 'block';
-                    }
-                    setTimeout(checkKYCStatus, 2000);
-                } else {
-                    if (errorMsg) {
-                        errorMsg.textContent = data.message || 'Submission failed';
-                        errorMsg.style.display = 'block';
-                    }
+            const formData = new FormData(kycForm);
+            const response = await fetch('../api/kyc-upload.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status) {
+                if (successMsg) {
+                successMsg.textContent = data.message || 'Submission successful!';
+                successMsg.style.display = 'block';
                 }
-            } catch (error) {
-                console.error('Submission error:', error);
+                setTimeout(checkKYCStatus, 2000);
+            } else {
                 if (errorMsg) {
-                    errorMsg.textContent = 'Network error. Please try again.';
-                    errorMsg.style.display = 'block';
+                errorMsg.textContent = data.message || 'Submission failed';
+                errorMsg.style.display = 'block';
                 }
+            }
+            } catch (error) {
+            console.error('Submission error:', error);
+            if (errorMsg) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
             } finally {
-                if (submitBtn) submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit KYC Application';
+            }
             }
         }
-    });
+        });
     </script>
 
 <link rel="stylesheet" href="iziToast.min.css">

@@ -1,6 +1,12 @@
 <?php
-require 'auth.php';
-require 'db.php';
+require_once 'auth.php';
+require_once 'db.php';
+
+// ✅ Fix autoload path
+require __DIR__ . '/../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
 
 header('Content-Type: application/json');
 
@@ -12,20 +18,14 @@ if (!$user_id) {
     exit;
 }
 
-// File upload configuration
-$uploadDir = __DIR__ . '/uploads/kyc/';
-$allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-$allowedVideoTypes = ['video/mp4', 'video/quicktime'];
-$maxFileSize = 5 * 1024 * 1024; // 5MB
-
-// Create upload directory if it doesn't exist
-if (!file_exists($uploadDir)) {
-    if (!mkdir($uploadDir, 0755, true)) {
-        http_response_code(500);
-        echo json_encode(['status' => false, 'message' => 'Failed to create upload directory']);
-        exit;
-    }
-}
+// ✅ Init Cloudinary (like your deposit code)
+$cloudinary = new Cloudinary([
+    'cloud' => [
+        'cloud_name' => 'dgkv0zo7l',
+        'api_key'    => '163423683817439',
+        'api_secret' => 'oP0RbDzfjmsByZ84J2hH5JRqmiA'
+    ]
+]);
 
 try {
     // Validate required fields
@@ -37,53 +37,28 @@ try {
         }
     }
 
-    // Process ID document upload
+    // Upload NID file
     if (empty($_FILES['nid_file']['tmp_name'])) {
         throw new Exception('ID document is required');
     }
+    $nidResult = $cloudinary->uploadApi()->upload($_FILES['nid_file']['tmp_name'], [
+        "folder" => "kyc/id_docs",
+        "public_id" => "id_" . $user_id . "_" . time()
+    ]);
+    $nidUrl = $nidResult['secure_url'];
 
-    $nidFile = $_FILES['nid_file'];
-    $nidFileType = mime_content_type($nidFile['tmp_name']);
-    
-    if (!in_array($nidFileType, $allowedImageTypes)) {
-        throw new Exception('ID document must be an image (JPEG, PNG, GIF)');
-    }
-
-    if ($nidFile['size'] > $maxFileSize) {
-        throw new Exception('ID document must be less than 5MB');
-    }
-
-    $nidFileName = 'id_' . $user_id . '_' . time() . '.' . pathinfo($nidFile['name'], PATHINFO_EXTENSION);
-    $nidFilePath = $uploadDir . $nidFileName;
-
-    if (!move_uploaded_file($nidFile['tmp_name'], $nidFilePath)) {
-        throw new Exception('Failed to upload ID document');
-    }
-
-    // Process selfie upload
+    // Upload selfie
     if (empty($_FILES['selfie_file']['tmp_name'])) {
         throw new Exception('Selfie is required');
     }
+    $selfieResult = $cloudinary->uploadApi()->upload($_FILES['selfie_file']['tmp_name'], [
+        "folder" => "kyc/selfies",
+        "public_id" => "selfie_" . $user_id . "_" . time(),
+        "resource_type" => "auto" // allows image or video
+    ]);
+    $selfieUrl = $selfieResult['secure_url'];
 
-    $selfieFile = $_FILES['selfie_file'];
-    $selfieFileType = mime_content_type($selfieFile['tmp_name']);
-    
-    if (!in_array($selfieFileType, array_merge($allowedImageTypes, $allowedVideoTypes))) {
-        throw new Exception('Selfie must be an image or video (JPEG, PNG, GIF, MP4, MOV)');
-    }
-
-    if ($selfieFile['size'] > $maxFileSize) {
-        throw new Exception('Selfie must be less than 5MB');
-    }
-
-    $selfieFileName = 'selfie_' . $user_id . '_' . time() . '.' . pathinfo($selfieFile['name'], PATHINFO_EXTENSION);
-    $selfieFilePath = $uploadDir . $selfieFileName;
-
-    if (!move_uploaded_file($selfieFile['tmp_name'], $selfieFilePath)) {
-        throw new Exception('Failed to upload selfie');
-    }
-
-    // Prepare data for database
+    // Save to DB (same as before but store URLs)
     $fullname = $conn->real_escape_string($_POST['fullname']);
     $nid = $conn->real_escape_string($_POST['nid']);
     $gender = $conn->real_escape_string($_POST['gender']);
@@ -91,74 +66,52 @@ try {
     $state = $conn->real_escape_string($_POST['state']);
     $hobby = $conn->real_escape_string($_POST['hobby']);
 
-    // Start transaction
     $conn->begin_transaction();
 
-    try {
-        // Insert or update KYC record
-        $stmt = $conn->prepare("INSERT INTO kyc (
-            user_id, status, fullname, nid, gender, country, state, hobby, nid_url, selfie_url
-        ) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-            fullname = VALUES(fullname),
-            nid = VALUES(nid),
-            gender = VALUES(gender),
-            country = VALUES(country),
-            state = VALUES(state),
-            hobby = VALUES(hobby),
-            nid_url = VALUES(nid_url),
-            selfie_url = VALUES(selfie_url),
-            status = 'pending',
-            created_at = NOW()");
+    $stmt = $conn->prepare("INSERT INTO kyc (
+        user_id, status, fullname, nid, gender, country, state, hobby, nid_url, selfie_url
+    ) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        fullname = VALUES(fullname),
+        nid = VALUES(nid),
+        gender = VALUES(gender),
+        country = VALUES(country),
+        state = VALUES(state),
+        hobby = VALUES(hobby),
+        nid_url = VALUES(nid_url),
+        selfie_url = VALUES(selfie_url),
+        status = 'pending',
+        created_at = NOW()");
 
-        if (!$stmt) {
-            throw new Exception('Prepare failed: ' . $conn->error);
-        }
+    $stmt->bind_param(
+        "issssssss",
+        $user_id,
+        $fullname,
+        $nid,
+        $gender,
+        $country,
+        $state,
+        $hobby,
+        $nidUrl,
+        $selfieUrl
+    );
+    $stmt->execute();
 
-        $stmt->bind_param(
-            "issssssss", 
-            $user_id, 
-            $fullname, 
-            $nid, 
-            $gender, 
-            $country, 
-            $state, 
-            $hobby,
-            $nidFileName,
-            $selfieFileName
-        );
+    $updateUser = $conn->prepare("UPDATE user SET kyc_is_done = 0 WHERE id = ?");
+    $updateUser->bind_param("i", $user_id);
+    $updateUser->execute();
 
-        if (!$stmt->execute()) {
-            throw new Exception('Execute failed: ' . $stmt->error);
-        }
+    $conn->commit();
 
-        // Update user table to mark KYC as pending
-        $updateUser = $conn->prepare("UPDATE user SET kyc_is_done = 0 WHERE id = ?");
-        $updateUser->bind_param("i", $user_id);
-        if (!$updateUser->execute()) {
-            throw new Exception('Failed to update user status');
-        }
-
-        $conn->commit();
-
-        echo json_encode([
-            'status' => true,
-            'message' => 'KYC submitted successfully!',
-            'kyc_status' => 'pending'
-        ]);
-
-    } catch (Exception $e) {
-        $conn->rollback();
-        // Clean up uploaded files if DB operation failed
-        if (file_exists($nidFilePath)) unlink($nidFilePath);
-        if (file_exists($selfieFilePath)) unlink($selfieFilePath);
-        throw $e;
-    }
+    echo json_encode([
+        'status' => true,
+        'message' => 'KYC submitted successfully!',
+        'nid_url' => $nidUrl,
+        'selfie_url' => $selfieUrl
+    ]);
 
 } catch (Exception $e) {
+    $conn->rollback();
     http_response_code(500);
-    echo json_encode([
-        'status' => false,
-        'message' => $e->getMessage()
-    ]);
+    echo json_encode(['status' => false, 'message' => $e->getMessage()]);
 }

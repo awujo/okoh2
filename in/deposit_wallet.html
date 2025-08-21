@@ -619,34 +619,29 @@ document.getElementById("proofForm").addEventListener("submit", async function(e
   e.preventDefault();
 
   const hash = document.querySelector('input[name="hash"]').value.trim();
-  const screenshot = document.getElementById('screenshot').files[0];  // Get the first file selected
-  
+  const screenshot = document.getElementById('screenshot').files[0];
+
   // Validation: Check if either the hash or screenshot is provided
   if (!hash && !screenshot) {
     showToast('Please enter a transaction hash or upload a screenshot.', 'error');
-    return; // Stop the form from submitting if neither is provided
+    return;
   }
 
   const btn = document.getElementById("submitProofBtn");
   const btnText = btn.querySelector(".btn-text");
   const btnLoader = btn.querySelector(".btn-loader");
 
-  // Show loading state
   btn.disabled = true;
   btnText.textContent = "Submitting...";
   btnLoader.style.display = "block";
 
-  const formData = new FormData(this);  // Start with the form data from the form fields
-  
-  // Append the hash and screenshot (if available)
-  if (hash) formData.append('hash', hash);  // Append hash if provided
-  if (screenshot) formData.append('screenshot', screenshot);  // Append screenshot if uploaded
+  const formData = new FormData(this); // This already includes hash and screenshot
 
-  // Retrieve additional info from localStorage (gateway, amount)
+  // Only append gateway and amount from localStorage, since they're not in the form
   const info = JSON.parse(localStorage.getItem('depositDetails'));
   if (info) {
-    formData.append('gateway', info.gateway);  // Append gateway to form data
-    formData.append('amount', info.amount);    // Append amount to form data
+    formData.append('gateway', info.gateway);
+    formData.append('amount', info.amount);
   }
 
   try {
@@ -655,9 +650,7 @@ document.getElementById("proofForm").addEventListener("submit", async function(e
       body: formData
     });
 
-    // Try parsing the response as JSON
     const data = await res.json();
-    
     if (data.status === 'success') {
       showToast('Proof submitted successfully!', 'success');
       setTimeout(() => {
