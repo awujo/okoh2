@@ -429,30 +429,30 @@
                     const btnText = btn.querySelector('.btn-text');
                     const btnLoader = btn.querySelector('.btn-loader');
                     
+                    // Show loading state
                     btn.disabled = true;
                     btnText.textContent = 'Processing...';
                     btnLoader.style.display = 'block';
-
+                    
+                    const formData = new FormData(e.target);
+                    const amount = parseFloat(formData.get('amount'));
+                    const gateway = formData.get('gateway');
+                    
                     try {
-                      const amount = parseFloat(document.querySelector('[name="amount"]').value);
-                      const gateway = document.querySelector('[name="gateway"]').value;
-                      const hash = document.querySelector('[name="hash"]').value;
-                      const screenshot = document.querySelector('[name="screenshot"]').files[0];
+                        // Validate amount
+                        if (isNaN(amount)) {
+                            throw new Error('Please enter a valid amount');
+                        }
 
-                      if (isNaN(amount)) throw new Error('Please enter a valid amount');
-                      if (amount <= 0) throw new Error('Amount must be greater than 0');
-                      if (!gateway) throw new Error('Please select a payment gateway');
-                      if (!hash) throw new Error('Please enter transaction hash');
-                      if (!screenshot) throw new Error('Please upload a screenshot');
+                        if (amount <= 0) {
+                            throw new Error('Amount must be greater than 0');
+                        }
 
-                      // ✅ Build FormData cleanly (only once per field)
-                      const formData = new FormData();
-                      formData.append('amount', amount);
-                      formData.append('gateway', gateway);
-                      formData.append('hash', hash);
-                      formData.append('screenshot', screenshot);
+                        if (!gateway) {
+                            throw new Error('Please select a payment gateway');
+                        }
 
-                      const response = await fetch('../api/create_deposit.php', {
+                        const response = await fetch('../api/create_deposit.php', {
                         method: 'POST',
                         body: formData
                       });
@@ -460,35 +460,43 @@
                       const result = await response.json();
                       console.log('Deposit response:', result);
 
-                      if (result.status !== 'success') {
-                        throw new Error(result.message || 'Failed to submit deposit request.');
-                      }
+                      // if (!response.ok || !result.success) {
+                      //   throw new Error(result.message || 'Failed to submit deposit request.');
+                      // }
 
-                      // Save details for next page
+                      // Store in localStorage
+                      console.log('Saving to localStorage...');
                       localStorage.setItem('depositDetails', JSON.stringify({
-                        amount,
-                        gateway,
-                        wallet_address: result.wallet_address ?? ''
+                        amount: result.amount,
+                        gateway: result.gateway,
+                        wallet_address: result.wallet_address
                       }));
 
+                      const saved = localStorage.getItem('depositDetails');
+                      if (saved) {
+                        console.log('Deposit details saved to localStorage:', JSON.parse(saved));
+                        setTimeout(() => {
+                          window.location.href = 'deposit_wallet.html';
+                        }, 2000);
+                      } else {
+                        showToast('Failed to save deposit details locally.', 'warning');
+                      }
+
                       showToast('Deposit request submitted successfully!', 'success');
-
-                      setTimeout(() => {
-                        window.location.href = 'deposit_wallet.html';
-                      }, 2000);
-
                       e.target.reset();
                       document.getElementById('preview-details').style.display = 'none';
 
                     } catch (error) {
                       showToast(error.message || 'An error occurred. Please try again.', 'error');
-                    } finally {
+                    }
+                 finally {
+                      // Reset button state
                       btn.disabled = false;
                       btnText.textContent = 'Proceed';
                       btnLoader.style.display = 'none';
                     }
                   });
-
+                });
               </script>
         </div>
     </div>
