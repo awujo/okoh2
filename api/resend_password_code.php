@@ -31,7 +31,7 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = $_ENV['SMTP_PORT'];
 
-    $mail->setFrom('support@northbridgeinvestments.com', 'NORTH BRIDGE');
+    $mail->setFrom($_ENV['SMTP_USER'], 'NORTH BRIDGE');
     $mail->addAddress($email);
     $mail->isHTML(false);
     $mail->Subject = 'Your Reset Code (Resent)';

@@ -1,6 +1,7 @@
 {
     "require": {
         "robthree/twofactorauth": "^3.0",
-        "spomky-labs/otphp": "^11.3"
+        "spomky-labs/otphp": "^11.3",
+        "cloudinary/cloudinary_php": "^3.1"
     }
 }

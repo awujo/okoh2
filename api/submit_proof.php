@@ -19,22 +19,40 @@ if (!$gateway || $amount <= 0 || !$hash || !isset($_FILES['screenshot'])) {
 }
 
 $transaction_id = uniqid('dp_');
-$upload_dir = '../uploads/';
-$screenshot_path = '';
 
-if (!file_exists(filename: $upload_dir)) mkdir($upload_dir, 0777, true);
+// ✅ Load Cloudinary SDK
 
-$img = $_FILES['screenshot'];
-$ext = pathinfo($img['name'], PATHINFO_EXTENSION);
-$filename = uniqid('screenshot_') . '.' . $ext;
-$screenshot_path = $upload_dir . $filename;
-move_uploaded_file($img['tmp_name'], $screenshot_path);
+require __DIR__ . '/../vendor/autoload.php';
+use Cloudinary\Cloudinary;
 
+
+$cloudinary = new Cloudinary([
+    'cloud' => [
+        'cloud_name' => 'dgkv0zo7l',
+        'api_key'    => '163423683817439',
+        'api_secret' => 'oP0RbDzfjmsByZ84J2hH5JRqmiA'
+    ]
+]);
+
+// ✅ Upload file to Cloudinary
+$img = $_FILES['screenshot']['tmp_name'];
+try {
+    $upload_result = $cloudinary->uploadApi()->upload($img, [
+        'folder' => 'deposits' // Optional: will organize uploads inside "deposits/"
+    ]);
+
+    $screenshot_url = $upload_result['secure_url']; // Cloudinary hosted URL
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Upload failed: ' . $e->getMessage()]);
+    exit;
+}
+
+// ✅ Insert into DB (store Cloudinary URL instead of filename)
 $sql = "INSERT INTO deposit (user_id, transaction_id, gateway, amount, status, wallet, type, is_withdrawal_fee, screenshot, hash) 
         VALUES (?, ?, ?, ?, 'pending', 'deposit_wallet', 'plus', 0, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("issdss", $user_id, $transaction_id, $gateway, $amount, $filename, $hash); // Corrected type definition string
+$stmt->bind_param("issdss", $user_id, $transaction_id, $gateway, $amount, $screenshot_url, $hash);
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
