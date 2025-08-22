@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(data => {
 
 		if (data.status === "error" && data.message === "Unauthorized access") {
-        window.location.href = "../getIn/login.html";
+        window.location.href = "../getin/login.html";
         return;
       }
 
       if (data.status === "unauthorized") {
-        window.location.href = "../getIn/login.html";
+        window.location.href = "../getin/login.html";
         return;
       }
 
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => {
       console.error("Error fetching dashboard data:", err);
-      window.location.href = "../getIn/login.html";
+      window.location.href = "../getin/login.html";
     });
 });
 

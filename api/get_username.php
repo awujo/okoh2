@@ -23,8 +23,8 @@ try {
     }
     
     // Generate referral link (replace with your actual domain)
-    $base_url = "https://nexoracapitals.com"; // Change to your domain
-    $referral_link = $base_url . "/getIn/register.html?reference=" . $user['username'];
+    $base_url = "https://northbridgeinvestments.com"; // Change to your domain
+    $referral_link = $base_url . "/getin/register.html?reference=" . $user['username'];
     
     echo json_encode([
         'status' => true,
