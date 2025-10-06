@@ -3,12 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../PHPMailer-master/src/PHPMailer.php';
-require_once '../PHPMailer-master/src/SMTP.php';
-require_once '../PHPMailer-master/src/Exception.php';
 require_once 'db.php'; // database connection with $conn
-
-use PHPMailer\PHPMailer\PHPMailer;
 
 header("Content-Type: application/json");
 
@@ -61,25 +56,51 @@ if (!$stmt->execute()) {
 }
 $stmt->close();
 
-// Send email
-$mail = new PHPMailer(true);
-try {
-    $mail->isSMTP();
-    $mail->Host = $_ENV['SMTP_HOST'];
-    $mail->SMTPAuth = true;
-    $mail->Username = $_ENV['SMTP_USER'];
-    $mail->Password = $_ENV['SMTP_PASS'];
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = $_ENV['SMTP_PORT'];
+// ==================== SEND CONFIRMATION EMAIL VIA API ====================
+$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Your email API endpoint
+$apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
-    $mail->setFrom($_ENV['SMTP_USER'], 'North Bridge');
-    $mail->addAddress($email, $fullname);
-    $mail->isHTML(false);
-    $mail->Subject = 'Confirm Your Email';
-    $mail->Body = "Hi $fullname,\n\nYour confirmation code is: $confirmation_code";
+$subject = 'Confirm Your Email';
+$htmlBody = "
+    <p>Hi $fullname,</p>
+    <p>Your confirmation code is: <strong>$confirmation_code</strong></p>
+    <p>Use this code to verify your email address on North Bridge.</p>
+    <p>If you did not register, please ignore this email.</p>
+    <p>— North Bridge Support</p>
+";
 
-    $mail->send();
-    echo json_encode(["success" => true]);
-} catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Mailer Error: {$mail->ErrorInfo}"]);
+// Prepare API payload
+$payload = json_encode([
+    'email' => $email,
+    'name' => $fullname,
+    'subject' => $subject,
+    'html' => $htmlBody
+]);
+
+// Initialize cURL
+$ch = curl_init($apiUrl);
+
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'X-API-KEY: ' . $apiKey
+]);
+
+// Execute request and check response
+$apiResponse = curl_exec($ch);
+$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if (curl_errno($ch)) {
+    error_log('cURL error: ' . curl_error($ch));
+    echo json_encode(['success' => false, 'message' => 'Failed to send confirmation email.', 'error' => curl_error($ch)]);
+} elseif ($httpStatus !== 200) {
+    error_log("Email API HTTP $httpStatus: $apiResponse");
+    echo json_encode(['success' => false, 'message' => 'Failed to send confirmation email.', 'error' => $apiResponse]);
+} else {
+    echo json_encode(["success" => true, "message" => "Registration successful. Confirmation email sent."]);
 }
+
+curl_close($ch);
+// ==================== END EMAIL VIA API ====================

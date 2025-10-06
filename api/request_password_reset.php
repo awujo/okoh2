@@ -1,19 +1,13 @@
 <?php
+// Include necessary files for database connection
 require_once 'db.php';
-require_once '../PHPMailer-master/src/PHPMailer.php';
-require_once '../PHPMailer-master/src/SMTP.php';
-require_once '../PHPMailer-master/src/Exception.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json');
 
 $email = $_POST['email'] ?? '';
 if (!$email) exit(json_encode(['success' => false, 'message' => 'Email is required']));
 
-// Check user exists
+// Check if the user exists in the database
 $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -22,29 +16,53 @@ if ($result->num_rows === 0) exit(json_encode(['success' => false, 'message' => 
 
 $code = rand(100000, 999999);
 
-// Save code to `code` column
+// Save the code to the database
 $stmt = $conn->prepare("UPDATE user SET code = ? WHERE email = ?");
 $stmt->bind_param("is", $code, $email);
 $stmt->execute();
 
-// Send email
-$mail = new PHPMailer;
-$mail->isSMTP();
-$mail->Host = $_ENV['SMTP_HOST'];  // Set this properly
-$mail->SMTPAuth = true;
-$mail->Username = $_ENV['SMTP_USER'];
-$mail->Password = $_ENV['SMTP_PASS'];
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-$mail->Port = $_ENV['SMTP_PORT'];
+// ==================== SEND MAIL VIA API ====================
+$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/sendmail.php'; // Update with your actual API URL
+$apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
-$mail->setFrom($_ENV['SMTP_USER'], 'NORTH BRIDGE');
-$mail->isHTML(true);
-$mail->addAddress($email);
-$mail->Subject = 'Your Password Reset Code';
-$mail->Body = "Your reset code is: $code";
+// Prepare the email body content
+$htmlBody = "
+    <p>Your reset code is: <strong>$code</strong></p>
+";
 
-if ($mail->send()) {
-    echo json_encode(['success' => true, 'message' => 'Reset code sent to your email.']);
+// Prepare the payload for the API request
+$payload = json_encode([
+    'email' => $email,
+    'name' => '',  // Optional: You can include a name if available
+    'subject' => 'Your Password Reset Code',
+    'html' => $htmlBody
+]);
+
+// Initialize cURL to send the email via the API
+$ch = curl_init($apiUrl);
+
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'X-API-KEY: ' . $apiKey
+]);
+
+// Execute the API request and handle the response
+$apiResponse = curl_exec($ch);
+$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if (curl_errno($ch)) {
+    error_log('cURL error (Email API): ' . curl_error($ch));
+    echo json_encode(['success' => false, 'message' => 'Failed to send email.', 'error' => curl_error($ch)]);
+} elseif ($httpStatus !== 200) {
+    error_log("Email API returned status $httpStatus: $apiResponse");
+    echo json_encode(['success' => false, 'message' => 'Failed to send email.', 'error' => $apiResponse]);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Failed to send email.']);
+    echo json_encode(['success' => true, 'message' => 'Reset code sent to your email.']);
 }
+
+curl_close($ch);
+// ==================== END MAIL VIA API ====================
+?>
