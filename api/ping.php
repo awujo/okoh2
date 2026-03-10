@@ -10,18 +10,18 @@ if (!$result) {
 }
 echo "✓ Database connected at " . date('Y-m-d H:i:s') . "<br>";
 
-// Check if 'users' table exists
-$tableCheck = $conn->query("SHOW TABLES LIKE 'users'");
+// Check if 'user' table exists
+$tableCheck = $conn->query("SHOW TABLES LIKE 'user'");
 if ($tableCheck && $tableCheck->num_rows > 0) {
-    $userResult = $conn->query("SELECT COUNT(*) AS total_users FROM users");
+    $userResult = $conn->query("SELECT COUNT(*) AS total_user FROM user");
     if ($userResult) {
         $row = $userResult->fetch_assoc();
-        echo "📊 Total users: <strong>" . number_format($row['total_users']) . "</strong><br>";
+        echo "📊 Total user: <strong>" . number_format($row['total_user']) . "</strong><br>";
     } else {
-        echo "✗ Failed to count users: " . $conn->error . "<br>";
+        echo "✗ Failed to count user: " . $conn->error . "<br>";
     }
 } else {
-    echo "⚠️ 'users' table does not exist yet.<br>";
+    echo "⚠️ 'user' table does not exist yet.<br>";
 }
 
 $conn->close();
