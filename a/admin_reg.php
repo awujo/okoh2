@@ -7,7 +7,7 @@ if ($conn->connect_error) {
 }
 
 // Password to be hashed
-$password = "hustle@001";
+$password = "okoh";
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // SQL query using prepared statement
