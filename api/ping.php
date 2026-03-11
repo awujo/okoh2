@@ -1,10 +1,7 @@
 <?php
 require_once 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
-    http_response_code(200);
-    exit;
-}
+
 
 // Ping check
 $result = $conn->query("SELECT 1");
