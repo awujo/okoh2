@@ -40,13 +40,14 @@ $stmt->close();
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $confirmation_code = rand(100000, 999999);
 
-// Insert new user
+// ==================== NEW: Insert new user with email_is_confirmed = 1 ====================
+// This allows users to login immediately without email verification
 $stmt = $conn->prepare("INSERT INTO user (
     username, fullname, email, password, country, google_id, phone_number,
     deposit_balance, interest_balance, referal_balance, referrer_id,
     email_is_confirmed, 2fa_is_done, 2fa_secret, kyc_is_done, is_suspended,
     address, state, zipcode, city, code
-) VALUES (?, ?, ?, ?, ?, NULL, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, ?, ?, ?, ?, ?)");
+) VALUES (?, ?, ?, ?, ?, NULL, ?, 0, 0, 0, 0, 1, 0, 0, 0, 0, ?, ?, ?, ?, ?)");
 
 $stmt->bind_param("ssssssssssi", $username, $fullname, $email, $hashed_password, $country, $phone, $address, $state, $zipcode, $city, $confirmation_code);
 
@@ -56,8 +57,16 @@ if (!$stmt->execute()) {
 }
 $stmt->close();
 
+<<<<<<< HEAD
 // ==================== SEND CONFIRMATION EMAIL VIA API ====================
 $apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // Your email API endpoint
+=======
+// ==================== COMMENTED OUT: SEND CONFIRMATION EMAIL VIA API ====================
+// NOTE: Email verification API is currently down. Users are auto-confirmed and can login immediately.
+// Uncomment this section when the email API is restored.
+/*
+$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Your email API endpoint
+>>>>>>> 9c7bcc14f812d93df99457641bb5046267e12f1d
 $apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
 $subject = 'Confirm Your Email';
@@ -103,4 +112,15 @@ if (curl_errno($ch)) {
 }
 
 curl_close($ch);
-// ==================== END EMAIL VIA API ====================
+*/
+// ==================== END COMMENTED EMAIL API SECTION ====================
+
+// ==================== NEW: Success response with redirect to login ====================
+// User is auto-confirmed, send success response
+echo json_encode([
+    "success" => true, 
+    "message" => "Registration successful! You can now log in.",
+    "redirect" => "getin/login.html"
+]);
+// ==================== END NEW SECTION ====================
+?>
