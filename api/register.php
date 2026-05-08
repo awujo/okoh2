@@ -57,7 +57,7 @@ if (!$stmt->execute()) {
 $stmt->close();
 
 // ==================== SEND CONFIRMATION EMAIL VIA API ====================
-$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Your email API endpoint
+$apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // Your email API endpoint
 $apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
 $subject = 'Confirm Your Email';

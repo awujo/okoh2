@@ -22,7 +22,7 @@ $stmt->bind_param("is", $code, $email);
 $stmt->execute();
 
 // ==================== SEND MAIL VIA API ====================
-$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Update with your actual API URL
+$apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // Update with your actual API URL
 $apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
 // Prepare the email body content

@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->execute();
 
         // =================== SEND EMAIL VIA API ===================
-        $apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Your API endpoint
+        $apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // Your API endpoint
         $apiKey = 'your-secret-api-key-here'; // Replace with your real API key
 
         $subject = 'Email Confirmation Code';

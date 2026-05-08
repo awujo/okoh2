@@ -2,7 +2,7 @@
 <?php
 // ==================== SEND MAIL VIA API ====================
 function sendEmail($to, $subject, $body) {
-    $apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // API URL for sending emails
+    $apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // API URL for sending emails
     $apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
 
     // Prepare payload
