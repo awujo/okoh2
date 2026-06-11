@@ -16,8 +16,8 @@ $amount          = intval($_POST['amount']         ?? 0);
 $interest_earned =  0; // 
 $days_count      = 0; // start with 0, updated daily by cronjob, not user input
 
-// ✅ Fixed: use == not = for comparisons (was assigning 0, always true)
-if (empty($plan) || $amount <= 0 || $interest_earned == 0 || $days_count == 0) {
+// ✅ Only validate what the user actually provides
+if (empty($plan) || $amount <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
     exit;
 }
