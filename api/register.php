@@ -1,126 +1,157 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 0); // Disable in production
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 require_once 'db.php'; // database connection with $conn
 
 header("Content-Type: application/json");
 
-// Collect POST data
-$username = $_POST['username'] ?? '';
-$fullname = $_POST['fullname'] ?? '';
-$email = $_POST['email'] ?? '';
-$country = $_POST['country'] ?? '';
-$phone = $_POST['phone_number'] ?? '';
-$address = $_POST['address'] ?? '';
-$state = $_POST['state'] ?? '';
-$city = $_POST['city'] ?? '';
-$zipcode = $_POST['zipcode'] ?? '';
-$password = $_POST['password'] ?? '';
+// ─────────────────────────────────────────
+// 1. COLLECT & SANITIZE POST DATA
+// ─────────────────────────────────────────
+$username  = trim($_POST['username']     ?? '');
+$fullname  = trim($_POST['fullname']     ?? '');
+$email     = strtolower(trim($_POST['email'] ?? ''));
+$country   = trim($_POST['country']      ?? '');
+$phone     = trim($_POST['phone_number'] ?? '');
+$address   = trim($_POST['address']      ?? '');
+$state     = trim($_POST['state']        ?? '');
+$city      = trim($_POST['city']         ?? '');
+$zipcode   = trim($_POST['zipcode']      ?? '');
+$password  = $_POST['password']          ?? '';
 
-// Validate required fields
-if (!$username || !$fullname || !$email || !$country || !$phone || !$address || !$state || !$city || !$zipcode || !$password) {
+// ─────────────────────────────────────────
+// 2. VALIDATE REQUIRED FIELDS
+// ─────────────────────────────────────────
+if (!$username || !$fullname || !$email || !$country || !$phone ||
+    !$address  || !$state   || !$city  || !$zipcode || !$password) {
     echo json_encode(["success" => false, "message" => "All fields are required."]);
     exit;
 }
 
-// Check for existing email
-$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
-$stmt->bind_param("s", $email);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(["success" => false, "message" => "Invalid email address."]);
+    exit;
+}
+
+// ─────────────────────────────────────────
+// 3. CHECK FOR DUPLICATE EMAIL OR USERNAME
+// ─────────────────────────────────────────
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ? OR username = ?");
+$stmt->bind_param("ss", $email, $username);
 $stmt->execute();
 $stmt->store_result();
+
 if ($stmt->num_rows > 0) {
-    echo json_encode(["success" => false, "message" => "Email already registered."]);
+    echo json_encode(["success" => false, "message" => "Email or username already registered."]);
+    $stmt->close();
     exit;
 }
 $stmt->close();
 
-// Prepare data
-$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+// ─────────────────────────────────────────
+// 4. PREPARE & INSERT USER
+// ─────────────────────────────────────────
+$hashed_password   = password_hash($password, PASSWORD_DEFAULT);
 $confirmation_code = rand(100000, 999999);
 
-// ==================== NEW: Insert new user with email_is_confirmed = 1 ====================
-// This allows users to login immediately without email verification
-$stmt = $conn->prepare("INSERT INTO user (
-    username, fullname, email, password, country, google_id, phone_number,
-    deposit_balance, interest_balance, referal_balance, referrer_id,
-    email_is_confirmed, 2fa_is_done, 2fa_secret, kyc_is_done, is_suspended,
-    address, state, zipcode, city, code
-) VALUES (?, ?, ?, ?, ?, NULL, ?, 0, 0, 0, 0, 1, 0, 0, 0, 0, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("
+    INSERT INTO user (
+        username, fullname, email, password, country, google_id, phone_number,
+        deposit_balance, interest_balance, referal_balance, referrer_id,
+        email_is_confirmed, 2fa_is_done, 2fa_secret, kyc_is_done, is_suspended,
+        address, state, zipcode, city, code
+    ) VALUES (
+        ?, ?, ?, ?, ?, NULL, ?,
+        0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        ?, ?, ?, ?, ?
+    )
+");
 
-$stmt->bind_param("ssssssssssi", $username, $fullname, $email, $hashed_password, $country, $phone, $address, $state, $zipcode, $city, $confirmation_code);
+// 10 strings + 1 integer = "ssssssssss i"
+$stmt->bind_param(
+    "ssssssssssi",
+    $username, $fullname, $email, $hashed_password, $country, $phone,
+    $address, $state, $zipcode, $city, $confirmation_code
+);
 
 if (!$stmt->execute()) {
-    echo json_encode(["success" => false, "message" => "Registration failed. Try again."]);
+    error_log("Registration DB error: " . $stmt->error);
+    echo json_encode(["success" => false, "message" => "Registration failed. Please try again."]);
+    $stmt->close();
     exit;
 }
 $stmt->close();
 
-<<<<<<< HEAD
-// ==================== SEND CONFIRMATION EMAIL VIA API ====================
-$apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php'; // Your email API endpoint
-=======
-// ==================== COMMENTED OUT: SEND CONFIRMATION EMAIL VIA API ====================
-// NOTE: Email verification API is currently down. Users are auto-confirmed and can login immediately.
-// Uncomment this section when the email API is restored.
-/*
-$apiUrl = 'https://lightslategray-clam-797439.hostingersite.com/okoh.php'; // Your email API endpoint
->>>>>>> 9c7bcc14f812d93df99457641bb5046267e12f1d
-$apiKey = 'your-secret-api-key-here'; // Replace with your actual API key
+// ─────────────────────────────────────────
+// 5. SEND CONFIRMATION EMAIL
+// ─────────────────────────────────────────
+$apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php';
+$apiKey = getenv('EMAIL_API_KEY'); // Store your key in an environment variable
 
-$subject = 'Confirm Your Email';
+$subject  = 'Confirm Your Email – North Bridge';
 $htmlBody = "
-    <p>Hi $fullname,</p>
-    <p>Your confirmation code is: <strong>$confirmation_code</strong></p>
-    <p>Use this code to verify your email address on North Bridge.</p>
+    <p>Hi " . htmlspecialchars($fullname) . ",</p>
+    <p>Thank you for registering on <strong>North Bridge</strong>.</p>
+    <p>Your confirmation code is:</p>
+    <h2 style='letter-spacing:4px;'>$confirmation_code</h2>
+    <p>Enter this code on the verification page to activate your account.</p>
     <p>If you did not register, please ignore this email.</p>
     <p>— North Bridge Support</p>
 ";
 
-// Prepare API payload
 $payload = json_encode([
-    'email' => $email,
-    'name' => $fullname,
+    'email'   => $email,
+    'name'    => $fullname,
     'subject' => $subject,
-    'html' => $htmlBody
+    'html'    => $htmlBody,
 ]);
 
-// Initialize cURL
 $ch = curl_init($apiUrl);
-
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    'X-API-KEY: ' . $apiKey
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => $payload,
+    CURLOPT_TIMEOUT        => 10,
+    CURLOPT_HTTPHEADER     => [
+        'Content-Type: application/json',
+        'X-API-KEY: ' . $apiKey,
+    ],
 ]);
 
-// Execute request and check response
 $apiResponse = curl_exec($ch);
-$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$httpStatus  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlError   = curl_errno($ch) ? curl_error($ch) : null;
+curl_close($ch);
 
-if (curl_errno($ch)) {
-    error_log('cURL error: ' . curl_error($ch));
-    echo json_encode(['success' => false, 'message' => 'Failed to send confirmation email.', 'error' => curl_error($ch)]);
-} elseif ($httpStatus !== 200) {
-    error_log("Email API HTTP $httpStatus: $apiResponse");
-    echo json_encode(['success' => false, 'message' => 'Failed to send confirmation email.', 'error' => $apiResponse]);
-} else {
-    echo json_encode(["success" => true, "message" => "Registration successful. Confirmation email sent."]);
+// ─────────────────────────────────────────
+// 6. SINGLE RESPONSE — email result decides
+// ─────────────────────────────────────────
+if ($curlError) {
+    error_log("cURL error sending confirmation email: $curlError");
+    echo json_encode([
+        "success" => false,
+        "message" => "Account created but confirmation email could not be sent. Contact support.",
+    ]);
+    exit;
 }
 
-curl_close($ch);
-*/
-// ==================== END COMMENTED EMAIL API SECTION ====================
+if ($httpStatus !== 200) {
+    error_log("Email API returned HTTP $httpStatus: $apiResponse");
+    echo json_encode([
+        "success" => false,
+        "message" => "Account created but confirmation email failed (HTTP $httpStatus). Contact support.",
+    ]);
+    exit;
+}
 
-// ==================== NEW: Success response with redirect to login ====================
-// User is auto-confirmed, send success response
+// All good — redirect to verification page
 echo json_encode([
-    "success" => true, 
-    "message" => "Registration successful! You can now log in.",
-    "redirect" => "getin/login.html"
+    "success"  => true,
+    "message"  => "Registration successful! Please check your email for the confirmation code.",
+    "redirect" => "getin/verify.html", // your email verification page
 ]);
-// ==================== END NEW SECTION ====================
+exit;
 ?>
