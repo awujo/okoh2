@@ -1,25 +1,24 @@
 <?php
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'db.php'; // database connection with $conn
+require_once 'db.php';
 
 header("Content-Type: application/json");
 
 // ─────────────────────────────────────────
 // 1. COLLECT & SANITIZE POST DATA
 // ─────────────────────────────────────────
-$username  = trim($_POST['username']     ?? '');
-$fullname  = trim($_POST['fullname']     ?? '');
+$username  = trim($_POST['username']      ?? '');
+$fullname  = trim($_POST['fullname']      ?? '');
 $email     = strtolower(trim($_POST['email'] ?? ''));
-$country   = trim($_POST['country']      ?? '');
-$phone     = trim($_POST['phone_number'] ?? '');
-$address   = trim($_POST['address']      ?? '');
-$state     = trim($_POST['state']        ?? '');
-$city      = trim($_POST['city']         ?? '');
-$zipcode   = trim($_POST['zipcode']      ?? '');
-$password  = $_POST['password']          ?? '';
+$country   = trim($_POST['country']       ?? '');
+$phone     = trim($_POST['phone_number']  ?? '');
+$address   = trim($_POST['address']       ?? '');
+$state     = trim($_POST['state']         ?? '');
+$city      = trim($_POST['city']          ?? '');
+$zipcode   = trim($_POST['zipcode']       ?? '');
+$password  = $_POST['password']           ?? '';
 
 // ─────────────────────────────────────────
 // 2. VALIDATE REQUIRED FIELDS
@@ -70,7 +69,6 @@ $stmt = $conn->prepare("
     )
 ");
 
-// 10 strings + 1 integer = "ssssssssss i"
 $stmt->bind_param(
     "ssssssssssi",
     $username, $fullname, $email, $hashed_password, $country, $phone,
@@ -88,17 +86,20 @@ $stmt->close();
 // ─────────────────────────────────────────
 // 5. SEND CONFIRMATION EMAIL
 // ─────────────────────────────────────────
+
+// ✅ Must match $API_KEY in okoh.php exactly
 $apiUrl = 'https://white-rail-435258.hostingersite.com/okoh.php';
-$apiKey = getenv('EMAIL_API_KEY'); // Store your key in an environment variable
+$apiKey = 'northbridge-secret-2025'; // ← set your real key here, same in okoh.php
 
 $subject  = 'Confirm Your Email – North Bridge';
 $htmlBody = "
     <p>Hi " . htmlspecialchars($fullname) . ",</p>
-    <p>Thank you for registering on <strong>North Bridge</strong>.</p>
+    <p>Thank you for registering on <strong>North Bridge Investments</strong>.</p>
     <p>Your confirmation code is:</p>
-    <h2 style='letter-spacing:4px;'>$confirmation_code</h2>
+    <h2 style='letter-spacing:6px; font-size:32px;'>$confirmation_code</h2>
     <p>Enter this code on the verification page to activate your account.</p>
     <p>If you did not register, please ignore this email.</p>
+    <br>
     <p>— North Bridge Support</p>
 ";
 
@@ -114,7 +115,7 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_TIMEOUT        => 10,
+    CURLOPT_TIMEOUT        => 15,
     CURLOPT_HTTPHEADER     => [
         'Content-Type: application/json',
         'X-API-KEY: ' . $apiKey,
@@ -127,10 +128,10 @@ $curlError   = curl_errno($ch) ? curl_error($ch) : null;
 curl_close($ch);
 
 // ─────────────────────────────────────────
-// 6. SINGLE RESPONSE — email result decides
+// 6. RESPOND BASED ON EMAIL RESULT
 // ─────────────────────────────────────────
 if ($curlError) {
-    error_log("cURL error sending confirmation email: $curlError");
+    error_log("cURL error: $curlError");
     echo json_encode([
         "success" => false,
         "message" => "Account created but confirmation email could not be sent. Contact support.",
@@ -139,19 +140,19 @@ if ($curlError) {
 }
 
 if ($httpStatus !== 200) {
-    error_log("Email API returned HTTP $httpStatus: $apiResponse");
+    error_log("Email API HTTP $httpStatus: $apiResponse");
     echo json_encode([
         "success" => false,
-        "message" => "Account created but confirmation email failed (HTTP $httpStatus). Contact support.",
+        "message" => "Account created but confirmation email failed. Contact support.",
+        "debug"   => $apiResponse, // remove this line in production
     ]);
     exit;
 }
 
-// All good — redirect to verification page
 echo json_encode([
     "success"  => true,
     "message"  => "Registration successful! Please check your email for the confirmation code.",
-    "redirect" => "getin/verify.html", // your email verification page
+    "redirect" => "getin/verify.html",
 ]);
 exit;
 ?>
