@@ -13,8 +13,8 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $plan            = trim($_POST['plan']            ?? '');
 $amount          = intval($_POST['amount']         ?? 0);
-$interest_earned = intval($_POST['interest_earned'] ?? 0); // ✅ Read from POST payload
-$days_count      = intval($_POST['days_count']      ?? 0); // ✅ Read from POST payload
+$interest_earned =  0; // 
+$days_count      = 0; // start with 0, updated daily by cronjob, not user input
 
 // ✅ Fixed: use == not = for comparisons (was assigning 0, always true)
 if (empty($plan) || $amount <= 0 || $interest_earned == 0 || $days_count == 0) {
