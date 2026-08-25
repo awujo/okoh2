@@ -336,12 +336,12 @@ $stmt->close();
     <div class="section">
         <h2>KYC Information</h2>
         <p><strong>Full Name:</strong> <?= htmlspecialchars($kyc['fullname']) ?></p>
-        <p><strong>NID:</strong> <?= $kyc['nid'] ?></p>
-        <p><strong>Gender:</strong> <?= $kyc['gender'] ? 'Male' : 'Female' ?></p>
+        <p><strong>NID:</strong> <?= htmlspecialchars($kyc['nid']) ?></p>
+        <p><strong>Gender:</strong> <?= htmlspecialchars(ucfirst($kyc['gender'])) ?></p>
         <p><strong>Country:</strong> <?= htmlspecialchars($kyc['country']) ?></p>
         <p><strong>State:</strong> <?= htmlspecialchars($kyc['state']) ?></p>
         <p><strong>Hobby:</strong> <?= htmlspecialchars($kyc['hobby']) ?></p>
-        <p><strong>Status:</strong> <?= $kyc['status'] ?></p>
+        <p><strong>Status:</strong> <?= htmlspecialchars($kyc['status']) ?></p>
         
         <div>
             <h3>ID Document:</h3>

@@ -27,6 +27,20 @@ $cloudinary = new Cloudinary([
     ]
 ]);
 
+function uploadErrorMessage($field, $error) {
+    switch ($error) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            return "{$field} is too large. Please upload a smaller image.";
+        case UPLOAD_ERR_PARTIAL:
+            return "{$field} upload was interrupted. Please try again.";
+        case UPLOAD_ERR_NO_FILE:
+            return "{$field} is required";
+        default:
+            return "{$field} upload failed (error code {$error}). Please try again.";
+    }
+}
+
 try {
     // Validate required fields
     $requiredFields = ['fullname', 'nid', 'gender', 'country', 'state', 'hobby'];
@@ -38,8 +52,9 @@ try {
     }
 
     // Upload NID file
-    if (empty($_FILES['nid_file']['tmp_name'])) {
-        throw new Exception('ID document is required');
+    $nidError = $_FILES['nid_file']['error'] ?? UPLOAD_ERR_NO_FILE;
+    if ($nidError !== UPLOAD_ERR_OK) {
+        throw new Exception(uploadErrorMessage('ID document', $nidError));
     }
     $nidResult = $cloudinary->uploadApi()->upload($_FILES['nid_file']['tmp_name'], [
         "folder" => "kyc/id_docs",
@@ -48,8 +63,9 @@ try {
     $nidUrl = $nidResult['secure_url'];
 
     // Upload selfie
-    if (empty($_FILES['selfie_file']['tmp_name'])) {
-        throw new Exception('Selfie is required');
+    $selfieError = $_FILES['selfie_file']['error'] ?? UPLOAD_ERR_NO_FILE;
+    if ($selfieError !== UPLOAD_ERR_OK) {
+        throw new Exception(uploadErrorMessage('Selfie', $selfieError));
     }
     $selfieResult = $cloudinary->uploadApi()->upload($_FILES['selfie_file']['tmp_name'], [
         "folder" => "kyc/selfies",
@@ -95,11 +111,15 @@ try {
         $nidUrl,
         $selfieUrl
     );
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        throw new Exception('Failed to save KYC record: ' . $stmt->error);
+    }
 
     $updateUser = $conn->prepare("UPDATE user SET kyc_is_done = 0 WHERE id = ?");
     $updateUser->bind_param("i", $user_id);
-    $updateUser->execute();
+    if (!$updateUser->execute()) {
+        throw new Exception('Failed to update user status: ' . $updateUser->error);
+    }
 
     $conn->commit();
 
