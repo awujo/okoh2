@@ -1,0 +1,15 @@
+# KYC uploads (ID photo + selfie) can exceed common host defaults (2M/8M).
+# Guarded per PHP module version so this is a no-op where mod_php isn't in use
+# (e.g. PHP-FPM, where php.ini/pool config controls these instead).
+<IfModule mod_php.c>
+    php_value upload_max_filesize 20M
+    php_value post_max_size 25M
+</IfModule>
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 20M
+    php_value post_max_size 25M
+</IfModule>
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 20M
+    php_value post_max_size 25M
+</IfModule>
