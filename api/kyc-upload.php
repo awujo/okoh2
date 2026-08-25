@@ -95,11 +95,15 @@ try {
         $nidUrl,
         $selfieUrl
     );
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        throw new Exception('Failed to save KYC record: ' . $stmt->error);
+    }
 
     $updateUser = $conn->prepare("UPDATE user SET kyc_is_done = 0 WHERE id = ?");
     $updateUser->bind_param("i", $user_id);
-    $updateUser->execute();
+    if (!$updateUser->execute()) {
+        throw new Exception('Failed to update user status: ' . $updateUser->error);
+    }
 
     $conn->commit();
 

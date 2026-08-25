@@ -28,8 +28,8 @@ try {
         exit;
     }
 
-    // Check if KYC submission exists in kyc table
-    $kycQuery = $conn->prepare("SELECT status FROM kyc WHERE user_id = ?");
+    // Check if KYC submission exists in kyc table (most recent submission wins)
+    $kycQuery = $conn->prepare("SELECT status FROM kyc WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
     $kycQuery->bind_param("i", $user_id);
     $kycQuery->execute();
     $kycResult = $kycQuery->get_result()->fetch_assoc();
