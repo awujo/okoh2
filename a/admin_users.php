@@ -46,6 +46,12 @@ if (!empty($search)) {
 $stmt->execute();
 $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// CSRF token for destructive actions (delete user)
+if (empty($_SESSION['admin_delete_token'])) {
+    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
+}
+$delete_token = $_SESSION['admin_delete_token'];
 ?>
 
 <!-- HTML for admin users listing -->
@@ -162,10 +168,34 @@ $stmt->close();
             background-color: #007bff;
             color: white;
         }
+
+        td a.delete-link {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        td a.delete-link:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .flash-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>User Management</h1>
+
+    <?php if (!empty($_SESSION['admin_message'])): ?>
+        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
+        <?php unset($_SESSION['admin_message']); ?>
+    <?php endif; ?>
     
     <form method="get">
         <input type="text" name="search" placeholder="Search users..." value="<?= htmlspecialchars($search) ?>">
@@ -199,6 +229,8 @@ $stmt->close();
             <td>
                 <a href="admin_user_view.php?id=<?= $user['id'] ?>">View</a>
                 <a href="admin_user_edit.php?id=<?= $user['id'] ?>">Edit</a>
+                <a class="delete-link" href="admin_delete_user.php?id=<?= $user['id'] ?>&token=<?= htmlspecialchars($delete_token) ?>"
+                   onclick="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user['id'] ?>) and ALL their transactions? This cannot be undone!');">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>
