@@ -519,6 +519,7 @@ $stmt->close();
                 <th>Plan</th>
                 <th>Amount</th>
                 <th>Interest Earned</th>
+                <th>Profit</th>
                 <th>Status</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -528,7 +529,8 @@ $stmt->close();
                 <td><?= $investment['id'] ?></td>
                 <td><?= htmlspecialchars($investment['plan']) ?></td>
                 <td><?= $investment['amount'] ?></td>
-                <td><?= $investment['interest_earned'] ?></td>
+                <td><?= $investment['interest_earned'] ?? 0 ?></td>
+                <td><?= $investment['profit'] ?? 0 ?></td>
                 <td><?= $investment['status'] ?></td>
                 <td><?= $investment['created_at'] ?></td>
                 <td>
