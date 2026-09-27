@@ -458,6 +458,7 @@ $stmt->close();
                     <?php else: ?>
                         <span>No actions</span>
                     <?php endif; ?>
+                    <a href="admin_edit_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
                     <a class="btn-danger action-btn"
                        href="admin_delete_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
                        onclick="return confirm('Are you sure you want to permanently delete Deposit #<?= $deposit['id'] ?>?');">Delete</a>
@@ -499,6 +500,7 @@ $stmt->close();
                     <?php else: ?>
                         <span>No actions</span>
                     <?php endif; ?>
+                    <a href="admin_edit_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
                     <a class="btn-danger action-btn"
                        href="admin_delete_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
                        onclick="return confirm('Are you sure you want to permanently delete Withdrawal #<?= $withdrawal['id'] ?>?');">Delete</a>
@@ -530,6 +532,7 @@ $stmt->close();
                 <td><?= $investment['status'] ?></td>
                 <td><?= $investment['created_at'] ?></td>
                 <td>
+                    <a href="admin_edit_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
                     <a class="btn-danger action-btn"
                        href="admin_delete_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
                        onclick="return confirm('Are you sure you want to permanently delete Investment #<?= $investment['id'] ?>?');">Delete</a>
