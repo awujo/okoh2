@@ -40,6 +40,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// CSRF token for destructive actions (delete user / delete transactions)
+if (empty($_SESSION['admin_delete_token'])) {
+    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
+}
+$delete_token = $_SESSION['admin_delete_token'];
+
+// Handle "clear all transaction history" for this user
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_all_transactions'])) {
+    $token = $_POST['confirm_token'] ?? '';
+    if (empty($delete_token) || !hash_equals($delete_token, $token)) {
+        $_SESSION['admin_message'] = "Could not clear history: invalid confirmation token.";
+    } else {
+        $conn->begin_transaction();
+        try {
+            foreach (['deposit', 'withdrawal', 'investment'] as $table) {
+                $stmt = $conn->prepare("DELETE FROM `$table` WHERE user_id = ?");
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $stmt->close();
+            }
+            $conn->commit();
+            $_SESSION['admin_message'] = "All transaction history for user #$user_id deleted successfully.";
+        } catch (Exception $e) {
+            $conn->rollback();
+            $_SESSION['admin_message'] = "Failed to delete transaction history.";
+            error_log("clear transactions error: " . $e->getMessage());
+        }
+    }
+    header("Location: admin_user_view.php?id=$user_id");
+    exit;
+}
+
 // Get user details
 $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
 $stmt->bind_param("i", $user_id);
@@ -278,11 +310,47 @@ $stmt->close();
         border-radius: 3px;
         font-size: 0.9em;
     }
+
+    /* Destructive (delete) actions */
+    .btn-danger, a.btn-danger {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .btn-danger:hover, a.btn-danger:hover {
+        background-color: #a71d2a !important;
+        color: #fff !important;
+    }
+
+    .delete-section {
+        border-top: 2px solid #dc3545;
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+
+    .flash-message {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 12px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
 </style>
 
 </head>
 <body>
     <h1>User Details: <?= htmlspecialchars($user['username']) ?></h1>
+    <?php if (!empty($_SESSION['admin_message'])): ?>
+        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
+        <?php unset($_SESSION['admin_message']); ?>
+    <?php endif; ?>
     <a href="admin_users.php">Back to Users</a>
     
     <!-- User Info Section -->
@@ -390,6 +458,10 @@ $stmt->close();
                     <?php else: ?>
                         <span>No actions</span>
                     <?php endif; ?>
+                    <a href="admin_edit_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+                    <a class="btn-danger action-btn"
+                       href="admin_delete_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+                       onclick="return confirm('Are you sure you want to permanently delete Deposit #<?= $deposit['id'] ?>?');">Delete</a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -428,6 +500,10 @@ $stmt->close();
                     <?php else: ?>
                         <span>No actions</span>
                     <?php endif; ?>
+                    <a href="admin_edit_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+                    <a class="btn-danger action-btn"
+                       href="admin_delete_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+                       onclick="return confirm('Are you sure you want to permanently delete Withdrawal #<?= $withdrawal['id'] ?>?');">Delete</a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -445,6 +521,7 @@ $stmt->close();
                 <th>Interest Earned</th>
                 <th>Status</th>
                 <th>Date</th>
+                <th>Actions</th>
             </tr>
             <?php foreach ($investments as $investment): ?>
             <tr>
@@ -454,9 +531,21 @@ $stmt->close();
                 <td><?= $investment['interest_earned'] ?></td>
                 <td><?= $investment['status'] ?></td>
                 <td><?= $investment['created_at'] ?></td>
+                <td>
+                    <a href="admin_edit_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+                    <a class="btn-danger action-btn"
+                       href="admin_delete_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+                       onclick="return confirm('Are you sure you want to permanently delete Investment #<?= $investment['id'] ?>?');">Delete</a>
+                </td>
             </tr>
             <?php endforeach; ?>
         </table>
+
+        <!-- Clear ALL transaction history for this user -->
+        <form method="post" onsubmit="return confirm('This will PERMANENTLY delete every deposit, withdrawal and investment for this user. Continue?');" style="margin-top:15px;">
+            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
+            <button type="submit" name="delete_all_transactions" class="btn-danger">Delete All Transaction History</button>
+        </form>
     </div>
     
     <!-- Support Tickets Section -->
@@ -480,6 +569,19 @@ $stmt->close();
             </tr>
             <?php endforeach; ?>
         </table>
+    </div>
+
+    <!-- Danger Zone: Delete user account -->
+    <div class="section">
+        <h2 style="color:#dc3545;">Danger Zone</h2>
+        <p><strong>Delete User Account:</strong> This will permanently remove this user and ALL of their data
+           (deposits, withdrawals, investments, KYC records and support tickets). This action cannot be undone.</p>
+        <form method="post" action="admin_delete_user.php"
+              onsubmit="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user_id ?>) and all their transactions? This cannot be undone!');">
+            <input type="hidden" name="user_id" value="<?= $user_id ?>">
+            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
+            <button type="submit" class="btn-danger">Delete User Account</button>
+        </form>
     </div>
 </body>
 </html>
