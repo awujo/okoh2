@@ -64,15 +64,33 @@ $field_defs = [
                                  'options' => ['pending', 'completed', 'rejected']],
     ],
     'investment' => [
-        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
-        'plan'           => ['label' => 'Plan', 'type' => 'text'],
-        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
-        'interest'       => ['label' => 'Interest', 'type' => 'number'],
-        'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
-        'status'         => ['label' => 'Status', 'type' => 'select',
-                             'options' => ['pending', 'running', 'completed', 'rejected']],
+        'transaction_id'  => ['label' => 'Transaction ID', 'type' => 'text'],
+        'plan'            => ['label' => 'Plan', 'type' => 'text'],
+        'amount'          => ['label' => 'Amount', 'type' => 'amount'],
+        // The live DB (and the app code in api/process_investment.php & cronjob.php)
+        // stores earnings in `interest_earned` / `profit`, NOT `interest`.
+        'interest_earned' => ['label' => 'Interest Earned', 'type' => 'number', 'optional' => true],
+        'profit'          => ['label' => 'Profit', 'type' => 'number', 'optional' => true],
+        'days_count'      => ['label' => 'Days Count', 'type' => 'number'],
+        'status'          => ['label' => 'Status', 'type' => 'select',
+                              'options' => ['pending', 'active', 'running', 'completed', 'rejected']],
     ],
 ];
+
+// Detect which columns actually exist on this server so we never reference a
+// missing column (e.g. old schema with `interest` instead of `interest_earned`).
+$existing_cols = [];
+$res = $conn->query("SHOW COLUMNS FROM `$type`");
+if ($res) {
+    while ($colrow = $res->fetch_assoc()) {
+        $existing_cols[$colrow['Field']] = true;
+    }
+}
+foreach ($field_defs[$type] as $col => $def) {
+    if (!isset($existing_cols[$col])) {
+        unset($field_defs[$type][$col]);
+    }
+}
 $fields = $field_defs[$type];
 
 $errors = [];
@@ -109,9 +127,12 @@ if ($is_post) {
                 }
                 break;
             case 'number':
-                // Some numeric columns (e.g. investment.interest) may legitimately be
-                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
-                if ($val === '') {
+                // Optional numeric columns (e.g. investment.interest) may not exist on
+                // every live server -> skip them entirely when left blank so we never
+                // reference a missing column in the UPDATE statement.
+                if ($val === '' && !empty($def['optional'])) {
+                    continue 2;
+                } elseif ($val === '') {
                     $new[$col] = 0;
                 } elseif (!is_numeric($val)) {
                     $errors[] = "'{$def['label']}' must be a valid number.";
