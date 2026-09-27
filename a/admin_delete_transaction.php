@@ -48,8 +48,11 @@ try {
     // If this was a COMPLETED deposit that credited the user, remove the credit
     // so deleting the record keeps the ledger and the balance consistent.
     if ($type === 'deposit' && $transaction['status'] === 'completed') {
+        // deposit.amount is BIGINT in the schema (see drawSQL export); cast for bind safety
+        $amt = (int)$transaction['amount'];
+        $uid = (int)$transaction['user_id'];
         $stmt = $conn->prepare("UPDATE user SET deposit_balance = GREATEST(deposit_balance - ?, 0) WHERE id = ?");
-        $stmt->bind_param("di", $transaction['amount'], $transaction['user_id']);
+        $stmt->bind_param("di", $amt, $uid);
         $stmt->execute();
         $stmt->close();
     }
