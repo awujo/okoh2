@@ -67,7 +67,7 @@ $field_defs = [
         'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
         'plan'           => ['label' => 'Plan', 'type' => 'text'],
         'amount'         => ['label' => 'Amount', 'type' => 'amount'],
-        'interest'       => ['label' => 'Interest', 'type' => 'amount'],
+        'interest'       => ['label' => 'Interest', 'type' => 'number'],
         'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
         'status'         => ['label' => 'Status', 'type' => 'select',
                              'options' => ['pending', 'running', 'completed', 'rejected']],
@@ -97,17 +97,28 @@ if ($is_post) {
         $val = trim($val);
         switch ($def['type']) {
             case 'amount':
-                if (!is_numeric($val) || $val < 0) {
+                // Schema stores amounts as BIGINT, so normalise to whole numbers.
+                if ($val === '') {
+                    $errors[] = "'{$def['label']}' cannot be empty.";
+                } elseif (!is_numeric($val)) {
+                    $errors[] = "'{$def['label']}' must be a valid number.";
+                } elseif ((float)$val < 0) {
                     $errors[] = "'{$def['label']}' must be a non-negative number.";
                 } else {
-                    $new[$col] = (float)$val;
+                    $new[$col] = (int)round((float)$val);
                 }
                 break;
             case 'number':
-                if ($val !== '' && !is_numeric($val)) {
-                    $errors[] = "'{$def['label']}' must be numeric.";
+                // Some numeric columns (e.g. investment.interest) may legitimately be
+                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
+                if ($val === '') {
+                    $new[$col] = 0;
+                } elseif (!is_numeric($val)) {
+                    $errors[] = "'{$def['label']}' must be a valid number.";
+                } elseif ((float)$val < 0) {
+                    $errors[] = "'{$def['label']}' must be a non-negative number.";
                 } else {
-                    $new[$col] = (int)$val;
+                    $new[$col] = (int)round((float)$val);
                 }
                 break;
             case 'select':
@@ -200,7 +211,8 @@ if ($is_post) {
                 . ($backdated ? " (created-at backdated to {$new['created_at']})" : ".");
         } catch (Exception $e) {
             $conn->rollback();
-            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id.";
+            // Include the real DB error so admins can see WHY it failed
+            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id. Reason: " . $e->getMessage();
             error_log("admin_edit_transaction error: " . $e->getMessage());
         }
         header("Location: admin_user_view.php?id=$owner_id");
@@ -272,7 +284,7 @@ if ($is_post) {
                         <?php endforeach; ?>
                     </select>
                 <?php elseif ($def['type'] === 'amount'): ?>
-                    <input type="number" step="0.01" min="0" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
+                    <input type="number" step="1" min="0" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
                 <?php elseif ($def['type'] === 'number'): ?>
                     <input type="number" step="1" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
                 <?php else: ?>
