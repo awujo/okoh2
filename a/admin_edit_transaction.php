@@ -109,8 +109,10 @@ if ($is_post) {
                 }
                 break;
             case 'number':
+                // Some numeric columns (e.g. investment.interest) may legitimately be
+                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
                 if ($val === '') {
-                    $errors[] = "'{$def['label']}' cannot be empty.";
+                    $new[$col] = 0;
                 } elseif (!is_numeric($val)) {
                     $errors[] = "'{$def['label']}' must be a valid number.";
                 } elseif ((float)$val < 0) {
@@ -209,7 +211,8 @@ if ($is_post) {
                 . ($backdated ? " (created-at backdated to {$new['created_at']})" : ".");
         } catch (Exception $e) {
             $conn->rollback();
-            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id.";
+            // Include the real DB error so admins can see WHY it failed
+            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id. Reason: " . $e->getMessage();
             error_log("admin_edit_transaction error: " . $e->getMessage());
         }
         header("Location: admin_user_view.php?id=$owner_id");
