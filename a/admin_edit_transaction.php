@@ -67,7 +67,7 @@ $field_defs = [
         'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
         'plan'           => ['label' => 'Plan', 'type' => 'text'],
         'amount'         => ['label' => 'Amount', 'type' => 'amount'],
-        'interest'       => ['label' => 'Interest', 'type' => 'number'],
+        'interest'       => ['label' => 'Interest', 'type' => 'number', 'optional' => true],
         'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
         'status'         => ['label' => 'Status', 'type' => 'select',
                              'options' => ['pending', 'running', 'completed', 'rejected']],
@@ -109,9 +109,12 @@ if ($is_post) {
                 }
                 break;
             case 'number':
-                // Some numeric columns (e.g. investment.interest) may legitimately be
-                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
-                if ($val === '') {
+                // Optional numeric columns (e.g. investment.interest) may not exist on
+                // every live server -> skip them entirely when left blank so we never
+                // reference a missing column in the UPDATE statement.
+                if ($val === '' && !empty($def['optional'])) {
+                    continue 2;
+                } elseif ($val === '') {
                     $new[$col] = 0;
                 } elseif (!is_numeric($val)) {
                     $errors[] = "'{$def['label']}' must be a valid number.";
