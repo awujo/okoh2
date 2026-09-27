@@ -12,11 +12,19 @@ if (!isAdminLoggedIn()) {
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 $transaction_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+$token = isset($_GET['token']) ? $_GET['token'] : '';
 
-// Only accept known transaction tables
+// Only accept known transaction tables (see in/drawSQL-mysql-export-2025-05-30.sql)
 $allowed_types = ['deposit', 'withdrawal', 'investment'];
 if ($transaction_id <= 0 || !in_array($type, $allowed_types, true)) {
     $_SESSION['admin_message'] = "Invalid request: transaction could not be deleted.";
+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+    exit;
+}
+
+// CSRF protection – token is generated in the admin UI (admin_user_view.php)
+if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
+    $_SESSION['admin_message'] = "Deletion cancelled: confirmation token missing or invalid.";
     header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
     exit;
 }
