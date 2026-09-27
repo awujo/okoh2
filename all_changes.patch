@@ -1,830 +1,2572 @@
-diff --git a/a/admin_delete_transaction.php b/a/admin_delete_transaction.php
-new file mode 100644
-index 0000000..a4990a7
---- /dev/null
-+++ b/a/admin_delete_transaction.php
-@@ -0,0 +1,77 @@
-+<?php
-+// admin_delete_transaction.php
-+// Allows an admin to permanently delete a single deposit / withdrawal / investment
-+// transaction (i.e. "delete a transaction history" entry).
-+require_once 'admin_auth.php';
-+
-+if (!isAdminLoggedIn()) {
-+    header("Location: admin_login.php");
-+    exit;
-+}
-+
-+$type = isset($_GET['type']) ? $_GET['type'] : '';
-+$transaction_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-+$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
-+$token = isset($_GET['token']) ? $_GET['token'] : '';
-+
-+// Only accept known transaction tables (see in/drawSQL-mysql-export-2025-05-30.sql)
-+$allowed_types = ['deposit', 'withdrawal', 'investment'];
-+if ($transaction_id <= 0 || !in_array($type, $allowed_types, true)) {
-+    $_SESSION['admin_message'] = "Invalid request: transaction could not be deleted.";
-+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
-+    exit;
-+}
-+
-+// CSRF protection – token is generated in the admin UI (admin_user_view.php)
-+if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
-+    $_SESSION['admin_message'] = "Deletion cancelled: confirmation token missing or invalid.";
-+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
-+    exit;
-+}
-+
-+// Fetch the transaction so we can adjust balances if needed
-+$stmt = $conn->prepare("SELECT * FROM `$type` WHERE id = ?");
-+$stmt->bind_param("i", $transaction_id);
-+$stmt->execute();
-+$transaction = $stmt->get_result()->fetch_assoc();
-+$stmt->close();
-+
-+if (!$transaction) {
-+    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id not found.";
-+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
-+    exit;
-+}
-+
-+$conn->begin_transaction();
-+
-+try {
-+    // If this was a COMPLETED deposit that credited the user, remove the credit
-+    // so deleting the record keeps the ledger and the balance consistent.
-+    if ($type === 'deposit' && $transaction['status'] === 'completed') {
-+        // deposit.amount is BIGINT in the schema (see drawSQL export); cast for bind safety
-+        $amt = (int)$transaction['amount'];
-+        $uid = (int)$transaction['user_id'];
-+        $stmt = $conn->prepare("UPDATE user SET deposit_balance = GREATEST(deposit_balance - ?, 0) WHERE id = ?");
-+        $stmt->bind_param("di", $amt, $uid);
-+        $stmt->execute();
-+        $stmt->close();
-+    }
-+
-+    // Delete the transaction row
-+    $stmt = $conn->prepare("DELETE FROM `$type` WHERE id = ?");
-+    $stmt->bind_param("i", $transaction_id);
-+    $stmt->execute();
-+    $stmt->close();
-+
-+    $conn->commit();
-+    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id deleted successfully.";
-+} catch (Exception $e) {
-+    $conn->rollback();
-+    $_SESSION['admin_message'] = "Failed to delete " . ucfirst($type) . " #$transaction_id.";
-+    error_log("admin_delete_transaction error: " . $e->getMessage());
-+}
-+
-+$target_user = (int)$transaction['user_id'];
-+header("Location: " . ($target_user > 0 ? "admin_user_view.php?id=$target_user" : "admin_users.php"));
-+exit;
-+?>
-diff --git a/a/admin_delete_user.php b/a/admin_delete_user.php
-new file mode 100644
-index 0000000..6db5d07
---- /dev/null
-+++ b/a/admin_delete_user.php
-@@ -0,0 +1,72 @@
-+<?php
-+// admin_delete_user.php
-+// Allows an admin to permanently delete a user account AND all of its related
-+// data (deposits, withdrawals, investments, KYC records and support tickets).
-+require_once 'admin_auth.php';
-+
-+if (!isAdminLoggedIn()) {
-+    header("Location: admin_login.php");
-+    exit;
-+}
-+
-+// Accept both GET links (with confirmation token) and POST forms
-+$id    = isset($_POST['user_id']) ? (int)$_POST['user_id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
-+$token = isset($_POST['confirm_token']) ? $_POST['confirm_token'] : (isset($_GET['token']) ? $_GET['token'] : '');
-+
-+if ($id <= 0) {
-+    header("Location: admin_users.php");
-+    exit;
-+}
-+
-+// Simple CSRF protection: a token is generated in the admin UI and must match
-+if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
-+    $_SESSION['admin_message'] = "Deletion cancelled: confirmation token missing or invalid.";
-+    header("Location: admin_user_view.php?id=$id");
-+    exit;
-+}
-+
-+// Make sure the user exists
-+$stmt = $conn->prepare("SELECT id, username FROM user WHERE id = ?");
-+$stmt->bind_param("i", $id);
-+$stmt->execute();
-+$user = $stmt->get_result()->fetch_assoc();
-+$stmt->close();
-+
-+if (!$user) {
-+    $_SESSION['admin_message'] = "User not found.";
-+    header("Location: admin_users.php");
-+    exit;
-+}
-+
-+$conn->begin_transaction();
-+
-+try {
-+    // Order matters because of the foreign keys pointing at `user`
-+    $child_tables = ['deposit', 'withdrawal', 'investment', 'kyc', 'support_ticket'];
-+    foreach ($child_tables as $table) {
-+        $stmt = $conn->prepare("DELETE FROM `$table` WHERE user_id = ?");
-+        $stmt->bind_param("i", $id);
-+        $stmt->execute();
-+        $stmt->close();
-+    }
-+
-+    // Finally delete the account itself
-+    $stmt = $conn->prepare("DELETE FROM user WHERE id = ?");
-+    $stmt->bind_param("i", $id);
-+    $stmt->execute();
-+    $stmt->close();
-+
-+    $conn->commit();
-+    // One-time use token – regenerate on next page load
-+    unset($_SESSION['admin_delete_token']);
-+    $_SESSION['admin_message'] = "User \"" . $user['username'] . "\" (ID #$id) and all related transactions were deleted successfully.";
-+    header("Location: admin_users.php");
-+    exit;
-+} catch (Exception $e) {
-+    $conn->rollback();
-+    $_SESSION['admin_message'] = "Failed to delete user #" . $id . ".";
-+    error_log("admin_delete_user error: " . $e->getMessage());
-+    header("Location: admin_user_view.php?id=$id");
-+    exit;
-+}
-+?>
+From e5e3ae738b2f7bcb70343a275dbea8f4de3db02f Mon Sep 17 00:00:00 2001
+From: Awujo Darlington <71509142+awujo@users.noreply.github.com>
+Date: Sun, 27 Sep 2026 22:37:29 +0200
+Subject: [PATCH 1/6] Change input type for interest and amount fields
+
+---
+ a/admin_edit_transaction.php | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
 diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
-new file mode 100644
-index 0000000..f02843b
---- /dev/null
+index 821ed83..f0d1cbf 100644
+--- a/a/admin_edit_transaction.php
 +++ b/a/admin_edit_transaction.php
-@@ -0,0 +1,304 @@
-+<?php
-+// admin_edit_transaction.php
-+// Allows an admin to edit ANY detail of a transaction (deposit / withdrawal /
-+// investment), including backdating the created_at date & time.
-+//
-+// Usage:
-+//   GET  ?type=deposit&id=5&user_id=2          -> renders the edit form
-+//   POST (same query string)                   -> validates & saves changes
-+require_once 'admin_auth.php';
-+
-+if (!isAdminLoggedIn()) {
-+    header("Location: admin_login.php");
-+    exit;
-+}
-+
-+$type = isset($_GET['type']) ? $_GET['type'] : '';
-+$transaction_id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
-+$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : (isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0);
-+
-+// Only accept known transaction tables (see in/drawSQL-mysql-export-2025-05-30.sql)
-+$allowed_types = ['deposit', 'withdrawal', 'investment'];
-+if ($transaction_id <= 0 || !in_array($type, $allowed_types, true)) {
-+    $_SESSION['admin_message'] = "Invalid request: transaction could not be edited.";
-+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
-+    exit;
-+}
-+
-+// Load the transaction row
-+$stmt = $conn->prepare("SELECT * FROM `$type` WHERE id = ?");
-+$stmt->bind_param("i", $transaction_id);
-+$stmt->execute();
-+$transaction = $stmt->get_result()->fetch_assoc();
-+$stmt->close();
-+
-+if (!$transaction) {
-+    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id not found.";
-+    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
-+    exit;
-+}
-+$owner_id = (int)$transaction['user_id'];
-+
-+// Editable fields per table (created_at handled separately as the backdate).
-+// type: amount | text | select | datetime
-+$field_defs = [
-+    'deposit' => [
-+        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
-+        'gateway'        => ['label' => 'Gateway', 'type' => 'text'],
-+        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
-+        'status'         => ['label' => 'Status', 'type' => 'select',
-+                             'options' => ['pending', 'completed', 'rejected']],
-+        'wallet'         => ['label' => 'Wallet', 'type' => 'text'],
-+        'type'           => ['label' => 'Type', 'type' => 'text'],
-+        'is_withdrawal_fee' => ['label' => 'Is Withdrawal Fee (0/1)', 'type' => 'number'],
-+    ],
-+    'withdrawal' => [
-+        'transaction_id'     => ['label' => 'Transaction ID', 'type' => 'text'],
-+        'amount'             => ['label' => 'Amount', 'type' => 'amount'],
-+        'withdrawable_amount'=> ['label' => 'Withdrawable Amount', 'type' => 'amount'],
-+        'wallet'             => ['label' => 'Wallet', 'type' => 'text'],
-+        'type'               => ['label' => 'Type', 'type' => 'text'],
-+        'wallet_address'     => ['label' => 'Wallet Address', 'type' => 'text'],
-+        'gateway'            => ['label' => 'Gateway', 'type' => 'text'],
-+        'status'             => ['label' => 'Status', 'type' => 'select',
-+                                 'options' => ['pending', 'completed', 'rejected']],
-+    ],
-+    'investment' => [
-+        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
-+        'plan'           => ['label' => 'Plan', 'type' => 'text'],
-+        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+@@ -67,7 +67,7 @@ $field_defs = [
+         'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+         'plan'           => ['label' => 'Plan', 'type' => 'text'],
+         'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+-        'interest'       => ['label' => 'Interest', 'type' => 'amount'],
 +        'interest'       => ['label' => 'Interest', 'type' => 'number'],
-+        'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
-+        'status'         => ['label' => 'Status', 'type' => 'select',
-+                             'options' => ['pending', 'running', 'completed', 'rejected']],
-+    ],
-+];
-+$fields = $field_defs[$type];
-+
-+$errors = [];
-+$is_post = ($_SERVER['REQUEST_METHOD'] === 'POST');
-+
-+if ($is_post) {
-+    // CSRF protection - same token used by the delete features
-+    $token = $_POST['confirm_token'] ?? '';
-+    if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
-+        $_SESSION['admin_message'] = "Edit cancelled: confirmation token missing or invalid.";
-+        header("Location: admin_user_view.php?id=$owner_id");
-+        exit;
-+    }
-+
-+    // Gather submitted values
-+    $new = [];
-+    foreach ($fields as $col => $def) {
-+        $val = $_POST['fields'][$col] ?? null;
-+        if ($val === null) {
-+            continue; // field not presented -> leave untouched
-+        }
-+        $val = trim($val);
-+        switch ($def['type']) {
-+            case 'amount':
+         'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
+         'status'         => ['label' => 'Status', 'type' => 'select',
+                              'options' => ['pending', 'running', 'completed', 'rejected']],
+@@ -97,17 +97,26 @@ if ($is_post) {
+         $val = trim($val);
+         switch ($def['type']) {
+             case 'amount':
+-                if (!is_numeric($val) || $val < 0) {
 +                // Schema stores amounts as BIGINT, so normalise to whole numbers.
 +                if ($val === '') {
 +                    $errors[] = "'{$def['label']}' cannot be empty.";
 +                } elseif (!is_numeric($val)) {
 +                    $errors[] = "'{$def['label']}' must be a valid number.";
 +                } elseif ((float)$val < 0) {
-+                    $errors[] = "'{$def['label']}' must be a non-negative number.";
-+                } else {
+                     $errors[] = "'{$def['label']}' must be a non-negative number.";
+                 } else {
+-                    $new[$col] = (float)$val;
 +                    $new[$col] = (int)round((float)$val);
-+                }
-+                break;
-+            case 'number':
-+                // Some numeric columns (e.g. investment.interest) may legitimately be
-+                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
+                 }
+                 break;
+             case 'number':
+-                if ($val !== '' && !is_numeric($val)) {
+-                    $errors[] = "'{$def['label']}' must be numeric.";
 +                if ($val === '') {
-+                    $new[$col] = 0;
++                    $errors[] = "'{$def['label']}' cannot be empty.";
 +                } elseif (!is_numeric($val)) {
 +                    $errors[] = "'{$def['label']}' must be a valid number.";
 +                } elseif ((float)$val < 0) {
 +                    $errors[] = "'{$def['label']}' must be a non-negative number.";
-+                } else {
+                 } else {
+-                    $new[$col] = (int)$val;
 +                    $new[$col] = (int)round((float)$val);
-+                }
-+                break;
-+            case 'select':
-+                if (!in_array($val, $def['options'], true)) {
-+                    $errors[] = "'{$def['label']}' has an invalid value.";
-+                } else {
-+                    $new[$col] = $val;
-+                }
-+                break;
-+            default: // text
-+                if ($val === '') {
-+                    $errors[] = "'{$def['label']}' cannot be empty.";
-+                } else {
-+                    $new[$col] = $val;
-+                }
-+        }
-+    }
-+
-+    // Backdate: the created-at date & time of the transaction
-+    $new_created_at = trim($_POST['created_at'] ?? '');
-+    $backdated = false;
-+    if ($new_created_at !== '') {
-+        $dt = date_create($new_created_at);
-+        if ($dt === false) {
-+            $errors[] = "Created At must be a valid date/time (YYYY-MM-DD HH:MM:SS).";
-+        } else {
-+            $new_created_at = $dt->format('Y-m-d H:i:s');
-+            if ($new_created_at !== $transaction['created_at']) {
-+                $backdated = true;
-+            }
-+            $new['created_at'] = $new_created_at;
-+        }
-+    }
-+
-+    if (empty($errors) && !empty($new)) {
-+        $conn->begin_transaction();
-+        try {
-+            // Keep ledger consistent when the AMOUNT or STATUS of a deposit changes.
-+            // user.deposit_balance is BIGINT in the schema, so store rounded whole amounts.
-+            if ($type === 'deposit') {
-+                $old_amt = (float)$transaction['amount'];
-+                $new_amt = isset($new['amount']) ? round((float)$new['amount']) : $old_amt;
-+                $new['amount'] = $new_amt;
-+
-+                $was_completed = ($transaction['status'] === 'completed');
-+                $now_completed = isset($new['status']) ? ($new['status'] === 'completed') : $was_completed;
-+
-+                $delta = 0.0;
-+                if ($was_completed && $now_completed) {
-+                    $delta = $new_amt - $old_amt;              // amount changed on a completed deposit
-+                } elseif (!$was_completed && $now_completed) {
-+                    $delta = $new_amt;                          // newly credited
-+                } elseif ($was_completed && !$now_completed) {
-+                    $delta = -$old_amt;                         // credit removed
-+                }
-+                if (abs($delta) > 0.001) {
-+                    $stmt = $conn->prepare(
-+                        "UPDATE user SET deposit_balance = GREATEST(deposit_balance + ?, 0) WHERE id = ?"
-+                    );
-+                    $d = $delta;
-+                    $stmt->bind_param("di", $d, $owner_id);
-+                    $stmt->execute();
-+                    $stmt->close();
-+                }
-+            }
-+
-+            // Build one UPDATE from the whitelisted columns actually submitted
-+            $set_parts = [];
-+            $values = [];
-+            $types_str = '';
-+            foreach ($new as $col => $val) {
-+                if (!array_key_exists($col, $fields) && $col !== 'created_at') {
-+                    continue; // strict whitelist
-+                }
-+                $set_parts[] = "`$col` = ?";
-+                $values[] = $val;
-+                $types_str .= is_int($val) ? 'i' : (is_float($val) ? 'd' : 's');
-+            }
-+            $types_str .= 'i'; // trailing id
-+            $values[] = $transaction_id;
-+
-+            $sql = "UPDATE `$type` SET " . implode(', ', $set_parts) . " WHERE id = ?";
-+            $stmt = $conn->prepare($sql);
-+            $stmt->bind_param($types_str, ...$values);
-+            $stmt->execute();
-+            $stmt->close();
-+
-+            $conn->commit();
-+            $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id updated successfully"
-+                . ($backdated ? " (created-at backdated to {$new['created_at']})" : ".");
-+        } catch (Exception $e) {
-+            $conn->rollback();
-+            // Include the real DB error so admins can see WHY it failed
-+            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id. Reason: " . $e->getMessage();
-+            error_log("admin_edit_transaction error: " . $e->getMessage());
-+        }
-+        header("Location: admin_user_view.php?id=$owner_id");
-+        exit;
-+    }
-+    // If we get here there were validation errors -> re-render the form with them
-+}
-+
-+// For GET requests (or POST with errors) make sure a CSRF token exists
-+if (empty($_SESSION['admin_delete_token'])) {
-+    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
-+}
-+$delete_token = $_SESSION['admin_delete_token'];
-+
-+// Merge submitted values over DB values so the form shows what the admin typed
-+$current = array_merge($transaction, []);
-+if ($is_post) {
-+    foreach ($fields as $col => $def) {
-+        if (isset($_POST['fields'][$col])) {
-+            $current[$col] = $_POST['fields'][$col];
-+        }
-+    }
-+    if (trim($_POST['created_at'] ?? '') !== '') {
-+        $current['created_at'] = $_POST['created_at'];
-+    }
-+}
-+?>
-+<!DOCTYPE html>
-+<html>
-+<head>
-+    <title>Admin - Edit <?= htmlspecialchars($type) ?> #<?= $transaction_id ?></title>
-+    <style>
-+        * { margin: 0; padding: 0; box-sizing: border-box; }
-+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f7fa; padding: 20px; }
-+        h1 { color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #3498db; }
-+        a { color: #3498db; text-decoration: none; }
-+        .section { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 25px; max-width: 700px; }
-+        label { display: block; font-weight: 600; margin-top: 12px; }
-+        input[type=text], input[type=number], select, input[type=datetime-local] {
-+            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px; font-size: 14px;
-+        }
-+        button { margin-top: 20px; padding: 10px 18px; border: none; border-radius: 4px; background: #3498db; color: white; font-size: 15px; cursor: pointer; }
-+        button:hover { background: #2980b9; }
-+        .errors { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; }
-+        .errors ul { margin-left: 20px; }
-+        .hint { font-size: 12px; color: #777; margin-top: 3px; }
-+    </style>
-+</head>
-+<body>
-+    <h1>Edit <?= htmlspecialchars(ucfirst($type)) ?> #<?= $transaction_id ?></h1>
-+    <?php if (!empty($errors)): ?>
-+        <div class="errors"><ul><?php foreach ($errors as $err): ?><li><?= htmlspecialchars($err) ?></li><?php endforeach; ?></ul></div>
-+    <?php endif; ?>
-+    <a href="admin_user_view.php?id=<?= $owner_id ?>">&larr; Back to User Details</a>
-+
-+    <div class="section">
-+        <form method="post">
-+            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
-+            <input type="hidden" name="id" value="<?= $transaction_id ?>">
-+            <input type="hidden" name="user_id" value="<?= $owner_id ?>">
-+
-+            <?php foreach ($fields as $col => $def): ?>
-+                <label for="f_<?= $col ?>"><?= htmlspecialchars($def['label']) ?></label>
-+                <?php $val = htmlspecialchars($current[$col] ?? '', ENT_QUOTES); ?>
-+                <?php if ($def['type'] === 'select'): ?>
-+                    <select id="f_<?= $col ?>" name="fields[<?= $col ?>]">
-+                        <?php foreach ($def['options'] as $opt): ?>
-+                            <option value="<?= $opt ?>" <?= ($current[$col] ?? '') === $opt ? 'selected' : '' ?>><?= ucfirst($opt) ?></option>
-+                        <?php endforeach; ?>
-+                    </select>
-+                <?php elseif ($def['type'] === 'amount'): ?>
+                 }
+                 break;
+             case 'select':
+@@ -272,7 +281,7 @@ if ($is_post) {
+                         <?php endforeach; ?>
+                     </select>
+                 <?php elseif ($def['type'] === 'amount'): ?>
+-                    <input type="number" step="0.01" min="0" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
 +                    <input type="number" step="1" min="0" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
-+                <?php elseif ($def['type'] === 'number'): ?>
-+                    <input type="number" step="1" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
-+                <?php else: ?>
-+                    <input type="text" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
-+                <?php endif; ?>
-+            <?php endforeach; ?>
+                 <?php elseif ($def['type'] === 'number'): ?>
+                     <input type="number" step="1" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
+                 <?php else: ?>
+-- 
+2.39.5
+
+From f534c8ca2af717f6980d303a4cde1fcfc0cbff3f Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 21:22:26 +0000
+Subject: [PATCH] Fix investment edit: use real columns interest_earned/profit,
+ auto-detect schema, show Profit in user view
+
+---
+ a/admin_edit_transaction.php | 32 +++++++++++++++++++++++++-------
+ a/admin_user_view.php        |  4 +++-
+ 2 files changed, 28 insertions(+), 8 deletions(-)
+
+diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
+index 15aa92d..8563317 100644
+--- a/a/admin_edit_transaction.php
++++ b/a/admin_edit_transaction.php
+@@ -64,15 +64,33 @@ $field_defs = [
+                                  'options' => ['pending', 'completed', 'rejected']],
+     ],
+     'investment' => [
+-        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+-        'plan'           => ['label' => 'Plan', 'type' => 'text'],
+-        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+-        'interest'       => ['label' => 'Interest', 'type' => 'number', 'optional' => true],
+-        'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
+-        'status'         => ['label' => 'Status', 'type' => 'select',
+-                             'options' => ['pending', 'running', 'completed', 'rejected']],
++        'transaction_id'  => ['label' => 'Transaction ID', 'type' => 'text'],
++        'plan'            => ['label' => 'Plan', 'type' => 'text'],
++        'amount'          => ['label' => 'Amount', 'type' => 'amount'],
++        // The live DB (and the app code in api/process_investment.php & cronjob.php)
++        // stores earnings in `interest_earned` / `profit`, NOT `interest`.
++        'interest_earned' => ['label' => 'Interest Earned', 'type' => 'number', 'optional' => true],
++        'profit'          => ['label' => 'Profit', 'type' => 'number', 'optional' => true],
++        'days_count'      => ['label' => 'Days Count', 'type' => 'number'],
++        'status'          => ['label' => 'Status', 'type' => 'select',
++                              'options' => ['pending', 'active', 'running', 'completed', 'rejected']],
+     ],
+ ];
 +
-+            <label for="created_at">Created At (Date &amp; Time)</label>
-+            <input type="datetime-local" id="created_at" name="created_at"
-+                   value="<?= htmlspecialchars(substr($current['created_at'] ?? '', 0, 16), ENT_QUOTES) ?>">
-+            <p class="hint">Set this to any past date/time to backdate the transaction. Leave unchanged to keep the original.</p>
-+
-+            <button type="submit">Save Changes</button>
-+        </form>
-+    </div>
-+</body>
-+</html>
++// Detect which columns actually exist on this server so we never reference a
++// missing column (e.g. old schema with `interest` instead of `interest_earned`).
++$existing_cols = [];
++$res = $conn->query("SHOW COLUMNS FROM `$type`");
++if ($res) {
++    while ($colrow = $res->fetch_assoc()) {
++        $existing_cols[$colrow['Field']] = true;
++    }
++}
++foreach ($field_defs[$type] as $col => $def) {
++    if (!isset($existing_cols[$col])) {
++        unset($field_defs[$type][$col]);
++    }
++}
+ $fields = $field_defs[$type];
+ 
+ $errors = [];
 diff --git a/a/admin_user_view.php b/a/admin_user_view.php
-index d88dcf6..9d51574 100644
+index 9d51574..73ddc29 100644
 --- a/a/admin_user_view.php
 +++ b/a/admin_user_view.php
-@@ -40,6 +40,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-     }
- }
- 
-+// CSRF token for destructive actions (delete user / delete transactions)
-+if (empty($_SESSION['admin_delete_token'])) {
-+    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
-+}
-+$delete_token = $_SESSION['admin_delete_token'];
-+
-+// Handle "clear all transaction history" for this user
-+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_all_transactions'])) {
-+    $token = $_POST['confirm_token'] ?? '';
-+    if (empty($delete_token) || !hash_equals($delete_token, $token)) {
-+        $_SESSION['admin_message'] = "Could not clear history: invalid confirmation token.";
-+    } else {
-+        $conn->begin_transaction();
-+        try {
-+            foreach (['deposit', 'withdrawal', 'investment'] as $table) {
-+                $stmt = $conn->prepare("DELETE FROM `$table` WHERE user_id = ?");
-+                $stmt->bind_param("i", $user_id);
-+                $stmt->execute();
-+                $stmt->close();
-+            }
-+            $conn->commit();
-+            $_SESSION['admin_message'] = "All transaction history for user #$user_id deleted successfully.";
-+        } catch (Exception $e) {
-+            $conn->rollback();
-+            $_SESSION['admin_message'] = "Failed to delete transaction history.";
-+            error_log("clear transactions error: " . $e->getMessage());
-+        }
-+    }
-+    header("Location: admin_user_view.php?id=$user_id");
-+    exit;
-+}
-+
- // Get user details
- $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
- $stmt->bind_param("i", $user_id);
-@@ -278,11 +310,47 @@ $stmt->close();
-         border-radius: 3px;
-         font-size: 0.9em;
-     }
-+
-+    /* Destructive (delete) actions */
-+    .btn-danger, a.btn-danger {
-+        background-color: #dc3545 !important;
-+        color: #fff !important;
-+        border: none;
-+        padding: 8px 16px;
-+        border-radius: 4px;
-+        cursor: pointer;
-+        display: inline-block;
-+        text-decoration: none;
-+    }
-+
-+    .btn-danger:hover, a.btn-danger:hover {
-+        background-color: #a71d2a !important;
-+        color: #fff !important;
-+    }
-+
-+    .delete-section {
-+        border-top: 2px solid #dc3545;
-+        margin-top: 20px;
-+        padding-top: 15px;
-+    }
-+
-+    .flash-message {
-+        background-color: #d4edda;
-+        border: 1px solid #c3e6cb;
-+        color: #155724;
-+        padding: 12px 15px;
-+        border-radius: 4px;
-+        margin-bottom: 20px;
-+    }
- </style>
- 
- </head>
- <body>
-     <h1>User Details: <?= htmlspecialchars($user['username']) ?></h1>
-+    <?php if (!empty($_SESSION['admin_message'])): ?>
-+        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
-+        <?php unset($_SESSION['admin_message']); ?>
-+    <?php endif; ?>
-     <a href="admin_users.php">Back to Users</a>
-     
-     <!-- User Info Section -->
-@@ -390,6 +458,10 @@ $stmt->close();
-                     <?php else: ?>
-                         <span>No actions</span>
-                     <?php endif; ?>
-+                    <a href="admin_edit_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
-+                    <a class="btn-danger action-btn"
-+                       href="admin_delete_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
-+                       onclick="return confirm('Are you sure you want to permanently delete Deposit #<?= $deposit['id'] ?>?');">Delete</a>
-                 </td>
-             </tr>
-             <?php endforeach; ?>
-@@ -428,6 +500,10 @@ $stmt->close();
-                     <?php else: ?>
-                         <span>No actions</span>
-                     <?php endif; ?>
-+                    <a href="admin_edit_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
-+                    <a class="btn-danger action-btn"
-+                       href="admin_delete_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
-+                       onclick="return confirm('Are you sure you want to permanently delete Withdrawal #<?= $withdrawal['id'] ?>?');">Delete</a>
-                 </td>
-             </tr>
-             <?php endforeach; ?>
-@@ -445,6 +521,7 @@ $stmt->close();
+@@ -519,6 +519,7 @@ $stmt->close();
+                 <th>Plan</th>
+                 <th>Amount</th>
                  <th>Interest Earned</th>
++                <th>Profit</th>
                  <th>Status</th>
                  <th>Date</th>
-+                <th>Actions</th>
-             </tr>
-             <?php foreach ($investments as $investment): ?>
-             <tr>
-@@ -454,9 +531,21 @@ $stmt->close();
-                 <td><?= $investment['interest_earned'] ?></td>
+                 <th>Actions</th>
+@@ -528,7 +529,8 @@ $stmt->close();
+                 <td><?= $investment['id'] ?></td>
+                 <td><?= htmlspecialchars($investment['plan']) ?></td>
+                 <td><?= $investment['amount'] ?></td>
+-                <td><?= $investment['interest_earned'] ?></td>
++                <td><?= $investment['interest_earned'] ?? 0 ?></td>
++                <td><?= $investment['profit'] ?? 0 ?></td>
                  <td><?= $investment['status'] ?></td>
                  <td><?= $investment['created_at'] ?></td>
-+                <td>
-+                    <a href="admin_edit_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
-+                    <a class="btn-danger action-btn"
-+                       href="admin_delete_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
-+                       onclick="return confirm('Are you sure you want to permanently delete Investment #<?= $investment['id'] ?>?');">Delete</a>
-+                </td>
-             </tr>
-             <?php endforeach; ?>
-         </table>
-+
-+        <!-- Clear ALL transaction history for this user -->
-+        <form method="post" onsubmit="return confirm('This will PERMANENTLY delete every deposit, withdrawal and investment for this user. Continue?');" style="margin-top:15px;">
-+            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
-+            <button type="submit" name="delete_all_transactions" class="btn-danger">Delete All Transaction History</button>
-+        </form>
-     </div>
-     
-     <!-- Support Tickets Section -->
-@@ -481,5 +570,18 @@ $stmt->close();
-             <?php endforeach; ?>
-         </table>
-     </div>
-+
-+    <!-- Danger Zone: Delete user account -->
-+    <div class="section">
-+        <h2 style="color:#dc3545;">Danger Zone</h2>
-+        <p><strong>Delete User Account:</strong> This will permanently remove this user and ALL of their data
-+           (deposits, withdrawals, investments, KYC records and support tickets). This action cannot be undone.</p>
-+        <form method="post" action="admin_delete_user.php"
-+              onsubmit="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user_id ?>) and all their transactions? This cannot be undone!');">
-+            <input type="hidden" name="user_id" value="<?= $user_id ?>">
-+            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
-+            <button type="submit" class="btn-danger">Delete User Account</button>
-+        </form>
-+    </div>
- </body>
- </html>
-\ No newline at end of file
-diff --git a/a/admin_users.php b/a/admin_users.php
-index 0b34eb9..33e75d1 100644
---- a/a/admin_users.php
-+++ b/a/admin_users.php
-@@ -46,6 +46,12 @@ if (!empty($search)) {
- $stmt->execute();
- $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
- $stmt->close();
-+
-+// CSRF token for destructive actions (delete user)
-+if (empty($_SESSION['admin_delete_token'])) {
-+    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
-+}
-+$delete_token = $_SESSION['admin_delete_token'];
- ?>
- 
- <!-- HTML for admin users listing -->
-@@ -162,10 +168,34 @@ $stmt->close();
-             background-color: #007bff;
-             color: white;
+                 <td>
+-- 
+2.39.5
+
+From e59672e07bcdffec3dbf675fcc414dfe0f5e1e0d Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 20:50:25 +0000
+Subject: [PATCH 2/6] Allow empty Interest (defaults to 0) in investment edit;
+ surface DB error reason on failed update
+
+---
+ a/admin_edit_transaction.php | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
+index f0d1cbf..f02843b 100644
+--- a/a/admin_edit_transaction.php
++++ b/a/admin_edit_transaction.php
+@@ -109,8 +109,10 @@ if ($is_post) {
+                 }
+                 break;
+             case 'number':
++                // Some numeric columns (e.g. investment.interest) may legitimately be
++                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
+                 if ($val === '') {
+-                    $errors[] = "'{$def['label']}' cannot be empty.";
++                    $new[$col] = 0;
+                 } elseif (!is_numeric($val)) {
+                     $errors[] = "'{$def['label']}' must be a valid number.";
+                 } elseif ((float)$val < 0) {
+@@ -209,7 +211,8 @@ if ($is_post) {
+                 . ($backdated ? " (created-at backdated to {$new['created_at']})" : ".");
+         } catch (Exception $e) {
+             $conn->rollback();
+-            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id.";
++            // Include the real DB error so admins can see WHY it failed
++            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id. Reason: " . $e->getMessage();
+             error_log("admin_edit_transaction error: " . $e->getMessage());
          }
-+
-+        td a.delete-link {
-+            color: #dc3545;
-+            border-color: #dc3545;
-+        }
-+
-+        td a.delete-link:hover {
-+            background-color: #dc3545;
-+            color: white;
-+        }
-+
-+        .flash-message {
-+            background-color: #d4edda;
-+            border: 1px solid #c3e6cb;
-+            color: #155724;
-+            padding: 12px 15px;
-+            border-radius: 4px;
-+            margin-bottom: 20px;
-+        }
-     </style>
- </head>
- <body>
-     <h1>User Management</h1>
-+
-+    <?php if (!empty($_SESSION['admin_message'])): ?>
-+        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
-+        <?php unset($_SESSION['admin_message']); ?>
-+    <?php endif; ?>
-     
-     <form method="get">
-         <input type="text" name="search" placeholder="Search users..." value="<?= htmlspecialchars($search) ?>">
-@@ -199,6 +229,8 @@ $stmt->close();
-             <td>
-                 <a href="admin_user_view.php?id=<?= $user['id'] ?>">View</a>
-                 <a href="admin_user_edit.php?id=<?= $user['id'] ?>">Edit</a>
-+                <a class="delete-link" href="admin_delete_user.php?id=<?= $user['id'] ?>&token=<?= htmlspecialchars($delete_token) ?>"
-+                   onclick="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user['id'] ?>) and ALL their transactions? This cannot be undone!');">Delete</a>
-             </td>
-         </tr>
-         <?php endforeach; ?>
-diff --git a/about-us.html b/about-us.html
-index ca77d0e..2fa143b 100644
---- a/about-us.html
-+++ b/about-us.html
-@@ -417,7 +417,7 @@
-                             <div class="single-footer f-about">
-                                 <div class="logo">
-                                     <a href="index.html">
--                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
-+                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
-                                     </a>
-                                 </div>
-                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
-diff --git a/contact.html b/contact.html
-index fbfe4d3..f8e3bf3 100644
---- a/contact.html
-+++ b/contact.html
-@@ -273,7 +273,7 @@
-                             <div class="single-footer f-about">
-                                 <div class="logo">
-                                     <a href="index.html">
--                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
-+                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
-                                     </a>
-                                 </div>
-                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
-diff --git a/in/index_trade.html b/in/index_trade.html
-index 2d9dc79..e1d4163 100644
---- a/in/index_trade.html
-+++ b/in/index_trade.html
-@@ -202,6 +202,25 @@
-             <div class="tradingview-widget-container__widget"></div>
-             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-             {
-+                "symbols": [
-+                    {
-+                        "proName": "FOREXCOM:SPXUSD",
-+                        "title": "S&P 500 Index"
-+                    },
-+                    {
-+                        "proName": "BITSTAMP:BTCUSD",
-+                        "title": "Bitcoin"
-+                    },
-+                    {
-+                        "proName": "BITSTAMP:ETHUSD",
-+                        "title": "Ethereum"
-+                    },
-+                    {
-+                        "description": "Tesla",
-+                        "proName": "NASDAQ:TSLA"
-+                    }
-+                ],
-+                "showSymbolLogo": true,
-                 "colorTheme": "dark",
-                 "isTransparent": false,
-                 "displayMode": "adaptive",
-@@ -222,7 +241,7 @@
-     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-     {
-     "autosize": true,
--    "symbol": "NASDAQ:AAPL",
-+    "symbol": "NASDAQ:TSLA",
-     "interval": "D",
-     "timezone": "Etc/UTC",
-     "theme": "dark",
-diff --git a/index.html b/index.html
-index cd22364..2b20aa9 100644
---- a/index.html
-+++ b/index.html
-@@ -627,9 +627,13 @@
-         {
-           "description": "NVDA",
-           "proName": "NASDAQ:NVDA"
-+        },
-+        {
-+          "description": "Tesla",
-+          "proName": "NASDAQ:TSLA"
-         }
-       ],
--      "showSymbolLogo": true
-+      "showSymbolLogo": true,
-       "isTransparent": false,
-       "displayMode": "adaptive",
-       "colorTheme": "dark",
-@@ -874,6 +878,24 @@
-               "displayName": "SOL"
-             }
-           ]
-+        },
-+        {
-+          "name": "Stocks",
-+          "originalName": "Stocks",
-+          "symbols": [
-+            {
-+              "name": "NASDAQ:TSLA",
-+              "displayName": "Tesla"
-+            },
-+            {
-+              "name": "NASDAQ:NVDA",
-+              "displayName": "Nvidia"
-+            },
-+            {
-+              "name": "NASDAQ:AAPL",
-+              "displayName": "Apple"
-+            }
-+          ]
-         }
-       ],
-       "showSymbolLogo": true,
-@@ -1033,7 +1055,7 @@
-                             <div class="single-footer f-about">
-                                 <div class="logo">
-                                     <a href="index.html">
--                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 200px; width: auto;">                            </a>
-+                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
-                                     </a>
-                                 </div>
-                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
-diff --git a/investment-plans.html b/investment-plans.html
-index 30f5e27..9b735be 100644
---- a/investment-plans.html
-+++ b/investment-plans.html
-@@ -666,7 +666,7 @@
-                             <div class="single-footer f-about">
-                                <div class="logo">
-                                     <a href="index.html">
--                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
-+                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
-                                     </a>
-                                 </div>
-                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
-diff --git a/modified_files.zip b/modified_files.zip
+         header("Location: admin_user_view.php?id=$owner_id");
+-- 
+2.39.5
+
+From 751c370d9920300c90d155eff4eb4ef00e900158 Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 20:53:09 +0000
+Subject: [PATCH 3/6] Fix empty Interest validation and add admin transaction
+ management
+
+- Update `admin_edit_transaction.php` to allow empty or null values for numeric fields like 'interest' by defaulting them to 0, resolving the "Interest cannot be empty" error during investment updates.
+- Add `admin_delete_transaction.php` to enable permanent deletion of deposit, withdrawal, or investment records with CSRF protection and automatic balance adjustments for completed deposits.
+- Add `admin_delete_user.php` to support complete removal of user accounts along with all associated transactions, KYC records, and support tickets using a cascading delete approach within a transaction.
+- Modify `admin_user_view.php` to include Edit and Delete buttons for individual transactions, a "Delete All Transaction History" feature, and a Danger Zone section for account deletion, all secured with session-based CSRF tokens.
+- Enhance `admin_users.php` with direct user deletion links and flash message displays for successful or failed actions.
+- Implement consistent CSRF token generation and validation across all new and modified admin action files to prevent unauthorized destructive operations.
+---
+ .gitignore         |   2 +
+ all_changes.patch  | 830 +++++++++++++++++++++++++++++++++++++++++++++
+ modified_files.zip | Bin 4199 -> 50287 bytes
+ 3 files changed, 832 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 all_changes.patch
+
+diff --git a/.gitignore b/.gitignore
 new file mode 100644
-index 0000000..d90322e
-Binary files /dev/null and b/modified_files.zip differ
+index 0000000..9368508
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++# Build artifacts and temp files
++*.zip
+\ No newline at end of file
+diff --git a/all_changes.patch b/all_changes.patch
+new file mode 100644
+index 0000000..3f0129d
+--- /dev/null
++++ b/all_changes.patch
+@@ -0,0 +1,830 @@
++diff --git a/a/admin_delete_transaction.php b/a/admin_delete_transaction.php
++new file mode 100644
++index 0000000..a4990a7
++--- /dev/null
+++++ b/a/admin_delete_transaction.php
++@@ -0,0 +1,77 @@
+++<?php
+++// admin_delete_transaction.php
+++// Allows an admin to permanently delete a single deposit / withdrawal / investment
+++// transaction (i.e. "delete a transaction history" entry).
+++require_once 'admin_auth.php';
+++
+++if (!isAdminLoggedIn()) {
+++    header("Location: admin_login.php");
+++    exit;
+++}
+++
+++$type = isset($_GET['type']) ? $_GET['type'] : '';
+++$transaction_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+++$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+++$token = isset($_GET['token']) ? $_GET['token'] : '';
+++
+++// Only accept known transaction tables (see in/drawSQL-mysql-export-2025-05-30.sql)
+++$allowed_types = ['deposit', 'withdrawal', 'investment'];
+++if ($transaction_id <= 0 || !in_array($type, $allowed_types, true)) {
+++    $_SESSION['admin_message'] = "Invalid request: transaction could not be deleted.";
+++    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+++    exit;
+++}
+++
+++// CSRF protection – token is generated in the admin UI (admin_user_view.php)
+++if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
+++    $_SESSION['admin_message'] = "Deletion cancelled: confirmation token missing or invalid.";
+++    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+++    exit;
+++}
+++
+++// Fetch the transaction so we can adjust balances if needed
+++$stmt = $conn->prepare("SELECT * FROM `$type` WHERE id = ?");
+++$stmt->bind_param("i", $transaction_id);
+++$stmt->execute();
+++$transaction = $stmt->get_result()->fetch_assoc();
+++$stmt->close();
+++
+++if (!$transaction) {
+++    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id not found.";
+++    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+++    exit;
+++}
+++
+++$conn->begin_transaction();
+++
+++try {
+++    // If this was a COMPLETED deposit that credited the user, remove the credit
+++    // so deleting the record keeps the ledger and the balance consistent.
+++    if ($type === 'deposit' && $transaction['status'] === 'completed') {
+++        // deposit.amount is BIGINT in the schema (see drawSQL export); cast for bind safety
+++        $amt = (int)$transaction['amount'];
+++        $uid = (int)$transaction['user_id'];
+++        $stmt = $conn->prepare("UPDATE user SET deposit_balance = GREATEST(deposit_balance - ?, 0) WHERE id = ?");
+++        $stmt->bind_param("di", $amt, $uid);
+++        $stmt->execute();
+++        $stmt->close();
+++    }
+++
+++    // Delete the transaction row
+++    $stmt = $conn->prepare("DELETE FROM `$type` WHERE id = ?");
+++    $stmt->bind_param("i", $transaction_id);
+++    $stmt->execute();
+++    $stmt->close();
+++
+++    $conn->commit();
+++    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id deleted successfully.";
+++} catch (Exception $e) {
+++    $conn->rollback();
+++    $_SESSION['admin_message'] = "Failed to delete " . ucfirst($type) . " #$transaction_id.";
+++    error_log("admin_delete_transaction error: " . $e->getMessage());
+++}
+++
+++$target_user = (int)$transaction['user_id'];
+++header("Location: " . ($target_user > 0 ? "admin_user_view.php?id=$target_user" : "admin_users.php"));
+++exit;
+++?>
++diff --git a/a/admin_delete_user.php b/a/admin_delete_user.php
++new file mode 100644
++index 0000000..6db5d07
++--- /dev/null
+++++ b/a/admin_delete_user.php
++@@ -0,0 +1,72 @@
+++<?php
+++// admin_delete_user.php
+++// Allows an admin to permanently delete a user account AND all of its related
+++// data (deposits, withdrawals, investments, KYC records and support tickets).
+++require_once 'admin_auth.php';
+++
+++if (!isAdminLoggedIn()) {
+++    header("Location: admin_login.php");
+++    exit;
+++}
+++
+++// Accept both GET links (with confirmation token) and POST forms
+++$id    = isset($_POST['user_id']) ? (int)$_POST['user_id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
+++$token = isset($_POST['confirm_token']) ? $_POST['confirm_token'] : (isset($_GET['token']) ? $_GET['token'] : '');
+++
+++if ($id <= 0) {
+++    header("Location: admin_users.php");
+++    exit;
+++}
+++
+++// Simple CSRF protection: a token is generated in the admin UI and must match
+++if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
+++    $_SESSION['admin_message'] = "Deletion cancelled: confirmation token missing or invalid.";
+++    header("Location: admin_user_view.php?id=$id");
+++    exit;
+++}
+++
+++// Make sure the user exists
+++$stmt = $conn->prepare("SELECT id, username FROM user WHERE id = ?");
+++$stmt->bind_param("i", $id);
+++$stmt->execute();
+++$user = $stmt->get_result()->fetch_assoc();
+++$stmt->close();
+++
+++if (!$user) {
+++    $_SESSION['admin_message'] = "User not found.";
+++    header("Location: admin_users.php");
+++    exit;
+++}
+++
+++$conn->begin_transaction();
+++
+++try {
+++    // Order matters because of the foreign keys pointing at `user`
+++    $child_tables = ['deposit', 'withdrawal', 'investment', 'kyc', 'support_ticket'];
+++    foreach ($child_tables as $table) {
+++        $stmt = $conn->prepare("DELETE FROM `$table` WHERE user_id = ?");
+++        $stmt->bind_param("i", $id);
+++        $stmt->execute();
+++        $stmt->close();
+++    }
+++
+++    // Finally delete the account itself
+++    $stmt = $conn->prepare("DELETE FROM user WHERE id = ?");
+++    $stmt->bind_param("i", $id);
+++    $stmt->execute();
+++    $stmt->close();
+++
+++    $conn->commit();
+++    // One-time use token – regenerate on next page load
+++    unset($_SESSION['admin_delete_token']);
+++    $_SESSION['admin_message'] = "User \"" . $user['username'] . "\" (ID #$id) and all related transactions were deleted successfully.";
+++    header("Location: admin_users.php");
+++    exit;
+++} catch (Exception $e) {
+++    $conn->rollback();
+++    $_SESSION['admin_message'] = "Failed to delete user #" . $id . ".";
+++    error_log("admin_delete_user error: " . $e->getMessage());
+++    header("Location: admin_user_view.php?id=$id");
+++    exit;
+++}
+++?>
++diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
++new file mode 100644
++index 0000000..f02843b
++--- /dev/null
+++++ b/a/admin_edit_transaction.php
++@@ -0,0 +1,304 @@
+++<?php
+++// admin_edit_transaction.php
+++// Allows an admin to edit ANY detail of a transaction (deposit / withdrawal /
+++// investment), including backdating the created_at date & time.
+++//
+++// Usage:
+++//   GET  ?type=deposit&id=5&user_id=2          -> renders the edit form
+++//   POST (same query string)                   -> validates & saves changes
+++require_once 'admin_auth.php';
+++
+++if (!isAdminLoggedIn()) {
+++    header("Location: admin_login.php");
+++    exit;
+++}
+++
+++$type = isset($_GET['type']) ? $_GET['type'] : '';
+++$transaction_id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
+++$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : (isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0);
+++
+++// Only accept known transaction tables (see in/drawSQL-mysql-export-2025-05-30.sql)
+++$allowed_types = ['deposit', 'withdrawal', 'investment'];
+++if ($transaction_id <= 0 || !in_array($type, $allowed_types, true)) {
+++    $_SESSION['admin_message'] = "Invalid request: transaction could not be edited.";
+++    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+++    exit;
+++}
+++
+++// Load the transaction row
+++$stmt = $conn->prepare("SELECT * FROM `$type` WHERE id = ?");
+++$stmt->bind_param("i", $transaction_id);
+++$stmt->execute();
+++$transaction = $stmt->get_result()->fetch_assoc();
+++$stmt->close();
+++
+++if (!$transaction) {
+++    $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id not found.";
+++    header("Location: " . ($user_id > 0 ? "admin_user_view.php?id=$user_id" : "admin_users.php"));
+++    exit;
+++}
+++$owner_id = (int)$transaction['user_id'];
+++
+++// Editable fields per table (created_at handled separately as the backdate).
+++// type: amount | text | select | datetime
+++$field_defs = [
+++    'deposit' => [
+++        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+++        'gateway'        => ['label' => 'Gateway', 'type' => 'text'],
+++        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+++        'status'         => ['label' => 'Status', 'type' => 'select',
+++                             'options' => ['pending', 'completed', 'rejected']],
+++        'wallet'         => ['label' => 'Wallet', 'type' => 'text'],
+++        'type'           => ['label' => 'Type', 'type' => 'text'],
+++        'is_withdrawal_fee' => ['label' => 'Is Withdrawal Fee (0/1)', 'type' => 'number'],
+++    ],
+++    'withdrawal' => [
+++        'transaction_id'     => ['label' => 'Transaction ID', 'type' => 'text'],
+++        'amount'             => ['label' => 'Amount', 'type' => 'amount'],
+++        'withdrawable_amount'=> ['label' => 'Withdrawable Amount', 'type' => 'amount'],
+++        'wallet'             => ['label' => 'Wallet', 'type' => 'text'],
+++        'type'               => ['label' => 'Type', 'type' => 'text'],
+++        'wallet_address'     => ['label' => 'Wallet Address', 'type' => 'text'],
+++        'gateway'            => ['label' => 'Gateway', 'type' => 'text'],
+++        'status'             => ['label' => 'Status', 'type' => 'select',
+++                                 'options' => ['pending', 'completed', 'rejected']],
+++    ],
+++    'investment' => [
+++        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+++        'plan'           => ['label' => 'Plan', 'type' => 'text'],
+++        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+++        'interest'       => ['label' => 'Interest', 'type' => 'number'],
+++        'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
+++        'status'         => ['label' => 'Status', 'type' => 'select',
+++                             'options' => ['pending', 'running', 'completed', 'rejected']],
+++    ],
+++];
+++$fields = $field_defs[$type];
+++
+++$errors = [];
+++$is_post = ($_SERVER['REQUEST_METHOD'] === 'POST');
+++
+++if ($is_post) {
+++    // CSRF protection - same token used by the delete features
+++    $token = $_POST['confirm_token'] ?? '';
+++    if (empty($_SESSION['admin_delete_token']) || empty($token) || !hash_equals($_SESSION['admin_delete_token'], $token)) {
+++        $_SESSION['admin_message'] = "Edit cancelled: confirmation token missing or invalid.";
+++        header("Location: admin_user_view.php?id=$owner_id");
+++        exit;
+++    }
+++
+++    // Gather submitted values
+++    $new = [];
+++    foreach ($fields as $col => $def) {
+++        $val = $_POST['fields'][$col] ?? null;
+++        if ($val === null) {
+++            continue; // field not presented -> leave untouched
+++        }
+++        $val = trim($val);
+++        switch ($def['type']) {
+++            case 'amount':
+++                // Schema stores amounts as BIGINT, so normalise to whole numbers.
+++                if ($val === '') {
+++                    $errors[] = "'{$def['label']}' cannot be empty.";
+++                } elseif (!is_numeric($val)) {
+++                    $errors[] = "'{$def['label']}' must be a valid number.";
+++                } elseif ((float)$val < 0) {
+++                    $errors[] = "'{$def['label']}' must be a non-negative number.";
+++                } else {
+++                    $new[$col] = (int)round((float)$val);
+++                }
+++                break;
+++            case 'number':
+++                // Some numeric columns (e.g. investment.interest) may legitimately be
+++                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
+++                if ($val === '') {
+++                    $new[$col] = 0;
+++                } elseif (!is_numeric($val)) {
+++                    $errors[] = "'{$def['label']}' must be a valid number.";
+++                } elseif ((float)$val < 0) {
+++                    $errors[] = "'{$def['label']}' must be a non-negative number.";
+++                } else {
+++                    $new[$col] = (int)round((float)$val);
+++                }
+++                break;
+++            case 'select':
+++                if (!in_array($val, $def['options'], true)) {
+++                    $errors[] = "'{$def['label']}' has an invalid value.";
+++                } else {
+++                    $new[$col] = $val;
+++                }
+++                break;
+++            default: // text
+++                if ($val === '') {
+++                    $errors[] = "'{$def['label']}' cannot be empty.";
+++                } else {
+++                    $new[$col] = $val;
+++                }
+++        }
+++    }
+++
+++    // Backdate: the created-at date & time of the transaction
+++    $new_created_at = trim($_POST['created_at'] ?? '');
+++    $backdated = false;
+++    if ($new_created_at !== '') {
+++        $dt = date_create($new_created_at);
+++        if ($dt === false) {
+++            $errors[] = "Created At must be a valid date/time (YYYY-MM-DD HH:MM:SS).";
+++        } else {
+++            $new_created_at = $dt->format('Y-m-d H:i:s');
+++            if ($new_created_at !== $transaction['created_at']) {
+++                $backdated = true;
+++            }
+++            $new['created_at'] = $new_created_at;
+++        }
+++    }
+++
+++    if (empty($errors) && !empty($new)) {
+++        $conn->begin_transaction();
+++        try {
+++            // Keep ledger consistent when the AMOUNT or STATUS of a deposit changes.
+++            // user.deposit_balance is BIGINT in the schema, so store rounded whole amounts.
+++            if ($type === 'deposit') {
+++                $old_amt = (float)$transaction['amount'];
+++                $new_amt = isset($new['amount']) ? round((float)$new['amount']) : $old_amt;
+++                $new['amount'] = $new_amt;
+++
+++                $was_completed = ($transaction['status'] === 'completed');
+++                $now_completed = isset($new['status']) ? ($new['status'] === 'completed') : $was_completed;
+++
+++                $delta = 0.0;
+++                if ($was_completed && $now_completed) {
+++                    $delta = $new_amt - $old_amt;              // amount changed on a completed deposit
+++                } elseif (!$was_completed && $now_completed) {
+++                    $delta = $new_amt;                          // newly credited
+++                } elseif ($was_completed && !$now_completed) {
+++                    $delta = -$old_amt;                         // credit removed
+++                }
+++                if (abs($delta) > 0.001) {
+++                    $stmt = $conn->prepare(
+++                        "UPDATE user SET deposit_balance = GREATEST(deposit_balance + ?, 0) WHERE id = ?"
+++                    );
+++                    $d = $delta;
+++                    $stmt->bind_param("di", $d, $owner_id);
+++                    $stmt->execute();
+++                    $stmt->close();
+++                }
+++            }
+++
+++            // Build one UPDATE from the whitelisted columns actually submitted
+++            $set_parts = [];
+++            $values = [];
+++            $types_str = '';
+++            foreach ($new as $col => $val) {
+++                if (!array_key_exists($col, $fields) && $col !== 'created_at') {
+++                    continue; // strict whitelist
+++                }
+++                $set_parts[] = "`$col` = ?";
+++                $values[] = $val;
+++                $types_str .= is_int($val) ? 'i' : (is_float($val) ? 'd' : 's');
+++            }
+++            $types_str .= 'i'; // trailing id
+++            $values[] = $transaction_id;
+++
+++            $sql = "UPDATE `$type` SET " . implode(', ', $set_parts) . " WHERE id = ?";
+++            $stmt = $conn->prepare($sql);
+++            $stmt->bind_param($types_str, ...$values);
+++            $stmt->execute();
+++            $stmt->close();
+++
+++            $conn->commit();
+++            $_SESSION['admin_message'] = ucfirst($type) . " #$transaction_id updated successfully"
+++                . ($backdated ? " (created-at backdated to {$new['created_at']})" : ".");
+++        } catch (Exception $e) {
+++            $conn->rollback();
+++            // Include the real DB error so admins can see WHY it failed
+++            $_SESSION['admin_message'] = "Failed to update " . ucfirst($type) . " #$transaction_id. Reason: " . $e->getMessage();
+++            error_log("admin_edit_transaction error: " . $e->getMessage());
+++        }
+++        header("Location: admin_user_view.php?id=$owner_id");
+++        exit;
+++    }
+++    // If we get here there were validation errors -> re-render the form with them
+++}
+++
+++// For GET requests (or POST with errors) make sure a CSRF token exists
+++if (empty($_SESSION['admin_delete_token'])) {
+++    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
+++}
+++$delete_token = $_SESSION['admin_delete_token'];
+++
+++// Merge submitted values over DB values so the form shows what the admin typed
+++$current = array_merge($transaction, []);
+++if ($is_post) {
+++    foreach ($fields as $col => $def) {
+++        if (isset($_POST['fields'][$col])) {
+++            $current[$col] = $_POST['fields'][$col];
+++        }
+++    }
+++    if (trim($_POST['created_at'] ?? '') !== '') {
+++        $current['created_at'] = $_POST['created_at'];
+++    }
+++}
+++?>
+++<!DOCTYPE html>
+++<html>
+++<head>
+++    <title>Admin - Edit <?= htmlspecialchars($type) ?> #<?= $transaction_id ?></title>
+++    <style>
+++        * { margin: 0; padding: 0; box-sizing: border-box; }
+++        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f7fa; padding: 20px; }
+++        h1 { color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #3498db; }
+++        a { color: #3498db; text-decoration: none; }
+++        .section { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 25px; max-width: 700px; }
+++        label { display: block; font-weight: 600; margin-top: 12px; }
+++        input[type=text], input[type=number], select, input[type=datetime-local] {
+++            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px; font-size: 14px;
+++        }
+++        button { margin-top: 20px; padding: 10px 18px; border: none; border-radius: 4px; background: #3498db; color: white; font-size: 15px; cursor: pointer; }
+++        button:hover { background: #2980b9; }
+++        .errors { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; }
+++        .errors ul { margin-left: 20px; }
+++        .hint { font-size: 12px; color: #777; margin-top: 3px; }
+++    </style>
+++</head>
+++<body>
+++    <h1>Edit <?= htmlspecialchars(ucfirst($type)) ?> #<?= $transaction_id ?></h1>
+++    <?php if (!empty($errors)): ?>
+++        <div class="errors"><ul><?php foreach ($errors as $err): ?><li><?= htmlspecialchars($err) ?></li><?php endforeach; ?></ul></div>
+++    <?php endif; ?>
+++    <a href="admin_user_view.php?id=<?= $owner_id ?>">&larr; Back to User Details</a>
+++
+++    <div class="section">
+++        <form method="post">
+++            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
+++            <input type="hidden" name="id" value="<?= $transaction_id ?>">
+++            <input type="hidden" name="user_id" value="<?= $owner_id ?>">
+++
+++            <?php foreach ($fields as $col => $def): ?>
+++                <label for="f_<?= $col ?>"><?= htmlspecialchars($def['label']) ?></label>
+++                <?php $val = htmlspecialchars($current[$col] ?? '', ENT_QUOTES); ?>
+++                <?php if ($def['type'] === 'select'): ?>
+++                    <select id="f_<?= $col ?>" name="fields[<?= $col ?>]">
+++                        <?php foreach ($def['options'] as $opt): ?>
+++                            <option value="<?= $opt ?>" <?= ($current[$col] ?? '') === $opt ? 'selected' : '' ?>><?= ucfirst($opt) ?></option>
+++                        <?php endforeach; ?>
+++                    </select>
+++                <?php elseif ($def['type'] === 'amount'): ?>
+++                    <input type="number" step="1" min="0" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
+++                <?php elseif ($def['type'] === 'number'): ?>
+++                    <input type="number" step="1" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
+++                <?php else: ?>
+++                    <input type="text" id="f_<?= $col ?>" name="fields[<?= $col ?>]" value="<?= $val ?>">
+++                <?php endif; ?>
+++            <?php endforeach; ?>
+++
+++            <label for="created_at">Created At (Date &amp; Time)</label>
+++            <input type="datetime-local" id="created_at" name="created_at"
+++                   value="<?= htmlspecialchars(substr($current['created_at'] ?? '', 0, 16), ENT_QUOTES) ?>">
+++            <p class="hint">Set this to any past date/time to backdate the transaction. Leave unchanged to keep the original.</p>
+++
+++            <button type="submit">Save Changes</button>
+++        </form>
+++    </div>
+++</body>
+++</html>
++diff --git a/a/admin_user_view.php b/a/admin_user_view.php
++index d88dcf6..9d51574 100644
++--- a/a/admin_user_view.php
+++++ b/a/admin_user_view.php
++@@ -40,6 +40,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
++     }
++ }
++ 
+++// CSRF token for destructive actions (delete user / delete transactions)
+++if (empty($_SESSION['admin_delete_token'])) {
+++    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
+++}
+++$delete_token = $_SESSION['admin_delete_token'];
+++
+++// Handle "clear all transaction history" for this user
+++if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_all_transactions'])) {
+++    $token = $_POST['confirm_token'] ?? '';
+++    if (empty($delete_token) || !hash_equals($delete_token, $token)) {
+++        $_SESSION['admin_message'] = "Could not clear history: invalid confirmation token.";
+++    } else {
+++        $conn->begin_transaction();
+++        try {
+++            foreach (['deposit', 'withdrawal', 'investment'] as $table) {
+++                $stmt = $conn->prepare("DELETE FROM `$table` WHERE user_id = ?");
+++                $stmt->bind_param("i", $user_id);
+++                $stmt->execute();
+++                $stmt->close();
+++            }
+++            $conn->commit();
+++            $_SESSION['admin_message'] = "All transaction history for user #$user_id deleted successfully.";
+++        } catch (Exception $e) {
+++            $conn->rollback();
+++            $_SESSION['admin_message'] = "Failed to delete transaction history.";
+++            error_log("clear transactions error: " . $e->getMessage());
+++        }
+++    }
+++    header("Location: admin_user_view.php?id=$user_id");
+++    exit;
+++}
+++
++ // Get user details
++ $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
++ $stmt->bind_param("i", $user_id);
++@@ -278,11 +310,47 @@ $stmt->close();
++         border-radius: 3px;
++         font-size: 0.9em;
++     }
+++
+++    /* Destructive (delete) actions */
+++    .btn-danger, a.btn-danger {
+++        background-color: #dc3545 !important;
+++        color: #fff !important;
+++        border: none;
+++        padding: 8px 16px;
+++        border-radius: 4px;
+++        cursor: pointer;
+++        display: inline-block;
+++        text-decoration: none;
+++    }
+++
+++    .btn-danger:hover, a.btn-danger:hover {
+++        background-color: #a71d2a !important;
+++        color: #fff !important;
+++    }
+++
+++    .delete-section {
+++        border-top: 2px solid #dc3545;
+++        margin-top: 20px;
+++        padding-top: 15px;
+++    }
+++
+++    .flash-message {
+++        background-color: #d4edda;
+++        border: 1px solid #c3e6cb;
+++        color: #155724;
+++        padding: 12px 15px;
+++        border-radius: 4px;
+++        margin-bottom: 20px;
+++    }
++ </style>
++ 
++ </head>
++ <body>
++     <h1>User Details: <?= htmlspecialchars($user['username']) ?></h1>
+++    <?php if (!empty($_SESSION['admin_message'])): ?>
+++        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
+++        <?php unset($_SESSION['admin_message']); ?>
+++    <?php endif; ?>
++     <a href="admin_users.php">Back to Users</a>
++     
++     <!-- User Info Section -->
++@@ -390,6 +458,10 @@ $stmt->close();
++                     <?php else: ?>
++                         <span>No actions</span>
++                     <?php endif; ?>
+++                    <a href="admin_edit_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+++                    <a class="btn-danger action-btn"
+++                       href="admin_delete_transaction.php?type=deposit&id=<?= $deposit['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+++                       onclick="return confirm('Are you sure you want to permanently delete Deposit #<?= $deposit['id'] ?>?');">Delete</a>
++                 </td>
++             </tr>
++             <?php endforeach; ?>
++@@ -428,6 +500,10 @@ $stmt->close();
++                     <?php else: ?>
++                         <span>No actions</span>
++                     <?php endif; ?>
+++                    <a href="admin_edit_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+++                    <a class="btn-danger action-btn"
+++                       href="admin_delete_transaction.php?type=withdrawal&id=<?= $withdrawal['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+++                       onclick="return confirm('Are you sure you want to permanently delete Withdrawal #<?= $withdrawal['id'] ?>?');">Delete</a>
++                 </td>
++             </tr>
++             <?php endforeach; ?>
++@@ -445,6 +521,7 @@ $stmt->close();
++                 <th>Interest Earned</th>
++                 <th>Status</th>
++                 <th>Date</th>
+++                <th>Actions</th>
++             </tr>
++             <?php foreach ($investments as $investment): ?>
++             <tr>
++@@ -454,9 +531,21 @@ $stmt->close();
++                 <td><?= $investment['interest_earned'] ?></td>
++                 <td><?= $investment['status'] ?></td>
++                 <td><?= $investment['created_at'] ?></td>
+++                <td>
+++                    <a href="admin_edit_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>">Edit</a>
+++                    <a class="btn-danger action-btn"
+++                       href="admin_delete_transaction.php?type=investment&id=<?= $investment['id'] ?>&user_id=<?= $user_id ?>&token=<?= htmlspecialchars($delete_token) ?>"
+++                       onclick="return confirm('Are you sure you want to permanently delete Investment #<?= $investment['id'] ?>?');">Delete</a>
+++                </td>
++             </tr>
++             <?php endforeach; ?>
++         </table>
+++
+++        <!-- Clear ALL transaction history for this user -->
+++        <form method="post" onsubmit="return confirm('This will PERMANENTLY delete every deposit, withdrawal and investment for this user. Continue?');" style="margin-top:15px;">
+++            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
+++            <button type="submit" name="delete_all_transactions" class="btn-danger">Delete All Transaction History</button>
+++        </form>
++     </div>
++     
++     <!-- Support Tickets Section -->
++@@ -481,5 +570,18 @@ $stmt->close();
++             <?php endforeach; ?>
++         </table>
++     </div>
+++
+++    <!-- Danger Zone: Delete user account -->
+++    <div class="section">
+++        <h2 style="color:#dc3545;">Danger Zone</h2>
+++        <p><strong>Delete User Account:</strong> This will permanently remove this user and ALL of their data
+++           (deposits, withdrawals, investments, KYC records and support tickets). This action cannot be undone.</p>
+++        <form method="post" action="admin_delete_user.php"
+++              onsubmit="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user_id ?>) and all their transactions? This cannot be undone!');">
+++            <input type="hidden" name="user_id" value="<?= $user_id ?>">
+++            <input type="hidden" name="confirm_token" value="<?= htmlspecialchars($delete_token) ?>">
+++            <button type="submit" class="btn-danger">Delete User Account</button>
+++        </form>
+++    </div>
++ </body>
++ </html>
++\ No newline at end of file
++diff --git a/a/admin_users.php b/a/admin_users.php
++index 0b34eb9..33e75d1 100644
++--- a/a/admin_users.php
+++++ b/a/admin_users.php
++@@ -46,6 +46,12 @@ if (!empty($search)) {
++ $stmt->execute();
++ $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
++ $stmt->close();
+++
+++// CSRF token for destructive actions (delete user)
+++if (empty($_SESSION['admin_delete_token'])) {
+++    $_SESSION['admin_delete_token'] = bin2hex(random_bytes(16));
+++}
+++$delete_token = $_SESSION['admin_delete_token'];
++ ?>
++ 
++ <!-- HTML for admin users listing -->
++@@ -162,10 +168,34 @@ $stmt->close();
++             background-color: #007bff;
++             color: white;
++         }
+++
+++        td a.delete-link {
+++            color: #dc3545;
+++            border-color: #dc3545;
+++        }
+++
+++        td a.delete-link:hover {
+++            background-color: #dc3545;
+++            color: white;
+++        }
+++
+++        .flash-message {
+++            background-color: #d4edda;
+++            border: 1px solid #c3e6cb;
+++            color: #155724;
+++            padding: 12px 15px;
+++            border-radius: 4px;
+++            margin-bottom: 20px;
+++        }
++     </style>
++ </head>
++ <body>
++     <h1>User Management</h1>
+++
+++    <?php if (!empty($_SESSION['admin_message'])): ?>
+++        <div class="flash-message"><?= htmlspecialchars($_SESSION['admin_message']) ?></div>
+++        <?php unset($_SESSION['admin_message']); ?>
+++    <?php endif; ?>
++     
++     <form method="get">
++         <input type="text" name="search" placeholder="Search users..." value="<?= htmlspecialchars($search) ?>">
++@@ -199,6 +229,8 @@ $stmt->close();
++             <td>
++                 <a href="admin_user_view.php?id=<?= $user['id'] ?>">View</a>
++                 <a href="admin_user_edit.php?id=<?= $user['id'] ?>">Edit</a>
+++                <a class="delete-link" href="admin_delete_user.php?id=<?= $user['id'] ?>&token=<?= htmlspecialchars($delete_token) ?>"
+++                   onclick="return confirm('Are you sure you want to PERMANENTLY delete user \'<?= htmlspecialchars(addslashes($user['username'])) ?>\' (ID #<?= $user['id'] ?>) and ALL their transactions? This cannot be undone!');">Delete</a>
++             </td>
++         </tr>
++         <?php endforeach; ?>
++diff --git a/about-us.html b/about-us.html
++index ca77d0e..2fa143b 100644
++--- a/about-us.html
+++++ b/about-us.html
++@@ -417,7 +417,7 @@
++                             <div class="single-footer f-about">
++                                 <div class="logo">
++                                     <a href="index.html">
++-                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
+++                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
++                                     </a>
++                                 </div>
++                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
++diff --git a/contact.html b/contact.html
++index fbfe4d3..f8e3bf3 100644
++--- a/contact.html
+++++ b/contact.html
++@@ -273,7 +273,7 @@
++                             <div class="single-footer f-about">
++                                 <div class="logo">
++                                     <a href="index.html">
++-                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
+++                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
++                                     </a>
++                                 </div>
++                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
++diff --git a/in/index_trade.html b/in/index_trade.html
++index 2d9dc79..e1d4163 100644
++--- a/in/index_trade.html
+++++ b/in/index_trade.html
++@@ -202,6 +202,25 @@
++             <div class="tradingview-widget-container__widget"></div>
++             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
++             {
+++                "symbols": [
+++                    {
+++                        "proName": "FOREXCOM:SPXUSD",
+++                        "title": "S&P 500 Index"
+++                    },
+++                    {
+++                        "proName": "BITSTAMP:BTCUSD",
+++                        "title": "Bitcoin"
+++                    },
+++                    {
+++                        "proName": "BITSTAMP:ETHUSD",
+++                        "title": "Ethereum"
+++                    },
+++                    {
+++                        "description": "Tesla",
+++                        "proName": "NASDAQ:TSLA"
+++                    }
+++                ],
+++                "showSymbolLogo": true,
++                 "colorTheme": "dark",
++                 "isTransparent": false,
++                 "displayMode": "adaptive",
++@@ -222,7 +241,7 @@
++     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
++     {
++     "autosize": true,
++-    "symbol": "NASDAQ:AAPL",
+++    "symbol": "NASDAQ:TSLA",
++     "interval": "D",
++     "timezone": "Etc/UTC",
++     "theme": "dark",
++diff --git a/index.html b/index.html
++index cd22364..2b20aa9 100644
++--- a/index.html
+++++ b/index.html
++@@ -627,9 +627,13 @@
++         {
++           "description": "NVDA",
++           "proName": "NASDAQ:NVDA"
+++        },
+++        {
+++          "description": "Tesla",
+++          "proName": "NASDAQ:TSLA"
++         }
++       ],
++-      "showSymbolLogo": true
+++      "showSymbolLogo": true,
++       "isTransparent": false,
++       "displayMode": "adaptive",
++       "colorTheme": "dark",
++@@ -874,6 +878,24 @@
++               "displayName": "SOL"
++             }
++           ]
+++        },
+++        {
+++          "name": "Stocks",
+++          "originalName": "Stocks",
+++          "symbols": [
+++            {
+++              "name": "NASDAQ:TSLA",
+++              "displayName": "Tesla"
+++            },
+++            {
+++              "name": "NASDAQ:NVDA",
+++              "displayName": "Nvidia"
+++            },
+++            {
+++              "name": "NASDAQ:AAPL",
+++              "displayName": "Apple"
+++            }
+++          ]
++         }
++       ],
++       "showSymbolLogo": true,
++@@ -1033,7 +1055,7 @@
++                             <div class="single-footer f-about">
++                                 <div class="logo">
++                                     <a href="index.html">
++-                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 200px; width: auto;">                            </a>
+++                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
++                                     </a>
++                                 </div>
++                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
++diff --git a/investment-plans.html b/investment-plans.html
++index 30f5e27..9b735be 100644
++--- a/investment-plans.html
+++++ b/investment-plans.html
++@@ -666,7 +666,7 @@
++                             <div class="single-footer f-about">
++                                <div class="logo">
++                                     <a href="index.html">
++-                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 60px; width: auto;">                            </a>
+++                                        <img src="assets/images/logo/logo_white.svg" alt="North Bridge Investments" style="height: 50px; width: auto;">                            </a>
++                                     </a>
++                                 </div>
++                                 <p>Algorithmic trading platform delivering consistent returns through advanced market analysis and high-frequency trading strategies.</p>
++diff --git a/modified_files.zip b/modified_files.zip
++new file mode 100644
++index 0000000..d90322e
++Binary files /dev/null and b/modified_files.zip differ
+diff --git a/modified_files.zip b/modified_files.zip
+index d90322e53d26c1c08b53ea548035650ab2330352..b442f58c384ae671aaec1c2c220aae014aa8a356 100644
+GIT binary patch
+literal 50287
+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
+
+delta 4181
+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
+
+-- 
+2.39.5
+
+From 43b616687b6be8ebafc25e1bf60b7cbfb82013a9 Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 21:00:03 +0000
+Subject: [PATCH 4/6] Skip blank optional interest field in investment edit to
+ avoid Unknown column error
+
+---
+ a/admin_edit_transaction.php | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
+index f02843b..15aa92d 100644
+--- a/a/admin_edit_transaction.php
++++ b/a/admin_edit_transaction.php
+@@ -67,7 +67,7 @@ $field_defs = [
+         'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+         'plan'           => ['label' => 'Plan', 'type' => 'text'],
+         'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+-        'interest'       => ['label' => 'Interest', 'type' => 'number'],
++        'interest'       => ['label' => 'Interest', 'type' => 'number', 'optional' => true],
+         'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
+         'status'         => ['label' => 'Status', 'type' => 'select',
+                              'options' => ['pending', 'running', 'completed', 'rejected']],
+@@ -109,9 +109,12 @@ if ($is_post) {
+                 }
+                 break;
+             case 'number':
+-                // Some numeric columns (e.g. investment.interest) may legitimately be
+-                // empty/NULL in the DB -> treat blank as 0 instead of rejecting it.
+-                if ($val === '') {
++                // Optional numeric columns (e.g. investment.interest) may not exist on
++                // every live server -> skip them entirely when left blank so we never
++                // reference a missing column in the UPDATE statement.
++                if ($val === '' && !empty($def['optional'])) {
++                    continue 2;
++                } elseif ($val === '') {
+                     $new[$col] = 0;
+                 } elseif (!is_numeric($val)) {
+                     $errors[] = "'{$def['label']}' must be a valid number.";
+-- 
+2.39.5
+
+From 5a7520046280463db7d4251adb962111be3fceee Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 21:00:12 +0000
+Subject: [PATCH 5/6] Refresh modified_files.zip with interest column fix
+
+---
+ modified_files.zip | Bin 50287 -> 42356 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+diff --git a/modified_files.zip b/modified_files.zip
+index b442f58c384ae671aaec1c2c220aae014aa8a356..c3f8287615c2f45da47ee0db07a5365b941a4ece 100644
+GIT binary patch
+delta 4539
+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
+NDfB(YPcHhm^Dj%golO7$
+
+delta 12507
+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
+WlK*WI@c)%5L2|{EFfo1qm-#=$-ucM@
+
+-- 
+2.39.5
+
+From f534c8ca2af717f6980d303a4cde1fcfc0cbff3f Mon Sep 17 00:00:00 2001
+From: "qwen.ai[bot]" <qwenlm-intl@service.alibaba.com>
+Date: Sun, 27 Sep 2026 21:22:26 +0000
+Subject: [PATCH 6/6] Fix investment edit: use real columns
+ interest_earned/profit, auto-detect schema, show Profit in user view
+
+---
+ a/admin_edit_transaction.php | 32 +++++++++++++++++++++++++-------
+ a/admin_user_view.php        |  4 +++-
+ 2 files changed, 28 insertions(+), 8 deletions(-)
+
+diff --git a/a/admin_edit_transaction.php b/a/admin_edit_transaction.php
+index 15aa92d..8563317 100644
+--- a/a/admin_edit_transaction.php
++++ b/a/admin_edit_transaction.php
+@@ -64,15 +64,33 @@ $field_defs = [
+                                  'options' => ['pending', 'completed', 'rejected']],
+     ],
+     'investment' => [
+-        'transaction_id' => ['label' => 'Transaction ID', 'type' => 'text'],
+-        'plan'           => ['label' => 'Plan', 'type' => 'text'],
+-        'amount'         => ['label' => 'Amount', 'type' => 'amount'],
+-        'interest'       => ['label' => 'Interest', 'type' => 'number', 'optional' => true],
+-        'days_count'     => ['label' => 'Days Count', 'type' => 'number'],
+-        'status'         => ['label' => 'Status', 'type' => 'select',
+-                             'options' => ['pending', 'running', 'completed', 'rejected']],
++        'transaction_id'  => ['label' => 'Transaction ID', 'type' => 'text'],
++        'plan'            => ['label' => 'Plan', 'type' => 'text'],
++        'amount'          => ['label' => 'Amount', 'type' => 'amount'],
++        // The live DB (and the app code in api/process_investment.php & cronjob.php)
++        // stores earnings in `interest_earned` / `profit`, NOT `interest`.
++        'interest_earned' => ['label' => 'Interest Earned', 'type' => 'number', 'optional' => true],
++        'profit'          => ['label' => 'Profit', 'type' => 'number', 'optional' => true],
++        'days_count'      => ['label' => 'Days Count', 'type' => 'number'],
++        'status'          => ['label' => 'Status', 'type' => 'select',
++                              'options' => ['pending', 'active', 'running', 'completed', 'rejected']],
+     ],
+ ];
++
++// Detect which columns actually exist on this server so we never reference a
++// missing column (e.g. old schema with `interest` instead of `interest_earned`).
++$existing_cols = [];
++$res = $conn->query("SHOW COLUMNS FROM `$type`");
++if ($res) {
++    while ($colrow = $res->fetch_assoc()) {
++        $existing_cols[$colrow['Field']] = true;
++    }
++}
++foreach ($field_defs[$type] as $col => $def) {
++    if (!isset($existing_cols[$col])) {
++        unset($field_defs[$type][$col]);
++    }
++}
+ $fields = $field_defs[$type];
+ 
+ $errors = [];
+diff --git a/a/admin_user_view.php b/a/admin_user_view.php
+index 9d51574..73ddc29 100644
+--- a/a/admin_user_view.php
++++ b/a/admin_user_view.php
+@@ -519,6 +519,7 @@ $stmt->close();
+                 <th>Plan</th>
+                 <th>Amount</th>
+                 <th>Interest Earned</th>
++                <th>Profit</th>
+                 <th>Status</th>
+                 <th>Date</th>
+                 <th>Actions</th>
+@@ -528,7 +529,8 @@ $stmt->close();
+                 <td><?= $investment['id'] ?></td>
+                 <td><?= htmlspecialchars($investment['plan']) ?></td>
+                 <td><?= $investment['amount'] ?></td>
+-                <td><?= $investment['interest_earned'] ?></td>
++                <td><?= $investment['interest_earned'] ?? 0 ?></td>
++                <td><?= $investment['profit'] ?? 0 ?></td>
+                 <td><?= $investment['status'] ?></td>
+                 <td><?= $investment['created_at'] ?></td>
+                 <td>
+-- 
+2.39.5
+
